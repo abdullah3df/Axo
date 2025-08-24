@@ -3,123 +3,340 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Axolotl Coin — $AXO</title>
-<meta name="description" content="Axolotl Coin ($AXO) — meme coin on Solana. 0% tax, locked liquidity, community airdrops. Wiggle to the moon!">
+<title>$AXO — Axolotl Coin (Solana)</title>
 <meta name="theme-color" content="#0b0f14"/>
+<meta name="description" content="$AXO on Solana (SPL). 0% tax, locked liquidity, community airdrops. Buy on Raydium.">
+
 <style>
+/* ====== THEME ====== */
 :root{
-  --bg:#0b0f14; --card:#0f1620; --ink:#e9f3ff; --muted:#8aa1b7;
-  --accent:#ff4fd8; --accent2:#00e5ff; --ok:#00ff9c;
-  --glass:rgba(255,255,255,.06); --border:rgba(255,255,255,.1);
+  --bg:#0b0f14; --layer:#0f1620; --ink:#e9f3ff; --muted:#95a9bf;
+  --a:#8b5cf6; --b:#22d3ee; --ok:#00ff9c; --warn:#ff7a7a;
+  --glass:rgba(255,255,255,.06); --bd:rgba(255,255,255,.12);
+  --shadow:0 10px 30px rgba(0,0,0,.35);
 }
-*{box-sizing:border-box} html,body{height:100%}
-body{margin:0; font-family:system-ui,Arial; background:var(--bg); color:var(--ink);}
-.nav{display:flex; justify-content:space-between; padding:14px 20px; background:#111822;}
-.brand{display:flex; align-items:center; gap:10px; color:var(--ink); text-decoration:none; font-weight:800;}
-.logo{width:36px; height:36px}
-.links{display:flex; gap:18px}
-.links a{color:var(--muted); text-decoration:none; font-weight:600}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; font-family: ui-sans-serif,system-ui,Segoe UI,Roboto,Arial,sans-serif;
+  color:var(--ink); background:
+   radial-gradient(1200px 600px at 80% -20%, rgba(139,92,246,.14), transparent 60%),
+   radial-gradient(900px 400px at 10% 110%, rgba(34,211,238,.12), transparent 60%),
+   var(--bg);
+  scroll-behavior:smooth; line-height:1.65; font-size:17px;
+}
+
+/* ====== NAVBAR ====== */
+.nav{
+  position:sticky; top:0; z-index:50; backdrop-filter: blur(10px);
+  background:linear-gradient(180deg, rgba(11,15,20,.92), rgba(11,15,20,.55));
+  border-bottom:1px solid var(--bd);
+}
+.nav-in{
+  max-width:1200px; margin:0 auto; padding:14px 18px;
+  display:flex; align-items:center; justify-content:space-between; gap:16px;
+}
+.brand{font-weight:900; letter-spacing:.6px}
+.brand b{background:linear-gradient(90deg,var(--a),var(--b)); -webkit-background-clip:text; background-clip:text; color:transparent}
+.links{display:flex; gap:16px; align-items:center}
+.links a{
+  color:var(--muted); text-decoration:none; font-weight:700; padding:8px 10px; border-radius:10px; position:relative;
+}
 .links a:hover{color:var(--ink)}
-.hero{display:grid; grid-template-columns:1.1fr .9fr; gap:24px; padding:60px 20px; max-width:1100px; margin:0 auto;}
-.hero h1{font-size:clamp(32px,5vw,58px); margin:0 0 8px}
-.grad{background:linear-gradient(90deg,var(--accent),var(--accent2)); -webkit-background-clip:text; background-clip:text; color:transparent}
-.sub{color:var(--muted)}
-.contract{margin:18px 0}
-.contract .row{display:flex; gap:10px; align-items:center}
-code#contractText{padding:10px; border:1px solid var(--border); border-radius:8px; background:var(--card)}
-.copy{padding:8px 12px; border-radius:8px; border:1px solid var(--border); background:var(--glass); color:var(--ink); cursor:pointer}
-.cta{display:flex; gap:12px; margin:18px 0}
-.btn{padding:12px 18px; border-radius:14px; text-decoration:none; font-weight:700; border:1px solid var(--border)}
-.btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2)); color:#001018; border:0}
-.btn.ghost{background:transparent; color:var(--ink)}
-.section{max-width:1100px; margin:0 auto; padding:40px 20px}
-.card{background:var(--card); border:1px solid var(--border); border-radius:12px; padding:20px}
-.footer{text-align:center; padding:20px; background:#111822; color:var(--muted)}
+.links a.active{
+  color:#001018; background:linear-gradient(90deg,var(--a),var(--b)); box-shadow: var(--shadow);
+}
+.menu{display:none; background:transparent; border:1px solid var(--bd); color:var(--ink); padding:8px 10px; border-radius:10px}
+
+/* Drawer (mobile) */
+.drawer{display:none; border-bottom:1px solid var(--bd); background:#0c1118cc; backdrop-filter:blur(8px)}
+.drawer a{display:block; padding:12px 18px; color:var(--ink); text-decoration:none; border-top:1px solid var(--bd)}
+.drawer a:active{background:linear-gradient(90deg,rgba(139,92,246,.2),rgba(34,211,238,.2))}
+
+/* ====== UTILITIES ====== */
+.container{max-width:1200px; margin:0 auto; padding:0 18px}
+.section{padding:84px 0}
+h1{font-size:clamp(34px,7vw,62px); line-height:1.12; margin:0 0 10px}
+h2{font-size:clamp(26px,5vw,38px); margin:0 0 14px}
+.lead{color:var(--muted); font-size:18px}
+.row{display:flex; gap:14px; flex-wrap:wrap; align-items:center}
+.btn{
+  padding:14px 22px; border-radius:14px; font-weight:800; text-decoration:none; cursor:pointer;
+  border:1px solid var(--bd); color:var(--ink); background:transparent; transition:.25s ease;
+}
+.btn.primary{
+  border:0; color:#001018; background:linear-gradient(90deg,var(--a),var(--b));
+  box-shadow: var(--shadow);
+}
+.btn.ghost:hover{border-color:var(--b); color:var(--ink)}
+.code{padding:12px 14px; border:1px solid var(--bd); border-radius:12px; background:var(--layer); font-family:ui-monospace,Consolas,monospace}
+
+/* ====== HERO ====== */
+.hero{
+  display:grid; grid-template-columns:1.1fr .9fr; gap:28px; align-items:center;
+}
+.card, .glass{
+  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+  border:1px solid var(--bd); border-radius:20px; box-shadow: var(--shadow);
+}
+.hero-visual{
+  position:relative; padding:22px; border-radius:22px;
+  background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+  border:1px solid var(--bd);
+}
+.neon-ring{
+  --s:280px;
+  width:var(--s); height:var(--s); border-radius:50%;
+  margin:auto; position:relative; overflow:hidden;
+  background:radial-gradient(circle at 50% 50%, #17202a 0 35%, transparent 36%),
+              conic-gradient(from 0deg, var(--a), var(--b), var(--a));
+  filter:saturate(1.2) drop-shadow(0 20px 60px rgba(0,0,0,.5));
+  animation: spin 16s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg) } }
+.badges{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px}
+.badges span{border:1px solid var(--bd); background:var(--glass); padding:7px 12px; border-radius:999px; color:var(--muted); font-weight:700}
+
+/* ====== GRID + CARDS ====== */
+.grid2{display:grid; grid-template-columns:1.2fr .8fr; gap:26px; align-items:start}
+.stats{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+.stat{padding:14px; border:1px solid var(--bd); border-radius:14px; background:var(--glass)}
+.stat span{color:var(--muted); font-size:14px}
+.stat b{display:block; font-size:18px}
+
+/* Tokenomics pie (pure CSS) */
+.tokenomics{display:grid; grid-template-columns:320px 1fr; gap:26px; align-items:center}
+.pie{
+  width:300px; height:300px; border-radius:50%;
+  background: conic-gradient(var(--a) 0 50%, var(--b) 50% 80%, var(--ok) 80% 100%);
+  box-shadow:0 10px 60px rgba(139,92,246,.25), inset 0 0 0 10px #0b0f14;
+  margin:auto;
+}
+.legend{list-style:none; padding:0; margin:0; display:grid; gap:12px}
+.legend li{display:flex; align-items:center; gap:8px}
+.d{width:14px; height:14px; border-radius:50%}
+.d.lp{background:var(--a)} .d.mkt{background:var(--b)} .d.burn{background:var(--ok)}
+
+/* FAQ (interactive) */
+details{border-top:1px solid var(--bd); padding:14px 0}
+details:first-of-type{border-top:0}
+summary{cursor:pointer; font-weight:800}
+details[open] summary{color:var(--b)}
+
+/* Footer */
+.footer{padding:48px 20px; border-top:1px solid var(--bd); text-align:center; color:var(--muted)}
+
+/* ====== RESPONSIVE ====== */
+@media (max-width: 900px){
+  .links{display:none}
+  .menu{display:inline-flex}
+  .drawer.show{display:block}
+  .hero{grid-template-columns:1fr; text-align:center}
+  .grid2{grid-template-columns:1fr}
+  .tokenomics{grid-template-columns:1fr}
+  .neon-ring{--s:240px}
+}
+@media (max-width: 420px){
+  body{font-size:16.5px}
+  .btn{width:100%; justify-content:center}
+  .code{font-size:14px}
+}
 </style>
 </head>
 <body>
-<header class="nav">
-  <a class="brand" href="#">
-    <img src="assets/axo-logo.svg" alt="AXO logo" class="logo">
-    <span>$AXO</span>
-  </a>
-  <nav class="links">
-    <a href="#about">About</a>
-    <a href="#tokenomics">Tokenomics</a>
-    <a href="#how">How to Buy</a>
-  </nav>
-</header>
 
-<section class="hero">
+<!-- ========= NAV ========= -->
+<nav class="nav">
+  <div class="nav-in">
+    <a class="brand" href="#"><b>$AXO</b> <span style="color:var(--muted);font-weight:700;margin-left:6px">Solana</span></a>
+    <div class="links" id="links">
+      <a href="#about"    data-nav>About</a>
+      <a href="#token"    data-nav>Tokenomics</a>
+      <a href="#how"      data-nav>How to Buy</a>
+      <a href="#airdrop"  class="pill" data-nav>Airdrop</a>
+    </div>
+    <button class="menu" id="menuBtn" aria-label="Open menu">☰</button>
+  </div>
+  <div class="drawer" id="drawer">
+    <a href="#about">About</a>
+    <a href="#token">Tokenomics</a>
+    <a href="#how">How to Buy</a>
+    <a href="#airdrop">Airdrop</a>
+  </div>
+</nav>
+
+<!-- ========= HERO ========= -->
+<section class="section container hero" id="top">
   <div>
-    <h1>Axolotl Coin <span class="grad">$AXO</span></h1>
-    <p class="sub">Meme coin on Solana with 0% tax, locked liquidity, and community airdrops.</p>
-    <div class="contract">
-      <label>Contract (Solana):</label>
+    <h1>$AXO — Axolotl Coin</h1>
+    <p class="lead">Meme coin on <b>Solana (SPL)</b> with 0% tax, locked liquidity, and community airdrops.</p>
+
+    <div style="margin:18px 0">
+      <div style="color:var(--muted);margin-bottom:6px">Contract (Solana):</div>
       <div class="row">
-        <code id="contractText">FnFcZMAR96k3kZm7Cz7LcvM7pngE8WwEjSAxppFsMqgh</code>
-        <button class="copy" id="copyBtn">Copy</button>
+        <code class="code" id="contractText">FnFcZMAR96k3kZm7Cz7LcvM7pngE8WwEjSAxppFsMqgh</code>
+        <button class="btn ghost" id="copyBtn">Copy</button>
       </div>
     </div>
-    <div class="cta">
-      <a class="btn primary" id="buyLink" target="_blank">Buy on Raydium</a>
-      <a class="btn ghost" id="chartLink" target="_blank">Chart</a>
+
+    <div class="row" style="margin:14px 0 8px">
+      <a class="btn primary" id="buyLink" target="_blank" rel="noopener">Buy on Raydium</a>
+      <a class="btn ghost"   id="chartLink" target="_blank" rel="noopener">Chart</a>
+    </div>
+
+    <div class="badges">
+      <span>0% Tax</span><span>Locked LP</span><span>Community Airdrops</span>
     </div>
   </div>
-  <div>
-    <img src="assets/axo-mascot.png" alt="Axolotl mascot" style="max-width:100%">
+
+  <div class="hero-visual">
+    <div class="neon-ring" aria-hidden="true"></div>
+    <div class="badges" style="justify-content:center;margin-top:16px">
+      <span>Supply: 1,000,000,000</span><span>Symbol: —</span>
+    </div>
   </div>
 </section>
 
-<section id="about" class="section">
-  <h2>About $AXO</h2>
-  <p>Axolotl Coin is inspired by the quirky axolotl — reimagined as a funny, exhausted character. With 1B total supply, no tax, and liquidity locked, $AXO is a community-driven meme token built on Solana.</p>
+<!-- ========= ABOUT / STATS ========= -->
+<section id="about" class="section container grid2">
+  <div>
+    <h2>About $AXO</h2>
+    <p>
+      Axolotl Coin is a meme token reimagined as a hilarious, exhausted axolotl character.
+      Built on Solana, $AXO features free trading (0% tax), a fixed 1B supply, and random community airdrops.
+      The project is community-first with a clean, transparent token model.
+    </p>
+    <ul style="padding-left:18px">
+      <li>Smooth, zero-tax swaps on Raydium</li>
+      <li>Transparent distribution &amp; locked liquidity</li>
+      <li>Community rewards, contests, and surprise snapshots</li>
+    </ul>
+  </div>
+  <div class="glass" style="padding:18px">
+    <h3 style="margin:0 0 8px">Quick Stats</h3>
+    <div class="stats">
+      <div class="stat"><span>Total Supply</span><b>1,000,000,000</b></div>
+      <div class="stat"><span>Chain</span><b>Solana (SPL)</b></div>
+      <div class="stat"><span>Symbol</span><b>—</b></div>
+      <div class="stat"><span>Tax</span><b>0%</b></div>
+    </div>
+  </div>
 </section>
 
-<section id="tokenomics" class="section card">
+<!-- ========= TOKENOMICS ========= -->
+<section id="token" class="section container">
   <h2>Tokenomics</h2>
-  <ul>
-    <li><b>Total Supply:</b> 1,000,000,000</li>
-    <li><b>Chain:</b> Solana (SPL)</li>
-    <li><b>Symbol:</b> —</li>
-    <li><b>Tax:</b> 0%</li>
-  </ul>
+  <div class="tokenomics">
+    <div class="pie" aria-label="Token distribution pie"></div>
+    <ul class="legend">
+      <li><span class="d lp"></span>50% Locked Liquidity</li>
+      <li><span class="d mkt"></span>30% Marketing &amp; Community</li>
+      <li><span class="d burn"></span>20% Burn Events</li>
+    </ul>
+  </div>
+  <p style="color:var(--muted);text-align:center;margin-top:12px">Simple. Transparent. No hidden taxes.</p>
 </section>
 
-<section id="how" class="section">
-  <h2>How to Buy</h2>
-  <ol>
-    <li>Install <b>Phantom</b> or <b>Backpack</b> wallet and set network to Solana.</li>
-    <li>Buy <b>SOL</b> and send it to your wallet.</li>
-    <li>Open <b>Raydium</b> and paste our contract:<br>
-      <code>FnFcZMAR96k3kZm7Cz7LcvM7pngE8WwEjSAxppFsMqgh</code>
-    </li>
-    <li>Set slippage (0.5% – 2%) and confirm the swap.</li>
-  </ol>
+<!-- ========= HOW TO BUY ========= -->
+<section id="how" class="section container grid2">
+  <div>
+    <h2>How to Buy</h2>
+    <ol style="padding-left:18px">
+      <li>Install <b>Phantom</b> or <b>Backpack</b> and set network to Solana.</li>
+      <li>Buy <b>SOL</b> and send it to your wallet.</li>
+      <li>Open <b>Raydium</b> and paste our contract:<br>
+        <span class="code" style="display:inline-block;margin-top:6px">FnFcZMAR96k3kZm7Cz7LcvM7pngE8WwEjSAxppFsMqgh</span>
+      </li>
+      <li>Set slippage (0.5% – 2%) and confirm the swap.</li>
+    </ol>
+    <div class="row" style="margin-top:10px">
+      <a class="btn" id="howBuy" target="_blank" rel="noopener">Open Raydium</a>
+      <button class="btn ghost" id="copyBtn2">Copy Contract</button>
+    </div>
+  </div>
+
+  <div class="card" style="padding:18px">
+    <h3 style="margin:0 0 8px">FAQ</h3>
+    <details open>
+      <summary>Is there any tax?</summary>
+      <p>No. $AXO has 0% buy/sell tax.</p>
+    </details>
+    <details>
+      <summary>Is liquidity locked?</summary>
+      <p>Yes. LP will be locked via a reputable locker and links will be posted on socials.</p>
+    </details>
+    <details>
+      <summary>Where can I see the chart?</summary>
+      <p>Use the “Chart” button above (Dexscreener) once the pair is live.</p>
+    </details>
+  </div>
 </section>
 
+<!-- ========= AIRDROP ========= -->
+<section id="airdrop" class="section container">
+  <div class="glass" style="padding:22px">
+    <h2>Community Airdrops</h2>
+    <p>Random airdrops to holders. Keep $AXO in your wallet, engage in the community, and watch for surprise snapshots.</p>
+    <div class="row">
+      <a class="btn primary" href="#" target="_blank" rel="noopener">Join Telegram</a>
+      <a class="btn ghost" href="#" target="_blank" rel="noopener">Follow on X</a>
+    </div>
+  </div>
+</section>
+
+<!-- ========= FOOTER ========= -->
 <footer class="footer">
-  <p>© <span id="year"></span> Axolotl Coin — $AXO</p>
+  <p>© <span id="year"></span> $AXO — Axolotl Coin. All rights reserved.</p>
 </footer>
 
 <script>
+/* ====== SETTINGS (Solana) ====== */
 const CONTRACT = "FnFcZMAR96k3kZm7Cz7LcvM7pngE8WwEjSAxppFsMqgh";
-const BUY_URL   = "https://raydium.io/swap/?inputMint=sol&outputMint=" + CONTRACT;
-const CHART_URL = "https://dexscreener.com/solana/" + CONTRACT;
+const BUY_URL  = "https://raydium.io/swap/?inputMint=sol&outputMint=" + CONTRACT;
+const CHART_URL= "https://dexscreener.com/solana/" + CONTRACT;
 
+/* Fill links */
 document.getElementById("buyLink").href  = BUY_URL;
 document.getElementById("chartLink").href= CHART_URL;
+document.getElementById("howBuy").href   = BUY_URL;
 document.getElementById("year").textContent = new Date().getFullYear();
 
+/* Copy contract */
 function copy(addr){
   navigator.clipboard.writeText(addr).then(()=>{
-    const t=document.getElementById("contractText");
-    const o=t.textContent;
-    t.textContent="Copied!";
-    setTimeout(()=>t.textContent=o,900);
+    const t = document.getElementById("contractText");
+    const old = t.textContent; t.textContent = "Copied!";
+    setTimeout(()=> t.textContent = old, 900);
   });
 }
 document.getElementById("copyBtn").addEventListener("click", ()=> copy(CONTRACT));
+document.getElementById("copyBtn2").addEventListener("click", ()=> {
+  navigator.clipboard.writeText(CONTRACT);
+});
+
+/* Mobile drawer toggle */
+const menuBtn = document.getElementById("menuBtn");
+const drawer  = document.getElementById("drawer");
+menuBtn?.addEventListener("click", ()=> drawer.classList.toggle("show"));
+
+/* Scrollspy: highlight active nav link */
+const navLinks = [...document.querySelectorAll('[data-nav]')];
+const sections = ["about","token","how","airdrop"].map(id=>document.getElementById(id));
+const spy = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const id = e.target.id;
+      navLinks.forEach(a=>a.classList.toggle('active', a.getAttribute('href')==="#"+id));
+    }
+  });
+},{rootMargin:"-45% 0px -50% 0px", threshold:.01});
+sections.forEach(s=>spy.observe(s));
+
+/* Smooth anchor close drawer on mobile */
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click', ()=> drawer.classList.remove('show'));
+});
 </script>
 </body>
 </html>
+```0

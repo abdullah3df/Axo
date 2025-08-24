@@ -2,237 +2,85 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>$AXO — Meme Coin</title>
 <meta name="theme-color" content="#0b0f14"/>
-<title>$AXO — Meme Coin (Solana)</title>
-<meta name="description" content="$AXO is a fun meme coin on Solana. 0% tax. Highly risky — you can lose all funds. Buy on Raydium.">
-
-<!-- Open Graph (optional preview) -->
-<meta property="og:title" content="$AXO — Meme Coin (Solana)"/>
-<meta property="og:description" content="Fun-only meme coin. Extremely risky. Buy on Raydium."/>
-<meta property="og:type" content="website"/>
-
 <style>
-/* ===== Theme & Resets ===== */
 :root{
-  --bg:#0b0f14; --layer:#0f1620; --ink:#e9f3ff; --muted:#9db0c6;
+  --bg:#0b0f14; --ink:#e9f3ff; --muted:#9db0c6;
   --a:#8b5cf6; --b:#22d3ee; --danger:#ff5a7a;
   --glass:rgba(255,255,255,.06); --bd:rgba(255,255,255,.12);
-  --radius:16px; --shadow:0 12px 36px rgba(0,0,0,.35);
 }
-*{box-sizing:border-box}
-html,body{height:100%}
-body{
-  margin:0; color:var(--ink);
-  font-family: ui-sans-serif, system-ui, "Segoe UI", Roboto, Arial, sans-serif;
-  line-height:1.65; background:
-    radial-gradient(1200px 600px at 80% -20%, rgba(139,92,246,.14), transparent 60%),
-    radial-gradient(900px 400px at 10% 110%, rgba(34,211,238,.12), transparent 60%),
-    var(--bg);
-  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
-}
-:focus-visible{outline:2px solid var(--b); outline-offset:2px; border-radius:10px}
-img{max-width:100%; display:block}
-
-/* ===== Layout ===== */
-.container{max-width:1100px; margin:0 auto; padding:0 clamp(16px, 3.5vw, 28px)}
-.section{padding:clamp(40px, 7vw, 88px) 0}
-
-/* ===== Nav ===== */
-.nav{position:sticky; top:0; z-index:20; backdrop-filter:blur(10px);
-  background:linear-gradient(180deg, rgba(11,15,20,.92), rgba(11,15,20,.55));
-  border-bottom:1px solid var(--bd);
-}
-.nav__in{display:flex; align-items:center; justify-content:space-between; gap:16px; padding:14px 0}
-.brand{font-weight:900; letter-spacing:.5px}
-.brand b{background:linear-gradient(90deg,var(--a),var(--b)); -webkit-background-clip:text; background-clip:text; color:transparent}
-.links{display:flex; gap:12px}
-.links a{padding:8px 12px; border-radius:12px; color:var(--muted); text-decoration:none; font-weight:700}
-.links a:hover{color:var(--ink)}
-.links a.active{color:#001018; background:linear-gradient(90deg,var(--a),var(--b)); box-shadow:var(--shadow)}
-.menu{display:none; border:1px solid var(--bd); background:transparent; color:var(--ink); padding:8px 10px; border-radius:12px}
-
-/* Drawer (mobile) */
-.drawer{display:none; border-bottom:1px solid var(--bd); background:#0c1118cc; backdrop-filter:blur(8px)}
-.drawer a{display:block; padding:14px; color:var(--ink); text-decoration:none; border-top:1px solid var(--bd)}
-.drawer a:active{background:linear-gradient(90deg,rgba(139,92,246,.2),rgba(34,211,238,.2))}
-
-/* ===== Hero ===== */
-.hero{display:grid; grid-template-columns:1.1fr .9fr; gap:clamp(18px,4vw,32px); align-items:center}
-h1{margin:0 0 8px; font-size:clamp(30px,6.5vw,56px); line-height:1.15}
-.lead{color:var(--muted); font-size:clamp(16px,1.7vw,18px)}
-.badges{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px}
-.badges span{border:1px solid var(--bd); background:var(--glass); padding:7px 12px; border-radius:999px; color:var(--muted); font-weight:700}
-
-.panel{border:1px solid var(--bd); background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03)); border-radius:var(--radius); padding:clamp(14px,2vw,18px); box-shadow:var(--shadow)}
-.code{display:inline-flex; align-items:center; gap:10px; padding:10px 12px; border:1px solid var(--bd); border-radius:12px; background:var(--layer); font-family:ui-monospace,Consolas,monospace; font-size:clamp(13px,1.8vw,15px); white-space:nowrap; overflow:auto; max-width:100%}
-.btn{display:inline-flex; align-items:center; justify-content:center; gap:10px; padding:14px 22px; border-radius:14px; font-weight:800; text-decoration:none; border:1px solid var(--bd); color:var(--ink); background:transparent; transition:.25s ease}
-.btn.primary{border:0; color:#001018; background:linear-gradient(90deg,var(--a),var(--b)); box-shadow:var(--shadow)}
-.btn.ghost:hover{border-color:var(--b)}
-.btn.full{width:100%}
-
-/* Visual donut */
-.donut{
-  --s: min(64vw, 320px);
-  width:var(--s); height:var(--s); border-radius:50%; margin:auto;
-  background:conic-gradient(var(--a) 0 50%, var(--b) 50% 80%, #00ff9c 80% 100%);
-  position:relative; filter:saturate(1.1) drop-shadow(0 24px 60px rgba(0,0,0,.45));
-}
-.donut::after{
-  content:""; position:absolute; inset:12%; border-radius:50%;
-  background:radial-gradient(closest-side, #121a23 0, #0b0f14 80%);
-}
-
-/* ===== Minimal sections ===== */
-.grid2{display:grid; grid-template-columns:1.2fr .8fr; gap:clamp(18px,3.5vw,26px); align-items:start}
-.stat{padding:12px 14px; border:1px solid var(--bd); border-radius:14px; background:var(--glass)}
-.stat span{color:var(--muted); font-size:14px}
-.stat b{display:block; font-size:18px}
-
-/* Warning */
-.warn{margin:clamp(24px,4vw,36px) auto; max-width:760px; font-weight:800; color:var(--danger);
-  border:1px solid var(--danger); background:rgba(255,90,122,.08);
-  padding:16px 18px; border-radius:14px}
-
-/* Footer */
-.footer{padding:28px 0; color:var(--muted); border-top:1px solid var(--bd); text-align:center}
-
-/* ===== Responsive ===== */
-@media (max-width: 900px){
-  .links{display:none} .menu{display:inline-flex}
-  .drawer.show{display:block}
-  .hero{grid-template-columns:1fr; text-align:center}
-  .grid2{grid-template-columns:1fr}
-  .btn.stack{width:100%}
-}
-@media (prefers-reduced-motion: reduce){
-  *{animation:none!important; transition:none!important}
-}
+*{box-sizing:border-box} body{margin:0;font-family:sans-serif;background:var(--bg);color:var(--ink);line-height:1.6}
+.container{max-width:800px;margin:0 auto;padding:20px}
+header{text-align:center;padding:20px;border-bottom:1px solid var(--bd)}
+header h1{margin:0;font-size:clamp(28px,6vw,42px)}
+header p{color:var(--muted);margin:6px 0 0;font-size:16px}
+.code{display:flex;justify-content:space-between;align-items:center;gap:10px;
+  padding:12px;border:1px solid var(--bd);border-radius:12px;background:var(--glass);
+  font-family:monospace;font-size:14px;overflow:auto}
+.btns{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin:20px 0}
+.btn{flex:1;min-width:120px;text-align:center;padding:14px 20px;border-radius:12px;
+  font-weight:700;text-decoration:none;transition:.25s ease}
+.primary{background:linear-gradient(90deg,var(--a),var(--b));color:#001018;border:0}
+.ghost{border:1px solid var(--bd);color:var(--ink);background:transparent}
+.stats{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin:20px 0}
+.stats div{padding:10px 14px;border:1px solid var(--bd);border-radius:10px;background:var(--glass);font-size:14px}
+.warn{margin:20px auto;max-width:700px;padding:14px 18px;border-radius:12px;
+  border:1px solid var(--danger);background:rgba(255,90,122,.1);color:var(--danger);font-weight:700;text-align:center}
+footer{text-align:center;color:var(--muted);padding:20px;font-size:14px;border-top:1px solid var(--bd)}
 </style>
 </head>
 <body>
 
-<!-- Nav -->
-<nav class="nav">
-  <div class="container nav__in">
-    <a class="brand" href="#"><b>$AXO</b> <span style="color:var(--muted);font-weight:800;margin-left:6px">Solana</span></a>
-    <div class="links" id="navLinks">
-      <a href="#top"    data-spy>Home</a>
-      <a href="#buy"    data-spy>Buy</a>
-      <a href="#token"  data-spy>Token</a>
-    </div>
-    <button class="menu" id="menuBtn" aria-label="Menu">☰</button>
-  </div>
-  <div class="drawer" id="drawer">
-    <a href="#top">Home</a>
-    <a href="#buy">Buy</a>
-    <a href="#token">Token</a>
-  </div>
-</nav>
-
-<!-- Hero -->
-<header class="section container hero" id="top">
-  <div>
+<div class="container">
+  <header>
     <h1>$AXO — Meme Coin</h1>
-    <p class="lead">Fun-only meme coin on <b>Solana (SPL)</b> • 0% tax</p>
+    <p>Fun-only meme coin on <b>Solana (SPL)</b> • 0% tax</p>
+  </header>
 
-    <div class="panel" style="margin-top:14px">
-      <div style="color:var(--muted);margin-bottom:6px">Contract (Solana):</div>
-      <div class="code" id="contractBox" title="Click to copy">
-        <span id="contractTxt">FnFcZMAR96k3kZm7Cz7LcvM7pngE8WwEjSAxppFsMqgh</span>
-        <button class="btn" id="copyBtn" style="padding:8px 12px">Copy</button>
-      </div>
+  <section style="margin-top:20px">
+    <div style="margin-bottom:10px;color:var(--muted)">Contract (Solana):</div>
+    <div class="code" id="contractBox">
+      <span id="contractTxt">FnFcZMAR96k3kZm7Cz7LcvM7pngE8WwEjSAxppFsMqgh</span>
+      <button id="copyBtn" style="background:transparent;border:1px solid var(--bd);color:var(--ink);padding:6px 10px;border-radius:8px;cursor:pointer">Copy</button>
     </div>
+  </section>
 
-    <div class="badges" style="margin-top:12px">
-      <span>0% Tax</span><span>Supply: 1,000,000,000</span><span>Chain: Solana</span>
-    </div>
+  <div class="btns">
+    <a class="btn primary" id="buyLink" target="_blank">Buy on Raydium</a>
+    <a class="btn ghost" id="chartLink" target="_blank">Chart</a>
   </div>
 
-  <div class="panel" aria-hidden="true">
-    <div class="donut"></div>
+  <div class="stats">
+    <div>Supply: 1,000,000,000</div>
+    <div>Chain: Solana</div>
+    <div>Tax: 0%</div>
   </div>
-</header>
 
-<!-- Quick Actions -->
-<section id="buy" class="container section" style="padding-top:24px">
-  <div class="grid2">
-    <div class="panel">
-      <h2 style="margin-top:0">Buy / Chart</h2>
-      <div class="row" style="gap:12px">
-        <a class="btn primary stack full" id="buyLink" target="_blank" rel="noopener">Buy on Raydium</a>
-        <a class="btn ghost stack full" id="chartLink" target="_blank" rel="noopener">Chart</a>
-      </div>
-      <p class="warn" role="note">
-        ⚠️ This is a <b>meme coin for fun</b>. Trading is extremely risky and you can lose <u>all</u> your funds.
-      </p>
-    </div>
-
-    <div class="panel">
-      <h2 style="margin-top:0">Token</h2>
-      <div class="row" style="flex-wrap:wrap">
-        <div class="stat"><span>Total Supply</span><b>1,000,000,000</b></div>
-        <div class="stat"><span>Symbol</span><b>—</b></div>
-        <div class="stat"><span>Tax</span><b>0%</b></div>
-        <div class="stat"><span>Network</span><b>Solana (SPL)</b></div>
-      </div>
-    </div>
+  <div class="warn">
+    ⚠️ This is a meme coin for fun only.<br>
+    Trading is extremely risky and you can lose all your funds.
   </div>
-</section>
 
-<footer class="footer">
-  <div class="container">© <span id="year"></span> $AXO • For fun only</div>
-</footer>
+  <footer>© <span id="year"></span> $AXO Meme Coin</footer>
+</div>
 
 <script>
-/* ===== Settings ===== */
-const CONTRACT = "FnFcZMAR96k3kZm7Cz7LcvM7pngE8WwEjSAxppFsMqgh";
-const BUY_URL  = "https://raydium.io/swap/?inputMint=sol&outputMint=" + CONTRACT;
-const CHART_URL= "https://dexscreener.com/solana/" + CONTRACT;
+const CONTRACT="FnFcZMAR96k3kZm7Cz7LcvM7pngE8WwEjSAxppFsMqgh";
+document.getElementById("buyLink").href="https://raydium.io/swap/?inputMint=sol&outputMint="+CONTRACT;
+document.getElementById("chartLink").href="https://dexscreener.com/solana/"+CONTRACT;
+document.getElementById("year").textContent=new Date().getFullYear();
 
-/* Fill links & year */
-document.getElementById("buyLink").href   = BUY_URL;
-document.getElementById("chartLink").href = CHART_URL;
-document.getElementById("year").textContent = new Date().getFullYear();
-
-/* Copy-to-clipboard */
 function copyContract(){
   navigator.clipboard.writeText(CONTRACT).then(()=>{
-    const box = document.getElementById("contractBox");
-    const old = document.getElementById("contractTxt").textContent;
-    document.getElementById("contractTxt").textContent = "Copied!";
-    box.style.borderColor = "var(--b)";
-    setTimeout(()=>{
-      document.getElementById("contractTxt").textContent = old;
-      box.style.borderColor = "var(--bd)";
-    }, 900);
+    const txt=document.getElementById("contractTxt");
+    const old=txt.textContent; txt.textContent="Copied!";
+    setTimeout(()=>txt.textContent=old,900);
   });
 }
 document.getElementById("copyBtn").addEventListener("click", copyContract);
-document.getElementById("contractBox").addEventListener("click", (e)=>{
-  if(e.target.id!=="copyBtn") copyContract();
-});
-
-/* Mobile drawer */
-const menuBtn = document.getElementById("menuBtn");
-const drawer  = document.getElementById("drawer");
-menuBtn?.addEventListener("click", ()=> drawer.classList.toggle("show"));
-
-/* Scrollspy: active link highlight */
-const links = [...document.querySelectorAll('[data-spy]')];
-const ids = ["top","buy","token"].map(id=>document.getElementById(id));
-const spy = new IntersectionObserver((entries)=>{
-  entries.forEach(e=>{
-    if(e.isIntersecting){
-      const id = e.target.id;
-      links.forEach(a=>a.classList.toggle('active', a.getAttribute('href')==="#"+id));
-    }
-  });
-},{rootMargin:"-45% 0px -50% 0px", threshold:.01});
-ids.forEach(s=>spy.observe(s));
-
-/* Respect safe-areas on iOS */
-document.documentElement.style.paddingBottom = "env(safe-area-inset-bottom)";
 </script>
+
 </body>
 </html>

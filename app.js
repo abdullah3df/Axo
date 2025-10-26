@@ -1,16 +1,59 @@
-
+// app.js
 
 const AUTH_KEY = 'work_auth';
 const STATE_KEY = 'workhours_v1';
 
 // =========================================================
-// 1. إدارة الحالة (State Management)
+// 1. إدارة الحالة (State Management) و Google Handlers
 // =========================================================
 
 let state = {
     auth: null,
     sessions: [],
 };
+
+// وظيفة لاستخراج معرف العميل من وسم meta
+function getClientId() {
+    const meta = document.querySelector('meta[name="google-signin-client_id"]');
+    if (meta && meta.content && !/YOUR_GOOGLE_CLIENT_ID/.test(meta.content)) {
+        return meta.content;
+    }
+    return null;
+}
+
+// معالج بيانات اعتماد Google
+function handleGoogleCredential(response) {
+    if (response.credential) {
+        // يمكنك هنا فك تشفير JWT للحصول على بيانات المستخدم، لكن للتبسيط، نستخدم اسم عام
+        bootDashboard({ method: 'google', token: response.credential, email: 'Google User' });
+    }
+}
+
+// دالة تهيئة زر Google
+function initGoogleSignIn() {
+    const clientId = getClientId();
+    if (clientId && window.google && google.accounts && google.accounts.id) {
+        google.accounts.id.initialize({
+            client_id: clientId,
+            callback: handleGoogleCredential, 
+            auto_select: false,
+            cancel_on_tap_outside: true
+        });
+        
+        // عرض الزر في الحاوية المحددة
+        google.accounts.id.renderButton(
+            document.getElementById('google-btn-container'), {
+                theme: 'outline',
+                size: 'large',
+                type: 'standard',
+                shape: 'rectangular',
+                locale: 'ar',
+                text: 'signin_with'
+            }
+        );
+    } 
+}
+
 
 // دالة تحميل حالة التطبيق من التخزين المحلي
 function loadState() {
@@ -65,7 +108,6 @@ function getTodayTotalTime() {
     let totalMs = 0;
     state.sessions.forEach(s => {
         const inTime = new Date(s.in);
-        // نتجاهل الجلسات التي بدأت وانتهت قبل اليوم
         if (inTime < today && (s.out && new Date(s.out) < today)) return;
 
         const start = Math.max(inTime.getTime(), today.getTime());
@@ -92,7 +134,7 @@ function renderSessionHistory() {
     const historyEl = document.getElementById('sessions-history');
     historyEl.innerHTML = '';
     
-    state.sessions.slice(0, 30).forEach(s => { // عرض آخر 30 جلسة
+    state.sessions.slice(0, 30).forEach(s => { 
         const inT = new Date(s.in);
         const outT = s.out ? new Date(s.out) : null;
         
@@ -122,7 +164,7 @@ function renderSessionHistory() {
 
 // دالة تحديث لوحة المراقبة (Dashboard) بالكامل
 function refreshDashboard() {
-    const userEmail = state.auth ? (state.auth.email || 'Guest') : '—';
+    const userEmail = state.auth?.email || (state.auth?.method === 'google' ? 'Google User' : 'Guest');
     const working = isWorking();
 
     // تحديث شريط الحالة
@@ -160,11 +202,10 @@ function showView(viewId) {
     document.getElementById('view-dashboard').classList.toggle('hidden', viewId !== 'view-dashboard');
 }
 
-// دالة تشغيل لوحة المراقبة
 function bootDashboard(auth) {
     if (auth) state.auth = auth;
     saveState();
-    loadState(); // إعادة تحميل للتأكد من المزامنة
+    loadState(); 
     
     // ربط الأحداث
     document.getElementById('start-session-btn').onclick = startSession;
@@ -177,11 +218,12 @@ function bootDashboard(auth) {
     updateLiveClock();
 }
 
-// دالة تشغيل شاشة الترحيب
+// دالة تشغيل شاشة الترحيب (تتضمن تهيئة Google)
 function bootWelcome() {
     showView('view-welcome');
+    initGoogleSignIn(); // ✨ تهيئة Google ✨
 
-    // ربط أحداث شاشة الترحيب
+    // ربط أحداث شاشة الترحيب 
     document.getElementById('login-email-btn').addEventListener('click', () => {
         const emailInput = document.getElementById('email-input');
         const email = (emailInput.value || '').trim();
@@ -202,9 +244,8 @@ function handleLogout() {
     if (confirm) {
         state.auth = null;
         localStorage.removeItem(AUTH_KEY);
-        // لا نحذف سجلات العمل STATE_KEY للسماح للمستخدم بالعودة كضيف
         alert('تم تسجيل الخروج.');
-        window.location.reload(); // إعادة تحميل الصفحة للعودة لشاشة الترحيب
+        window.location.reload(); 
     }
 }
 
@@ -219,7 +260,6 @@ function exportCSV() {
         const inS = new Date(s.in).toISOString();
         const outS = s.out ? new Date(s.out).toISOString() : '';
         const dur = s.out ? Math.round((s.out - s.in) / 60000) : '';
-        // التأكد من معالجة الملاحظات
         rows.push([inS, outS, dur, `"${(s.note || '').replace(/"/g, '""')}"`]);
     });
 
@@ -239,7 +279,7 @@ function exportCSV() {
 // =========================================================
 
 window.addEventListener('DOMContentLoaded', () => {
-    loadState(); // حمل الحالة فوراً
+    loadState(); 
 
     if (state.auth) {
         bootDashboard();

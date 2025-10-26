@@ -1,4 +1,4 @@
-// app.js
+
 
 const AUTH_KEY = 'work_auth';
 const STATE_KEY = 'workhours_v1';

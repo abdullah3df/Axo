@@ -1,4 +1,4 @@
-
+ 
 
 const AUTH_KEY = 'work_auth';
 const STATE_KEY = 'workhours_v1';
@@ -10,6 +10,9 @@ const STATE_KEY = 'workhours_v1';
 let state = {
     auth: null,
     sessions: [],
+    // ✨ متغيرات الإجازات ✨
+    vacTotal: 21,
+    vacUsed: 0,
 };
 
 // وظيفة لاستخراج معرف العميل من وسم meta
@@ -55,13 +58,21 @@ function initGoogleSignIn() {
 }
 
 
-// دالة تحميل حالة التطبيق من التخزين المحلي
+// دالة تحميل حالة التطبيق من التخزين المحلي (محدثة لضم الإجازات)
 function loadState() {
     try {
         const storedState = JSON.parse(localStorage.getItem(STATE_KEY));
         const storedAuth = JSON.parse(localStorage.getItem(AUTH_KEY));
+        
         state.auth = storedAuth;
         state.sessions = storedState ? (storedState.sessions || []) : [];
+        
+        // ✨ تحميل قيم الإجازات ✨
+        if (storedState) {
+            state.vacTotal = storedState.vacTotal !== undefined ? Number(storedState.vacTotal) : 21;
+            state.vacUsed = storedState.vacUsed !== undefined ? Number(storedState.vacUsed) : 0;
+        }
+
     } catch (e) {
         console.error("Error loading state:", e);
         state.auth = null;
@@ -69,9 +80,13 @@ function loadState() {
     }
 }
 
-// دالة حفظ حالة التطبيق في التخزين المحلي
+// دالة حفظ حالة التطبيق في التخزين المحلي (محدثة لضم الإجازات)
 function saveState() {
-    localStorage.setItem(STATE_KEY, JSON.stringify({ sessions: state.sessions }));
+    localStorage.setItem(STATE_KEY, JSON.stringify({ 
+        sessions: state.sessions, 
+        vacTotal: state.vacTotal, // حفظ إجمالي الإجازة
+        vacUsed: state.vacUsed,   // حفظ الإجازة المستخدمة
+    }));
     if (state.auth) {
         localStorage.setItem(AUTH_KEY, JSON.stringify(state.auth));
     } else {
@@ -124,9 +139,49 @@ function getTodayTotalTime() {
     return `${hh}h ${mm}m`;
 }
 
+// =========================================================
+// 3. وظائف الإجازات (Vacation Logic)
+// =========================================================
+
+function calculateVacation() {
+    const total = Number(state.vacTotal) || 0;
+    const used = Number(state.vacUsed) || 0;
+    const remaining = Math.max(0, total - used);
+    
+    // تحديث المدخلات لعكس الحالة الحالية
+    document.getElementById('vac-total-input').value = total;
+    document.getElementById('vac-used-input').value = used;
+    
+    // تحديث شاشة العرض
+    document.getElementById('vac-remaining-display').textContent = `${remaining} يوم`;
+}
+
+// دالة ربط أحداث الإجازات
+function bindVacationEvents() {
+    const totalInput = document.getElementById('vac-total-input');
+    const usedInput = document.getElementById('vac-used-input');
+
+    const updateVacationState = (event) => {
+        // التأكد من أن القيمة رقمية وغير سالبة قبل الحفظ
+        const value = Math.max(0, Number(event.target.value) || 0);
+        event.target.value = value;
+        
+        if (event.target.id === 'vac-total-input') {
+            state.vacTotal = value;
+        } else if (event.target.id === 'vac-used-input') {
+            state.vacUsed = value;
+        }
+        saveState();
+        calculateVacation();
+    };
+
+    totalInput.addEventListener('change', updateVacationState);
+    usedInput.addEventListener('change', updateVacationState);
+}
+
 
 // =========================================================
-// 3. عرض الواجهة (UI Rendering)
+// 4. عرض الواجهة (UI Rendering)
 // =========================================================
 
 // دالة عرض سجل الجلسات
@@ -178,6 +233,9 @@ function refreshDashboard() {
     document.getElementById('start-session-btn').classList.toggle('hidden', working);
     document.getElementById('stop-session-btn').classList.toggle('hidden', !working);
 
+    // ✨ استدعاء دالة الإجازات ✨
+    calculateVacation(); 
+
     // تحديث التاريخ الحالي
     document.getElementById('current-date').textContent = new Date().toLocaleDateString();
 
@@ -193,7 +251,7 @@ function updateLiveClock() {
 }
 
 // =========================================================
-// 4. التوجيه (Router) والتهيئة
+// 5. التوجيه (Router) والتهيئة
 // =========================================================
 
 // دالة تبديل العرض بين الترحيب ولوحة المراقبة
@@ -207,12 +265,15 @@ function bootDashboard(auth) {
     saveState();
     loadState(); 
     
-    // ربط الأحداث
+    // ربط الأحداث الرئيسية
     document.getElementById('start-session-btn').onclick = startSession;
     document.getElementById('stop-session-btn').onclick = stopSession;
     document.getElementById('export-csv-btn').onclick = exportCSV;
     document.getElementById('logout-btn').onclick = handleLogout;
     
+    // ✨ ربط أحداث الإجازات ✨
+    bindVacationEvents();
+
     showView('view-dashboard');
     refreshDashboard();
     updateLiveClock();
@@ -221,7 +282,7 @@ function bootDashboard(auth) {
 // دالة تشغيل شاشة الترحيب (تتضمن تهيئة Google)
 function bootWelcome() {
     showView('view-welcome');
-    initGoogleSignIn(); // ✨ تهيئة Google ✨
+    initGoogleSignIn(); // تهيئة Google
 
     // ربط أحداث شاشة الترحيب 
     document.getElementById('login-email-btn').addEventListener('click', () => {
@@ -250,7 +311,7 @@ function handleLogout() {
 }
 
 // =========================================================
-// 5. وظائف إضافية (CSV Export)
+// 6. وظائف إضافية (CSV Export)
 // =========================================================
 
 function exportCSV() {
@@ -275,7 +336,7 @@ function exportCSV() {
 }
 
 // =========================================================
-// 6. تشغيل التطبيق (Initialization)
+// 7. تشغيل التطبيق (Initialization)
 // =========================================================
 
 window.addEventListener('DOMContentLoaded', () => {

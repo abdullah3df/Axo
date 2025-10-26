@@ -1,86 +1,68 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>$AXO — Meme Coin</title>
-<meta name="theme-color" content="#0b0f14"/>
-<style>
-:root{
-  --bg:#0b0f14; --ink:#e9f3ff; --muted:#9db0c6;
-  --a:#8b5cf6; --b:#22d3ee; --danger:#ff5a7a;
-  --glass:rgba(255,255,255,.06); --bd:rgba(255,255,255,.12);
-}
-*{box-sizing:border-box} body{margin:0;font-family:sans-serif;background:var(--bg);color:var(--ink);line-height:1.6}
-.container{max-width:800px;margin:0 auto;padding:20px}
-header{text-align:center;padding:20px;border-bottom:1px solid var(--bd)}
-header h1{margin:0;font-size:clamp(28px,6vw,42px)}
-header p{color:var(--muted);margin:6px 0 0;font-size:16px}
-.code{display:flex;justify-content:space-between;align-items:center;gap:10px;
-  padding:12px;border:1px solid var(--bd);border-radius:12px;background:var(--glass);
-  font-family:monospace;font-size:14px;overflow:auto}
-.btns{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin:20px 0}
-.btn{flex:1;min-width:120px;text-align:center;padding:14px 20px;border-radius:12px;
-  font-weight:700;text-decoration:none;transition:.25s ease}
-.primary{background:linear-gradient(90deg,var(--a),var(--b));color:#001018;border:0}
-.ghost{border:1px solid var(--bd);color:var(--ink);background:transparent}
-.stats{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin:20px 0}
-.stats div{padding:10px 14px;border:1px solid var(--bd);border-radius:10px;background:var(--glass);font-size:14px}
-.warn{margin:20px auto;max-width:700px;padding:14px 18px;border-radius:12px;
-  border:1px solid var(--danger);background:rgba(255,90,122,.1);color:var(--danger);font-weight:700;text-align:center}
-footer{text-align:center;color:var(--muted);padding:20px;font-size:14px;border-top:1px solid var(--bd)}
-</style>
-</head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Work Hours - Modular Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css"> </head>
 <body>
 
-<div class="container">
-  <header>
-    <h1>$AXO — Meme Coin</h1>
-    <p>Fun-only meme coin on <b>Solana (SPL)</b> • 0% tax</p>
-  </header>
-
-  <section style="margin-top:20px">
-    <div style="margin-bottom:10px;color:var(--muted)">Contract (Solana):</div>
-    <div class="code" id="contractBox">
-      <span id="contractTxt">FnFcZMAR96k3kZm7Cz7LcvM7pngE8WwEjSAxppFsMqgh</span>
-      <button id="copyBtn" style="background:transparent;border:1px solid var(--bd);color:var(--ink);padding:6px 10px;border-radius:8px;cursor:pointer">Copy</button>
+  <div id="view-welcome" class="center-wrap">
+    <div class="welcome-card">
+      <h1>مرحبًا بك في نظام ساعات العمل الجديد 🚀</h1>
+      <p class="small">اختر طريقة الدخول لحفظ بياناتك محلياً.</p>
+      <input id="email-input" type="email" placeholder="you@company.com" />
+      <button id="login-email-btn" class="btn btn-primary">تسجيل الدخول بالبريد</button>
+      <div class="divider">أو كضيف</div>
+      <button id="continue-guest-btn" class="btn btn-ghost">الدخول كضيف</button>
     </div>
-  </section>
-
-  <div class="btns">
-    <a class="btn primary" id="buyLink" target="_blank">Buy on Raydium</a>
-    <a class="btn ghost" id="chartLink" target="_blank">Chart</a>
   </div>
 
-  <div class="stats">
-    <div>Supply: 1,000,000,000</div>
-    <div>Chain: Solana</div>
-    <div>Tax: 0%</div>
+  <div id="view-dashboard" class="hidden container">
+    <header class="appbar">
+      <div class="brand">لوحة مراقبة الساعات</div>
+      <div class="spacer"></div>
+      <div class="badge" id="user-email-badge">—</div>
+      <button id="logout-btn" class="btn btn-link">تغيير الحساب</button>
+    </header>
+
+    <main class="grid">
+      <section class="card session-card">
+        <div class="head">
+          <div style="font-weight:700">إدارة الجلسة</div>
+          <div class="meta" id="current-date">--/--/----</div>
+        </div>
+        <div class="body">
+          <div class="big-btns">
+            <button id="start-session-btn" title="تسجيل دخول" class="big-btn btn-login" aria-label="دخول">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/></svg>
+            </button>
+            <button id="stop-session-btn" title="تسجيل خروج" class="big-btn btn-logout hidden" aria-label="خروج">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+            </button>
+            <div class="clock" id="live-clock">--:--:--</div>
+          </div>
+          <div class="session-info">
+            <div class="meta">الحالة: <span id="session-state">غير مسجّل</span></div>
+            <div id="today-timer" style="font-weight:700;margin-top:6px">ساعات اليوم: 0h 0m</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="head">
+          <div style="font-weight:700">سجلات الدخول/الخروج</div>
+          <button id="export-csv-btn" class="btn btn-link">تنزيل CSV</button>
+        </div>
+        <div class="body">
+          <div class="history" id="sessions-history">
+            </div>
+        </div>
+      </section>
+    </main>
   </div>
 
-  <div class="warn">
-    ⚠️ This is a meme coin for fun only.<br>
-    Trading is extremely risky and you can lose all your funds.
-  </div>
-
-  <footer>© <span id="year"></span> $AXO Meme Coin</footer>
-</div>
-
-<script>
-const CONTRACT="FnFcZMAR96k3kZm7Cz7LcvM7pngE8WwEjSAxppFsMqgh";
-document.getElementById("buyLink").href="https://raydium.io/swap/?inputMint=sol&outputMint="+CONTRACT;
-document.getElementById("chartLink").href="https://dexscreener.com/solana/"+CONTRACT;
-document.getElementById("year").textContent=new Date().getFullYear();
-
-function copyContract(){
-  navigator.clipboard.writeText(CONTRACT).then(()=>{
-    const txt=document.getElementById("contractTxt");
-    const old=txt.textContent; txt.textContent="Copied!";
-    setTimeout(()=>txt.textContent=old,900);
-  });
-}
-document.getElementById("copyBtn").addEventListener("click", copyContract);
-</script>
-
+  <script type="module" src="app.js"></script>
 </body>
 </html>

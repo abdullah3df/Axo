@@ -1,101 +1,195 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Work Hours - Modular Dashboard</title>
-  
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
-
-  <meta name="google-signin-client_id" content="YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com">
-  <script src="https://accounts.google.com/gsi/client" async defer></script> 
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Work Hours Tracker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#2563eb',
+            secondary: '#1e293b',
+          },
+        },
+      },
+    };
+  </script>
 </head>
-<body>
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white min-h-screen flex flex-col items-center justify-center transition-colors duration-500">
 
-  <div id="view-welcome" class="center-wrap">
-    <div class="welcome-card">
-      <h1>مرحبًا بك في نظام ساعات العمل الجديد 🚀</h1>
-      <p class="small">اختر طريقة الدخول لحفظ بياناتك محلياً.</p>
-
-      <div id="google-btn-container" style="margin-bottom: 15px;"></div>
+  <div id="app" class="w-full max-w-md p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-xl transition-all duration-500">
+    <div id="login-screen">
+      <h1 class="text-2xl font-bold text-center mb-6" id="title">Work Hours Tracker</h1>
       
-      <div class="divider">أو بإدخال البريد</div>
-      <input id="email-input" type="email" placeholder="you@company.com" />
-      <button id="login-email-btn" class="btn btn-primary">تسجيل الدخول بالبريد</button>
-      <div class="divider">خيارات أخرى</div>
-      <button id="continue-guest-btn" class="btn btn-ghost">الدخول كضيف</button>
+      <div class="flex justify-center mb-4">
+        <select id="language" class="p-2 rounded border dark:bg-gray-700 dark:border-gray-600">
+          <option value="en">English</option>
+          <option value="ar">العربية</option>
+          <option value="de">Deutsch</option>
+        </select>
+      </div>
+
+      <div class="flex flex-col gap-3">
+        <button id="google-login" class="w-full py-3 bg-primary text-white rounded-lg hover:bg-blue-700 font-semibold">
+          🔐 Sign in with Google
+        </button>
+        <button id="guest-login" class="w-full py-3 bg-gray-300 dark:bg-gray-700 rounded-lg hover:bg-gray-400 dark:hover:bg-gray-600 font-semibold">
+          👤 Continue as Guest
+        </button>
+      </div>
+
+      <div class="mt-6 text-center">
+        <button id="toggle-theme" class="text-sm underline hover:text-primary">Toggle Theme</button>
+      </div>
+    </div>
+
+    <div id="dashboard" class="hidden">
+      <div class="text-center mb-6">
+        <h2 class="text-xl font-bold" id="welcome-text">Welcome!</h2>
+        <p id="date" class="text-gray-500 dark:text-gray-300"></p>
+      </div>
+
+      <div class="flex flex-col items-center gap-4">
+        <div id="clock" class="text-4xl font-mono font-semibold"></div>
+        <button id="clock-btn" class="py-3 px-6 bg-green-500 text-white rounded-lg font-semibold hover:bg-green-600 transition">Clock In</button>
+      </div>
+
+      <div class="mt-6 text-center">
+        <button id="logout" class="text-sm underline text-red-500 hover:text-red-600">Logout</button>
+      </div>
     </div>
   </div>
 
-  <div id="view-dashboard" class="hidden container">
-    <header class="appbar">
-      <div class="brand">لوحة مراقبة الساعات</div>
-      <div class="spacer"></div>
-      <button id="sync-btn" class="btn btn-link" style="color: var(--ok);">مزامنة البيانات 🔄</button>
-      <div class="badge" id="user-email-badge">—</div>
-      <button id="logout-btn" class="btn btn-link">تغيير الحساب</button>
-    </header>
+  <script>
+    const app = document.getElementById("app");
+    const loginScreen = document.getElementById("login-screen");
+    const dashboard = document.getElementById("dashboard");
+    const clock = document.getElementById("clock");
+    const dateEl = document.getElementById("date");
+    const clockBtn = document.getElementById("clock-btn");
+    const logoutBtn = document.getElementById("logout");
+    const langSelect = document.getElementById("language");
+    const title = document.getElementById("title");
+    const welcomeText = document.getElementById("welcome-text");
+    const toggleTheme = document.getElementById("toggle-theme");
 
-    <main class="grid">
-      <section class="card session-card">
-        <div class="head">
-          <div style="font-weight:700">إدارة الجلسة</div>
-          <div class="meta" id="current-date">--/--/----</div>
-        </div>
-        <div class="body">
-          <div class="big-btns">
-            <button id="start-session-btn" title="تسجيل دخول" class="big-btn btn-login" aria-label="دخول">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/></svg>
-            </button>
-            <button id="stop-session-btn" title="تسجيل خروج" class="big-btn btn-logout hidden" aria-label="خروج">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
-            </button>
-            <div class="clock" id="live-clock">--:--:--</div>
-          </div>
-          <div class="session-info">
-            <div class="meta">الحالة: <span id="session-state">غير مسجّل</span></div>
-            <div id="today-timer" style="font-weight:700;margin-top:6px">ساعات اليوم: 0h 0m</div>
-          </div>
-        </div>
-      </section>
+    let user = JSON.parse(localStorage.getItem("user")) || null;
+    let isDark = localStorage.getItem("theme") === "dark";
 
-      <section class="card vacation-card">
-        <div class="head">
-          <div style="font-weight:700">إدارة الأيام والإجازات</div>
-          <div class="meta">تخزين محلي</div>
-        </div>
-        <div class="body">
-          <div class="vac-list">
-            <div class="vac-row">
-              <div><div style="font-weight:700">إجمالي الإجازة السنوية</div><div class="meta">عدد الأيام المتاحة سنوياً</div></div>
-              <div><input type="number" id="vac-total-input" min="0" value="21" style="width: 80px; padding: 8px; border-radius: 8px; border: 1px solid #eef3ff;" /></div>
-            </div>
-            <div class="vac-row">
-              <div><div style="font-weight:700">مستخدمة حتى الآن</div><div class="meta">أيام الإجازة التي أُخذت</div></div>
-              <div><input type="number" id="vac-used-input" min="0" value="0" style="width: 80px; padding: 8px; border-radius: 8px; border: 1px solid #eef3ff;" /></div>
-            </div>
-            <div class="vac-row" style="margin-top: 10px; border-top: 1px dashed #eee; padding-top: 10px;">
-              <div style="font-weight:700">الأيام المتبقية</div>
-              <div id="vac-remaining-display" style="font-weight:800; color: var(--accent); font-size: 1.2em;">21 يوم</div>
-            </div>
-          </div>
-        </div>
-      </section>
-      
-      <section class="card">
-        <div class="head">
-          <div style="font-weight:700">سجلات الدخول/الخروج</div>
-          <button id="export-csv-btn" class="btn btn-link">تنزيل CSV</button>
-        </div>
-        <div class="body">
-          <div class="history" id="sessions-history">
-            </div>
-        </div>
-      </section>
-    </main>
-  </div>
+    if (isDark) document.documentElement.classList.add("dark");
 
-  <script type="module" src="app.js"></script>
+    function updateClock() {
+      const now = new Date();
+      clock.textContent = now.toLocaleTimeString();
+      dateEl.textContent = now.toLocaleDateString();
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    const translations = {
+      en: {
+        title: "Work Hours Tracker",
+        signin_google: "🔐 Sign in with Google",
+        guest: "👤 Continue as Guest",
+        toggle: "Toggle Theme",
+        welcome: "Welcome!",
+        logout: "Logout",
+        clockin: "Clock In",
+        clockout: "Clock Out"
+      },
+      ar: {
+        title: "متتبع ساعات العمل",
+        signin_google: "🔐 تسجيل الدخول عبر Google",
+        guest: "👤 متابعة كضيف",
+        toggle: "تبديل المظهر",
+        welcome: "مرحبًا!",
+        logout: "تسجيل الخروج",
+        clockin: "بدء الدوام",
+        clockout: "إنهاء الدوام"
+      },
+      de: {
+        title: "Arbeitszeit-Tracker",
+        signin_google: "🔐 Mit Google anmelden",
+        guest: "👤 Als Gast fortfahren",
+        toggle: "Thema wechseln",
+        welcome: "Willkommen!",
+        logout: "Abmelden",
+        clockin: "Arbeitsbeginn",
+        clockout: "Arbeitsende"
+      }
+    };
+
+    function setLanguage(lang) {
+      localStorage.setItem("lang", lang);
+      const t = translations[lang];
+      title.textContent = t.title;
+      document.getElementById("google-login").textContent = t.signin_google;
+      document.getElementById("guest-login").textContent = t.guest;
+      toggleTheme.textContent = t.toggle;
+      welcomeText.textContent = t.welcome;
+      logoutBtn.textContent = t.logout;
+      clockBtn.textContent = t.clockin;
+      document.body.dir = lang === "ar" ? "rtl" : "ltr";
+    }
+
+    const savedLang = localStorage.getItem("lang") || "en";
+    langSelect.value = savedLang;
+    setLanguage(savedLang);
+    langSelect.addEventListener("change", e => setLanguage(e.target.value));
+
+    toggleTheme.addEventListener("click", () => {
+      document.documentElement.classList.toggle("dark");
+      localStorage.setItem("theme", document.documentElement.classList.contains("dark") ? "dark" : "light");
+    });
+
+    document.getElementById("google-login").addEventListener("click", () => {
+      user = { name: "Google User" };
+      localStorage.setItem("user", JSON.stringify(user));
+      showDashboard();
+    });
+
+    document.getElementById("guest-login").addEventListener("click", () => {
+      user = { name: "Guest" };
+      localStorage.setItem("user", JSON.stringify(user));
+      showDashboard();
+    });
+
+    logoutBtn.addEventListener("click", () => {
+      localStorage.removeItem("user");
+      location.reload();
+    });
+
+    let isWorking = false;
+    let startTime = null;
+
+    clockBtn.addEventListener("click", () => {
+      isWorking = !isWorking;
+      const lang = localStorage.getItem("lang") || "en";
+      const t = translations[lang];
+      if (isWorking) {
+        startTime = new Date();
+        clockBtn.textContent = t.clockout;
+        clockBtn.classList.replace("bg-green-500", "bg-red-500");
+      } else {
+        const end = new Date();
+        const diff = ((end - startTime) / 1000 / 60).toFixed(1);
+        alert(`Worked ${diff} minutes`);
+        clockBtn.textContent = t.clockin;
+        clockBtn.classList.replace("bg-red-500", "bg-green-500");
+      }
+    });
+
+    function showDashboard() {
+      loginScreen.classList.add("hidden");
+      dashboard.classList.remove("hidden");
+      welcomeText.textContent = `${translations[localStorage.getItem("lang") || "en"].welcome} ${user.name}`;
+    }
+
+    if (user) showDashboard();
+  </script>
 </body>
 </html>

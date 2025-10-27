@@ -6,22 +6,19 @@
   <title>ساعتي — نظام احترافي لتتبّع ساعات العمل</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
-    // تهيئة TailwindCSS: تعديلات جمالية للبروز والألوان المتباينة
+    // تهيئة TailwindCSS: ألوان وتأثيرات محسّنة
     tailwind.config = {
       darkMode: 'class',
       theme: {
         extend: {
           fontFamily: { sans: ['Cairo', 'Inter', 'system-ui', 'ui-sans-serif'] },
           colors: {
-            // BRAND: أخضر للدخول/إيجابي (In/Positive)
             brand: {
               50: '#ecfdf5', 100: '#d1fae5', 200: '#a7f3d0', 300: '#6ee7b7', 400: '#34d399', 500: '#10b981', 600: '#059669', 700: '#047857', 800: '#065f46', 900: '#064e3b', 950: '#022c22'
             },
-            // ACCENT (أحمر/عنابي): للخروج/سلبي/تنظيف (Out/Negative/Clear)
             accent: { 
               50: '#fef2f2', 100: '#fee2e2', 200: '#fecaca', 300: '#fca5a5', 400: '#f87171', 500: '#ef4444', 600: '#dc2626', 700: '#b91c1c', 800: '#991b1b', 900: '#7f1d1d', 950: '#450a0a'
             },
-            // INK: درجات رمادي أعمق
             ink: {
               50:'#f9fafb',100:'#f3f4f6',200:'#e5e7eb',300:'#d1d5db',400:'#9ca3af',500:'#6b7280',600:'#4b5563',700:'#374151',800:'#1f2937',900:'#111827', 950: '#030712'
             }
@@ -29,11 +26,6 @@
           boxShadow: { 
             soft: '0 4px 18px rgba(0,0,0,0.06)', 
             card:'0 8px 30px rgba(2,6,23,0.08)',
-            // نيو مورفيزم (بروز خفيف) لأزرار الدخول والخروج الكبيرة
-            'emboss-in': '7px 7px 15px rgba(5, 150, 105, 0.2), -7px -7px 15px rgba(255, 255, 255, 0.4)',
-            'emboss-out': '7px 7px 15px rgba(220, 38, 38, 0.2), -7px -7px 15px rgba(255, 255, 255, 0.4)',
-            'emboss-in-dark': '7px 7px 15px rgba(5, 150, 105, 0.2), -7px -7px 15px rgba(0, 0, 0, 0.5)',
-            'emboss-out-dark': '7px 7px 15px rgba(220, 38, 38, 0.2), -7px -7px 15px rgba(0, 0, 0, 0.5)',
           }
         }
       }
@@ -76,29 +68,20 @@
       @apply rounded-2xl border border-ink-200 dark:border-ink-800 bg-white dark:bg-ink-900 shadow-soft; 
     }
 
-    /* ********** أزرار الدخول/الخروج الجديدة ********** */
-    /* زر الدخول (الأخضر) - تصميم راقي مع بروز */
-    .btn-checkin {
-        @apply btn-lg bg-brand-50 border-brand-300 text-brand-700 
-               shadow-emboss-in dark:shadow-emboss-in-dark dark:bg-ink-800 dark:border-brand-700 dark:text-brand-400;
-    }
-    .btn-checkin:not([disabled]):hover {
-        @apply bg-brand-100 dark:bg-ink-700;
-    }
-    .btn-checkin[disabled] {
-        @apply opacity-50 shadow-soft cursor-not-allowed; /* ظل ناعم عند التعطيل */
+    /* ********** أزرار الدخول/الخروج الجديدة (Clear Design) ********** */
+    /* زر الدخول (الأخضر) */
+    .btn-checkin-main {
+        @apply btn-lg bg-brand-600 border-brand-600 text-white hover:bg-brand-700 active:bg-brand-800 text-xl font-bold px-8 py-5 shadow-lg shadow-brand-500/30;
     }
 
-    /* زر الخروج (الأحمر) - تصميم راقي مع بروز */
-    .btn-checkout {
-        @apply btn-lg bg-accent-50 border-accent-300 text-accent-700 
-               shadow-emboss-out dark:shadow-emboss-out-dark dark:bg-ink-800 dark:border-accent-700 dark:text-accent-400;
+    /* زر الخروج (الأحمر) */
+    .btn-checkout-main {
+        @apply btn-lg bg-accent-600 border-accent-600 text-white hover:bg-accent-700 active:bg-accent-800 text-xl font-bold px-8 py-5 shadow-lg shadow-accent-500/30;
     }
-    .btn-checkout:not([disabled]):hover {
-        @apply bg-accent-100 dark:bg-ink-700;
-    }
-    .btn-checkout[disabled] {
-        @apply opacity-50 shadow-soft cursor-not-allowed;
+
+    /* حالة التعطيل */
+    .btn-checkin-main[disabled], .btn-checkout-main[disabled] {
+        @apply opacity-50 shadow-soft cursor-not-allowed transform-none;
     }
     /* ************************************************* */
 
@@ -119,7 +102,6 @@
             <button id="exportPdfBtn" type="button" class="btn btn-ghost" title="تصدير PDF">PDF</button>
             <button id="exportCsvBtn" type="button" class="btn btn-primary" title="تصدير CSV">CSV</button>
             <button id="clearBtn" type="button" class="btn btn-danger" title="مسح">مسح</button>
-
             <div id="userChip" class="ms-2 hidden items-center gap-3 px-3 py-1.5 rounded-xl bg-ink-100 dark:bg-ink-800 border border-ink-200 dark:border-ink-700">
               <div id="userAvatar" class="w-8 h-8 rounded-full bg-brand-600 grid place-items-center text-white text-sm">U</div>
               <div class="text-xs">
@@ -146,8 +128,8 @@
             </div>
           </div>
           <div class="mt-6 flex flex-wrap gap-3 actions">
-            <button id="checkInBtn" type="button" class="btn btn-checkin text-xl font-bold px-8 py-5">دخول 🚀</button>
-            <button id="checkOutBtn" type="button" class="btn btn-checkout text-xl font-bold px-8 py-5">خروج ☕</button>
+            <button id="checkInBtn" type="button" class="btn btn-checkin-main">دخول 🚀</button>
+            <button id="checkOutBtn" type="button" class="btn btn-checkout-main">خروج ☕</button>
             <button id="breakBtn" type="button" class="btn btn-ghost btn-lg">استراحة (+15د)</button>
             <button id="addLeaveBtn" type="button" class="btn btn-ghost btn-lg">تسجيل إجازة 🏖️</button>
           </div>
@@ -245,9 +227,11 @@
     // **********************************************
     // 1. DOM SELECTORS AND HELPERS
     // **********************************************
+    // المنطقة الزمنية المحلية المستخدمة كنقطة مرجعية
     const LOCAL_TZ = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Europe/Berlin';
 
     const DOM = {
+        // دالة مختصرة لاختيار عنصر واحد
         get: s => document.querySelector(s),
         clock: document.getElementById('clock'),
         todayStr: document.getElementById('todayStr'),
@@ -258,14 +242,18 @@
         breakBtn: document.getElementById('breakBtn'),
         stdHours: document.getElementById('stdHours'),
         vacDaysYear: document.getElementById('vacDaysYear'),
-        currentTzDisplay: document.getElementById('currentTzDisplay'), // لعرض المنطقة التلقائية
+        currentTzDisplay: document.getElementById('currentTzDisplay'),
+        logBody: document.getElementById('logBody'),
+        searchInput: document.getElementById('searchInput'),
+        modal: document.getElementById('modal'),
+        modalTitle: document.getElementById('modalTitle'),
+        modalBody: document.getElementById('modalBody'),
     }
 
     // General Helpers
     const totalMinutes = (startISO, endISO, breaksMin=0) => Math.max(0, dayjs(endISO).diff(dayjs(startISO), 'minute') - breaksMin)
     const typeLabel = t => { return t==='work'?'عمل': t==='vac'?'إجازة': t==='sick'?'مرضية':'عطلة رسمية' }
     const now = (tz) => dayjs().tz(tz)
-    
     const hhmm = m => { 
         const h = Math.floor(m/60)
         const mm = Math.max(0, Math.round(m%60))
@@ -283,13 +271,12 @@
             this.kpiCache = null; 
         }
 
-        // *--- STATE MANAGEMENT ---*
         loadState() {
             try {
                 this.state = {
                     lang: localStorage.getItem(this.STORAGE_PREFIX + 'lang') || 'ar',
                     theme: localStorage.getItem(this.STORAGE_PREFIX + 'theme') || (matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'),
-                    // *** التعديل الرئيسي: استخدام المنطقة الزمنية المحلية فقط ***
+                    // استخدام المنطقة الزمنية المحلية فقط
                     tz: LOCAL_TZ, 
                     stdHours: +(localStorage.getItem(this.STORAGE_PREFIX + 'stdHours') || 8),
                     vacYear: +(localStorage.getItem(this.STORAGE_PREFIX + 'vacYear') || 24),
@@ -304,7 +291,6 @@
         }
 
         saveState() {
-            // لا يتم حفظ 'tz' لأنه يُحسب تلقائياً
             localStorage.setItem(this.STORAGE_PREFIX + 'lang', this.state.lang);
             localStorage.setItem(this.STORAGE_PREFIX + 'theme', this.state.theme);
             localStorage.setItem(this.STORAGE_PREFIX + 'stdHours', this.state.stdHours);
@@ -313,12 +299,12 @@
             localStorage.setItem(this.STORAGE_PREFIX + 'logs', JSON.stringify(this.state.logs));
             localStorage.setItem(this.STORAGE_PREFIX + 'user', JSON.stringify(this.state.user));
             this.kpiCache = null; 
-            UIRender.render(); 
+            // إرسال إشارة للواجهة بالتحديث
+            App.uiRenderer.render(); 
         }
 
         getState() { return this.state; }
 
-        // *--- KPI CALCULATION (Memoized) ---*
         calculateKPIs() {
             if (this.kpiCache) return this.kpiCache;
 
@@ -327,7 +313,6 @@
             const weekStart = today.startOf('week')
             const monthStart = today.startOf('month')
 
-            // ... (بقية منطق KPI يبقى كما هو)
             const logs = this.state.logs.filter(e => e.date)
             logs.sort((a, b) => b.date.localeCompare(a.date)) 
 
@@ -359,7 +344,6 @@
         getKPIs() { return this.calculateKPIs(); }
 
         // *--- ACTIONS ---*
-        // تم إزالة 'tz' من مدخلات التحديث
         updateSettings(stdHours, vacYear) {
             this.state.stdHours = +stdHours; 
             this.state.vacYear = +vacYear;
@@ -373,7 +357,6 @@
         
         checkIn() { 
             if (this.state.running) return; 
-            // تستخدم this.state.tz (الذي هو LOCAL_TZ)
             this.state.running = { startISO: now(this.state.tz).toISOString(), breaksMin: 0 }; 
             this.saveState(); 
         }
@@ -399,7 +382,6 @@
         }
 
         saveEntry(entry) {
-            // ... (منطق حفظ الإدخال يبقى كما هو)
             if (entry.type==='work'){
                 const inISO = entry.in? dayjs(`${entry.date} ${entry.in}`).tz(this.state.tz).toISOString():null
                 const outISO = entry.out? dayjs(`${entry.date} ${entry.out}`).tz(this.state.tz).toISOString():null
@@ -429,13 +411,10 @@
             if (confirm('تأكيد تسجيل الخروج؟ سيتم مسح بيانات المستخدم (ولكن ليس السجل).')) { 
                 this.state.user = { name:'Guest', email:'', pic:'' };
                 this.saveState();
-                location.reload();
             }
         }
     }
     
-    const DataStore = new DataProcessor(); 
-
     // **********************************************
     // 3. UIRenderer Class (DOM Manipulation)
     // **********************************************
@@ -443,7 +422,6 @@
     class UIRenderer {
         constructor(dataStore) {
             this.dataStore = dataStore;
-            this.dlg = DOM.get('#modal');
         }
 
         // *--- CORE RENDERING FUNCTIONS ---*
@@ -469,8 +447,12 @@
             // تحديث حالة المؤشر
             if (!state.running){
                 DOM.stateDot.style.background = '#94a3b8'; DOM.stateLabel.textContent = 'غير مسجّل';
+                DOM.checkInBtn.classList.remove('opacity-50');
+                DOM.checkOutBtn.classList.add('opacity-50');
             } else {
                 DOM.stateDot.style.background = '#10b981'; DOM.stateLabel.textContent = 'نشِط — داخل';
+                DOM.checkInBtn.classList.add('opacity-50');
+                DOM.checkOutBtn.classList.remove('opacity-50');
             }
         }
 
@@ -479,7 +461,6 @@
             const kpis = this.dataStore.getKPIs();
 
             DOM.get('#weekHours').textContent = kpis.weekHours;
-            // ... (بقية الإحصائيات تبقى كما هي)
             DOM.get('#weekDays').textContent = `${kpis.weekDays} يوم عمل`;
             DOM.get('#weekNum').textContent = kpis.weekNum;
             DOM.get('#monthHours').textContent = kpis.monthHours;
@@ -496,17 +477,15 @@
         }
 
         renderTable() {
-            // ... (منطق عرض الجدول يبقى كما هو)
             const state = this.dataStore.getState();
             const logs = this.dataStore.getKPIs().filteredLogs;
-            const q = (DOM.get('#searchInput').value||'').toLowerCase();
-            const tbody = DOM.get('#logBody'); 
-            tbody.innerHTML = '';
+            const q = (DOM.searchInput.value||'').toLowerCase();
+            DOM.logBody.innerHTML = '';
 
             const rows = logs.filter(e => JSON.stringify(e).toLowerCase().includes(q));
 
             if (!rows.length){ 
-                tbody.innerHTML = `<tr class="text-center"><td colspan="8" class="py-4 muted">لا توجد بيانات تطابق البحث.</td></tr>`; 
+                DOM.logBody.innerHTML = `<tr class="text-center"><td colspan="8" class="py-4 muted">لا توجد بيانات تطابق البحث.</td></tr>`; 
                 return; 
             }
             
@@ -542,12 +521,11 @@
                 actions.querySelector('[data-act="edit"]').onclick = () => this.openEditEntry(e.id)
                 actions.querySelector('[data-act="del"]').onclick = () => this.delEntry(e.id)
                 tr.appendChild(actions)
-                tbody.appendChild(tr)
+                DOM.logBody.appendChild(tr)
             });
         }
 
         renderUser() {
-            // ... (عرض معلومات المستخدم يبقى كما هو)
             const user = this.dataStore.getState().user;
             const chip = DOM.get('#userChip');
             if (!user || user.name === 'Guest') { chip.classList.add('hidden'); return }
@@ -571,7 +549,7 @@
             const state = this.dataStore.getState();
             document.documentElement.classList.toggle('dark', state.theme==='dark');
             
-            // عرض المنطقة الزمنية المحلية (تلقائية)
+            // عرض المنطقة الزمنية المحلية التلقائية
             DOM.currentTzDisplay.value = LOCAL_TZ;
 
             DOM.stdHours.value = state.stdHours;
@@ -579,17 +557,17 @@
             DOM.get('#year').textContent = new Date().getFullYear();
         }
 
-        // ... (بقية دوال Modal تبقى كما هي، لكن تستخدم state.tz التلقائي)
+        // *--- MODAL FUNCTIONS ---*
         openModal(title, bodyHTML, onOk) {
-            DOM.get('#modalTitle').textContent = title;
-            DOM.get('#modalBody').innerHTML = bodyHTML;
-            this.dlg.returnValue = '';
-            this.dlg.showModal();
+            DOM.modalTitle.textContent = title;
+            DOM.modalBody.innerHTML = bodyHTML;
+            DOM.modal.returnValue = '';
+            DOM.modal.showModal();
             const handler = () => { 
-                if (this.dlg.returnValue === 'ok') onOk?.(); 
-                this.dlg.removeEventListener('close', handler); 
+                if (DOM.modal.returnValue === 'ok') onOk?.(); 
+                DOM.modal.removeEventListener('close', handler); 
             }
-            this.dlg.addEventListener('close', handler);
+            DOM.modal.addEventListener('close', handler);
         }
 
         openEditEntry(id){
@@ -624,7 +602,65 @@
             })
         }
         
-        // ... (بقية دوال Modal الأخرى)
+        openAddManual(){
+            const d = now(this.dataStore.getState().tz).format('YYYY-MM-DD')
+            this.openModal('إضافة يوم يدوي', `
+              <div class='grid md:grid-cols-2 gap-3'>
+                <label class='block'><span class='text-sm muted'>التاريخ</span><input id='m_date' type='date' class='form-input' value='${d}'></label>
+                <label class='block'><span class='text-sm muted'>النوع</span>
+                  <select id='m_type' class='form-input'>
+                    <option value='work'>عمل</option><option value='vac'>إجازة</option><option value='sick'>مرضية</option><option value='holiday'>عطلة رسمية</option>
+                  </select>
+                </label>
+              </div>
+              <div class='grid md:grid-cols-2 gap-3'>
+                <label class='block'><span class='text-sm muted'>دخول</span><input id='m_in' type='time' class='form-input'></label>
+                <label class='block'><span class='text-sm muted'>خروج</span><input id='m_out' type='time' class='form-input'></label>
+              </div>
+              <label class='block'><span class='text-sm muted'>استراحة (د)</span><input id='m_break' type='number' step='1' value='0' class='form-input'></label>
+              <label class='block'><span class='text-sm muted'>ملاحظة</span><input id='m_note' class='form-input'></label>
+            `, ()=>{
+                const newEntry = {
+                    date: DOM.get('#m_date').value, type: DOM.get('#m_type').value,
+                    in: DOM.get('#m_in').value, out: DOM.get('#m_out').value,
+                    breakMin: +(DOM.get('#m_break').value||0), note: DOM.get('#m_note').value||''
+                }
+                this.dataStore.saveEntry(newEntry);
+            })
+        }
+        
+        openAddLeave(){
+            const d = now(this.dataStore.getState().tz).format('YYYY-MM-DD')
+            this.openModal('تسجيل إجازة/مرضية/عطلة', `
+              <label class='block'><span class='text-sm muted'>التاريخ</span><input id='l_date' type='date' class='form-input' value='${d}'></label>
+              <label class='block'><span class='text-sm muted'>النوع</span>
+                <select id='l_type' class='form-input'>
+                  <option value='vac'>إجازة</option><option value='sick'>مرضية</option><option value='holiday'>عطلة رسمية</option>
+                </select>
+              </label>
+              <label class='block'><span class='text-sm muted'>ملاحظة</span><input id='l_note' class='form-input'></label>
+            `, ()=>{
+                const newEntry = {
+                    date: DOM.get('#l_date').value, type: DOM.get('#l_type').value,
+                    in: null, out: null, breakMin: 0, note: DOM.get('#l_note').value||''
+                }
+                this.dataStore.saveEntry(newEntry);
+            })
+        }
+
+        openHoliday(){
+            const d = now(this.dataStore.getState().tz).format('YYYY-MM-DD')
+            this.openModal('إضافة عطلة رسمية', `
+              <label class='block'><span class='text-sm muted'>التاريخ</span><input id='h_date' type='date' class='form-input' value='${d}'></label>
+              <label class='block'><span class='text-sm muted'>اسم العطلة</span><input id='h_note' class='form-input'></label>
+            `, ()=>{
+                const newEntry = {
+                    date: DOM.get('#h_date').value, type: 'holiday',
+                    in: null, out: null, breakMin: 0, note: DOM.get('#h_note').value||''
+                }
+                this.dataStore.saveEntry(newEntry);
+            })
+        }
 
         delEntry(id) {
             if (confirm('تأكيد الحذف؟ لا يمكن التراجع.')) { 
@@ -632,8 +668,6 @@
             }
         }
     }
-    
-    const UIRender = new UIRenderer(DataStore); 
 
     // **********************************************
     // 4. AppController Class (Initialization & Events)
@@ -649,17 +683,18 @@
             this.dataStore.loadState();
             this.bindEvents();
             this.uiRenderer.render(); 
-            // تحديث حالة الساعة كل ثانية
+            // تحديث حالة الساعة والوضع كل ثانية (يستخدم bind لضمان السياق)
             setInterval(this.uiRenderer.renderStatus.bind(this.uiRenderer), 1000); 
             // تحديث الإحصائيات كل 30 ثانية
             setInterval(this.uiRenderer.renderStats.bind(this.uiRenderer), 30000); 
         }
 
         bindEvents() {
-            // Main Actions
+            // Main Actions (تم استخدام bind لربط الدوال بسياق الكائن DataStore)
             DOM.checkInBtn.addEventListener('click', this.dataStore.checkIn.bind(this.dataStore));
             DOM.checkOutBtn.addEventListener('click', this.dataStore.checkOut.bind(this.dataStore));
             DOM.breakBtn.addEventListener('click', this.dataStore.addBreak.bind(this.dataStore));
+            
             DOM.get('#addLeaveBtn').addEventListener('click', this.uiRenderer.openAddLeave.bind(this.uiRenderer));
             DOM.get('#addManualEntry').addEventListener('click', this.uiRenderer.openAddManual.bind(this.uiRenderer));
             DOM.get('#addHolidayBtn').addEventListener('click', this.uiRenderer.openHoliday.bind(this.uiRenderer));
@@ -667,7 +702,7 @@
 
             // Settings & Export
             DOM.get('#saveSettings').addEventListener('click', ()=>{
-                // تمرير فقط stdHours و vacDaysYear
+                // تم تمرير القيم مباشرة من DOM
                 this.dataStore.updateSettings(DOM.stdHours.value, DOM.vacDaysYear.value);
             });
             DOM.get('#exportCsvBtn').addEventListener('click', this.exportCSV.bind(this));
@@ -679,7 +714,6 @@
             DOM.get('#searchInput').addEventListener('input', this.uiRenderer.renderTable.bind(this.uiRenderer));
         }
         
-        // ... (دوال التصدير CSV و PDF تبقى كما هي)
         exportCSV() {
             const state = this.dataStore.getState()
             const logs = this.dataStore.getKPIs().filteredLogs
@@ -722,9 +756,12 @@
         }
     }
 
-    // تشغيل التطبيق
+    // تهيئة وتشغيل التطبيق
+    const DataStore = new DataProcessor(); 
+    const UIRender = new UIRenderer(DataStore); 
+    const App = new AppController(DataStore, UIRender); // تهيئة الكائن العام لسهولة الوصول إليه
+
     document.addEventListener('DOMContentLoaded', () => {
-        const App = new AppController(DataStore, UIRender);
         App.init();
     });
   </script>

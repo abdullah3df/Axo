@@ -46,21 +46,13 @@
     .container-narrow { max-width: 1200px; }
     .muted { @apply text-ink-500 dark:text-ink-300; }
     
-    /* ********** إصلاح القوائم المنسدلة (Selects) ********** */
+    /* ********** تنسيق المدخلات والقوائم المنسدلة ********** */
     .form-input { 
       @apply mt-1 w-full rounded-xl border border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-800 px-3 py-2; 
     }
-    /* ضمان وضوح عنصر الاختيار (select) وتناسبه مع حقل الإدخال */
     .form-input:is(select) { 
         @apply appearance-none pr-10 pl-3 bg-no-repeat bg-[length:1.25rem_1.25rem] bg-[right_0.75rem_center] cursor-pointer;
-        /* هذا النمط يضيف سهمًا سفليًا للقائمة المنسدلة ويدعم RTL */
         background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23374151' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
-        /* تعديل موقع السهم ليتناسب مع RTL */
-        background-position: left 0.75rem center;
-        padding-left: 2.5rem; /* مساحة للسهم على اليسار */
-        padding-right: 0.75rem; /* مسافة على اليمين */
-    }
-    html[dir="rtl"] .form-input:is(select) {
         background-position: right 0.75rem center;
         padding-right: 2.5rem; /* مساحة للسهم على اليمين */
         padding-left: 0.75rem; /* مسافة على اليسار */
@@ -91,9 +83,8 @@
     /* ********** أزرار الدخول/الخروج الجديدة (Mega Button) ********** */
     .btn-mega {
         /* تطبيق الحجم الضخم */
-        @apply w-full flex items-center justify-center font-extrabold rounded-2xl shadow-xl transition-all;
-        height: 200px; /* ارتفاع ثابت لجميع الأجهزة */
-        font-size: 120px; /* ضمان حجم الرمز الكبير */
+        @apply w-full flex items-center justify-center gap-2 py-6 rounded-2xl shadow-xl transition-all font-bold text-xl;
+        height: 80px; /* ارتفاع ثابت أكثر تناسقا */
     }
     
     /* زر الدخول (الأخضر) */
@@ -106,12 +97,12 @@
         @apply btn-mega bg-accent-600 border-accent-600 text-white hover:bg-accent-700 active:bg-accent-800 shadow-accent-500/50;
     }
 
-    /* ********** حالة التعطيل اليدوية عبر JS (لضمان الوضوح) ********** */
-    /* نستخدم تعتيما خفيفا لجعل الزر باهتا لكن مرئيا بوضوح */
-    .disabled-mega-style {
-        @apply opacity-50 shadow-soft cursor-not-allowed transform-none;
+    /* ********** حالة التعطيل اليدوية عبر JS ********** */
+    /* ضمان ظهورها ولكن معتمة وغير قابلة للضغط */
+    .btn-mega.opacity-50 {
+        @apply shadow-soft cursor-not-allowed transform-none;
     }
-    /* ***************************************************************** */
+    /* ************************************************* */
 
     @media print { header, .actions, footer, .log-actions { display:none!important } body{ background:#fff!important; color:#000!important } .card{ box-shadow:none!important; border:none!important } }
   </style>
@@ -144,29 +135,41 @@
 
       <main id="printArea" class="mx-auto container-narrow px-4 py-6 grid gap-6">
         
-        <section class="card p-6">
-          <div class="flex flex-wrap items-center gap-4">
-            <div class="text-4xl font-extrabold text-ink-900 dark:text-ink-50" id="clock">--:--:--</div>
-            <div class="muted" id="todayStr"></div>
-            <div class="ms-auto">
-              <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-ink-100 dark:bg-ink-800 border border-ink-200 dark:border-ink-700 text-sm">
+        <section class="card p-6 text-center">
+            
+            <div class="flex flex-col items-center justify-center mb-6">
+                <div class="text-5xl font-extrabold text-ink-900 dark:text-ink-50" id="clock">--:--:--</div>
+                <div class="text-base muted mt-1" id="todayStr"></div>
+            </div>
+
+            <div class="w-full mb-6 py-3 rounded-xl bg-ink-100 dark:bg-ink-800 border border-ink-200 dark:border-ink-700 text-sm inline-flex items-center justify-center gap-2">
                 <span class="w-2.5 h-2.5 rounded-full animate-pulse" id="stateDot"></span>
-                <span id="stateLabel">غير مسجّل</span>
-              </span>
+                <span id="stateLabel" class="font-semibold">غير مسجّل</span>
             </div>
-          </div>
-          <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 actions">
-            <button id="checkInBtn" type="button" class="btn-checkin-mega" title="تسجيل دخول">⬆️</button>
-            <button id="checkOutBtn" type="button" class="btn-checkout-mega" title="تسجيل خروج">⬇️</button>
-            
-            <div class="col-span-1 md:col-span-2 flex flex-wrap gap-3">
-                <button id="breakBtn" type="button" class="btn btn-ghost btn-lg flex-grow">استراحة (+15د)</button>
-                <button id="editBreakBtn" type="button" class="btn btn-ghost btn-lg flex-grow">تعديل الاستراحة</button>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 actions">
+                <button id="checkInBtn" type="button" class="btn-checkin-mega" title="تسجيل دخول">
+                    <span class="text-3xl">⬆️</span>
+                    <span>تسجيل دخول</span>
+                </button>
+                <button id="checkOutBtn" type="button" class="btn-checkout-mega" title="تسجيل خروج">
+                    <span class="text-3xl">⬇️</span>
+                    <span>تسجيل خروج</span>
+                </button>
             </div>
-            
-            <button id="addLeaveBtn" type="button" class="btn btn-ghost btn-lg col-span-1 md:col-span-2">تسجيل إجازة 🏖️</button>
+        </section>
+
+        <section class="card p-6 actions">
+          <h2 class="text-lg font-semibold mb-4 border-b border-ink-200 dark:border-ink-800 pb-2">إجراءات سريعة ⚡</h2>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <button id="breakBtn" type="button" class="btn btn-ghost col-span-1">استراحة (+15د)</button>
+              <button id="editBreakBtn" type="button" class="btn btn-ghost col-span-1">تعديل الاستراحة</button>
+              
+              <button id="addLeaveBtn" type="button" class="btn btn-ghost col-span-1">تسجيل إجازة 🏖️</button>
+              <button id="addHolidayBtn" type="button" class="btn btn-ghost col-span-1">تسجيل عطلة رسمية</button>
           </div>
         </section>
+
 
         <section class="grid sm:grid-cols-2 md:grid-cols-4 gap-4">
           <div class="card p-4">
@@ -210,7 +213,6 @@
           <div class="mt-4 flex flex-wrap gap-3">
             <button id="saveSettings" type="button" class="btn btn-primary">حفظ الإعدادات</button>
             <button id="addManualEntry" type="button" class="btn btn-ghost">إضافة يوم يدوي</button>
-            <button id="addHolidayBtn" type="button" class="btn btn-ghost">إضافة عطلة رسمية</button>
           </div>
         </section>
 
@@ -273,7 +275,7 @@
         checkInBtn: document.getElementById('checkInBtn'),
         checkOutBtn: document.getElementById('checkOutBtn'),
         breakBtn: document.getElementById('breakBtn'),
-        editBreakBtn: document.getElementById('editBreakBtn'), // الزر الجديد
+        editBreakBtn: document.getElementById('editBreakBtn'), 
         stdHours: document.getElementById('stdHours'),
         vacDaysYear: document.getElementById('vacDaysYear'),
         currentTzDisplay: document.getElementById('currentTzDisplay'),
@@ -310,7 +312,6 @@
                 this.state = {
                     lang: localStorage.getItem(this.STORAGE_PREFIX + 'lang') || 'ar',
                     theme: localStorage.getItem(this.STORAGE_PREFIX + 'theme') || (matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'),
-                    // استخدام المنطقة الزمنية المحلية فقط
                     tz: LOCAL_TZ, 
                     stdHours: +(localStorage.getItem(this.STORAGE_PREFIX + 'stdHours') || 8),
                     vacYear: +(localStorage.getItem(this.STORAGE_PREFIX + 'vacYear') || 24),
@@ -333,7 +334,6 @@
             localStorage.setItem(this.STORAGE_PREFIX + 'logs', JSON.stringify(this.state.logs));
             localStorage.setItem(this.STORAGE_PREFIX + 'user', JSON.stringify(this.state.user));
             this.kpiCache = null; 
-            // إرسال إشارة للواجهة بالتحديث
             App.uiRenderer.render(); 
         }
 
@@ -484,17 +484,17 @@
             DOM.editBreakBtn.disabled = !state.running;
             
             // ************ منطق التحكم في وضوح الأزرار الكبيرة ************
-            // استخدام فئة مخصصة بدلاً من opacity-30 لتجنب التعارضات
-            const DISABLED_CLASS = 'disabled-mega-style';
+            // نستخدم opacity-50 مباشرة لتجنب التعارض
+            const DISABLED_CLASS = 'opacity-50';
             
             if (!state.running){
-                // خارج العمل: زر الدخول (الأخضر) واضح
+                // خارج العمل: زر الدخول (الأخضر) واضح 100%
                 DOM.checkInBtn.classList.remove(DISABLED_CLASS); 
                 DOM.checkOutBtn.classList.add(DISABLED_CLASS);    
                 
                 DOM.stateDot.style.background = '#94a3b8'; DOM.stateLabel.textContent = 'غير مسجّل';
             } else {
-                // نشط: زر الخروج (الأحمر) واضح
+                // نشط: زر الخروج (الأحمر) واضح 100%
                 DOM.checkInBtn.classList.add(DISABLED_CLASS);    
                 DOM.checkOutBtn.classList.remove(DISABLED_CLASS); 
                 
@@ -755,8 +755,8 @@
         }
 
         bindEvents() {
-            // ************ منطق مُعدَّل لمُعالجة النقر (التحقق من disabled-mega-style) ************
-            const DISABLED_CLASS = 'disabled-mega-style';
+            // ************ منطق مُعدَّل لمُعالجة النقر (التحقق من opacity-50) ************
+            const DISABLED_CLASS = 'opacity-50';
 
             DOM.checkInBtn.addEventListener('click', ()=>{
                 // لا تنفذ إذا كان الزر باهتاً

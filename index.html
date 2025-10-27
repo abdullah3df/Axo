@@ -41,17 +41,23 @@
   <style>
     /* تحسينات التصميم الاحترافي */
     html { -webkit-tap-highlight-color: transparent; }
-    .container-narrow { max-width: 1200px; } /* توسيع بسيط للعرض */
+    .container-narrow { max-width: 1200px; }
+    /* تحسين شكل الأزرار */
     .btn { @apply px-4 py-2 rounded-xl font-semibold shadow-soft border border-black/5 transition text-sm; }
     .btn:hover { @apply translate-y-[-1px] shadow-lg; }
     .btn:active { @apply translate-y-0 shadow-soft; }
     .btn-lg { @apply text-base px-6 py-3 rounded-2xl; }
     .card { @apply rounded-2xl border border-black/5 shadow-soft bg-white dark:bg-zinc-900; }
     .muted { @apply text-zinc-500 dark:text-zinc-400; }
+    /* تحسين استجابة صفحة البداية */
+    #landing .card { @apply w-[min(96vw,500px)] p-6 sm:p-10 }
+    #landing h1 { @apply text-3xl sm:text-4xl }
+    #landing .grid.md\:grid-cols-2 > div { @apply md:col-span-2; } /* جعل الاسم والبريد في سطر واحد على الشاشات الكبيرة */
+
     /* تنسيق خاص للطباعة */
     @media print {
         #app { margin: 0; padding: 0; }
-        header, section:not(#printArea), footer, .actions { display: none !important; }
+        header, section.actions, footer, .actions { display: none !important; }
         #printArea { margin: 0 auto !important; padding: 0 !important; }
         .card { box-shadow: none !important; border: none !important; }
         body { background: white !important; color: black !important; }
@@ -78,7 +84,7 @@
               <input id="li_email" type="email" class="mt-1 w-full rounded-xl border border-black/10 bg-white dark:bg-zinc-900 px-4 py-3 focus:ring-primary-500 focus:border-primary-500 transition" placeholder="you@gmail.com"/>
             </label>
           </div>
-          <div class="grid md:grid-cols-2 gap-3">
+          <div class="grid md:grid-cols-2 gap-3 mt-4">
             <button id="guestBtn" type="button" class="btn btn-lg bg-zinc-900 text-white dark:bg-primary-500 dark:text-white dark:border-none">دخول كضيف</button>
             <div id="googleBtnWrap" class="grid place-items-center md:place-items-stretch">
               <button id="googleSignInMock" type="button" class="btn btn-lg bg-white dark:bg-zinc-800 border hover:border-black/20">المتابعة باستخدام Google</button>
@@ -132,10 +138,10 @@
             </div>
           </div>
           <div class="mt-6 flex flex-wrap gap-4 actions">
-            <button id="checkInBtn" class="btn btn-lg bg-primary-500 text-white border-primary-600/30 w-full sm:w-auto">✅ دخول</button>
-            <button id="checkOutBtn" class="btn btn-lg bg-rose-500 text-white border-rose-600/30 w-full sm:w-auto">🚪 خروج</button>
-            <button id="breakBtn" class="btn btn-lg bg-white dark:bg-zinc-800 w-full sm:w-auto">☕ استراحة (+15د)</button>
-            <button id="addLeaveBtn" class="btn btn-lg bg-white dark:bg-zinc-800 w-full sm:w-auto">🏖️ إجازة</button>
+            <button id="checkInBtn" class="btn btn-lg bg-primary-500 text-white border-primary-600/30 w-full sm:w-auto">✅ <span class="lang-text">دخول</span></button>
+            <button id="checkOutBtn" class="btn btn-lg bg-rose-500 text-white border-rose-600/30 w-full sm:w-auto">🚪 <span class="lang-text">خروج</span></button>
+            <button id="breakBtn" class="btn btn-lg bg-white dark:bg-zinc-800 w-full sm:w-auto">☕ <span class="lang-text">استراحة (+15د)</span></button>
+            <button id="addLeaveBtn" class="btn btn-lg bg-white dark:bg-zinc-800 w-full sm:w-auto">🏖️ <span class="lang-text">إجازة</span></button>
           </div>
         </section>
 
@@ -211,7 +217,7 @@
           </table>
         </section>
 
-        <footer class="py-10 text-center muted text-sm">© <span id="year"></span> Sa'ati — تم التطوير بواسطة AI (مستوحى من Feras) • محلي 100% (localStorage)</footer>
+        <footer class="py-10 text-center muted text-sm">© <span id="year"></span> Sa'ati — تم التطوير بواسطة AI • محلي 100% (localStorage)</footer>
       </main>
     </div>
 
@@ -233,12 +239,14 @@
     const SAATI_GOOGLE_CLIENT_ID = '' // ضع Client ID هنا لتفعيل تسجيل Google الحقيقي
 
     // ===== i18n =====
+    // تم إبقاء الأيقونات داخل النصوص في الإنجليزية والألمانية، وحذفها في العربية لتقليل التشوه البصري
     const I18N = {
       ar: {
         title: "ساعتي — تتبّع ساعات العمل", subtitle: "تسجيل دخول/خروج، أيام عمل، إجازات، وتصدير.",
         landing: { title: "ساعتي — صفحة الدخول", sub: "واجهة دخول أنيقة وبسيطة لتبدأ تتبع ساعات العمل.", google: "المتابعة باستخدام Google", guest: "دخول كضيف" },
         status: { idle: "غير مسجّل", in: "نشِط — داخل", out: "انتهى اليوم", over: "وقت إضافي" },
-        buttons: { checkIn: "✅ دخول", checkOut: "🚪 خروج", break: "☕ استراحة (+15د)", leave: "🏖️ إجازة", save: "حفظ الإعدادات", addManual: "➕ إضافة يوم يدوي", addHoliday: "🎉 إضافة عطلة رسمية" },
+        // تم إزالة الأيقونات من هنا للعربية لتخفيف ازدحام الأزرار
+        buttons: { checkIn: "دخول", checkOut: "خروج", break: "استراحة (+15د)", leave: "إجازة", save: "حفظ الإعدادات", addManual: "إضافة يوم يدوي", addHoliday: "إضافة عطلة رسمية" },
         week: "هذا الأسبوع", month: "هذا الشهر", settings: "الإعدادات", log: "سجل الأيام",
         cols: { date: "التاريخ", in: "دخول", out: "خروج", brk: "استراحة (د)", total: "مجموع (س)", type: "النوع", note: "ملاحظة" },
         labels: { tz: "المنطقة الزمنية", stdH: "الساعات القياسية/اليوم", vacY: "رصيد الإجازة السنوي (يوم)" },
@@ -247,8 +255,32 @@
         place: { search: "🔍 بحث...", tz: "Europe/Berlin", holidayName: "اسم العطلة" },
         pdfName: (d)=>`saaty_${d}.pdf`, workdays: "يوم عمل"
       },
-      en: { /* ... (English translations) ... */ },
-      de: { /* ... (German translations) ... */ }
+      en: {
+        title: "Sa'ati — Work Hours Tracker", subtitle: "Clock in/out, workdays, leave, and export.",
+        landing: { title: "Sa'ati — Work Hours Tracker", sub: "Clock in/out, hours & leave — 100% local.", google: "Continue with Google", guest: "Continue as Guest" },
+        status: { idle: "Idle", in: "Active — Clocked In", out: "Day Closed", over: "Overtime" },
+        buttons: { checkIn: "✅ Check In", checkOut: "🚪 Check Out", break: "☕ Break (+15m)", leave: "🏖️ Leave", save: "Save Settings", addManual: "➕ Add Manual Day", addHoliday: "🎉 Add Public Holiday" },
+        week: "This week", month: "This month", settings: "Settings", log: "Log",
+        cols: { date: "Date", in: "In", out: "Out", brk: "Break (m)", total: "Total (h)", type: "Type", note: "Note" },
+        labels: { tz: "Time Zone", stdH: "Std hours / day", vacY: "Annual Leave Balance (days)" },
+        types: { work: "Work", vac: "Vacation", sick: "Sick", holiday: "Public Holiday" },
+        modal: { addLeave: "Add Leave/Sick/Holiday", addManual: "Add Manual Day", addHoliday: "Add Public Holiday", edit: "Edit Manual Entry" },
+        place: { search: "🔍 Search...", tz: "Europe/Berlin", holidayName: "Holiday Name" },
+        pdfName: (d)=>`saati_${d}.pdf`, workdays: "workdays"
+      },
+      de: {
+        title: "Sa'ati — Arbeitszeit-Tracker", subtitle: "Kommen/Gehen, Arbeitstage, Urlaub, Export.",
+        landing: { title: "Sa'ati — Arbeitszeit-Tracker", sub: "Zeiten & Urlaub lokal erfassen.", google: "Mit Google fortfahren", guest: "Als Gast fortfahren" },
+        status: { idle: "Inaktiv", in: "Aktiv — Eingecheckt", out: "Tag abgeschlossen", over: "Überstunden" },
+        buttons: { checkIn: "✅ Kommen", checkOut: "🚪 Gehen", break: "☕ Pause (+15m)", leave: "🏖️ Abwesenheit", save: "Einstellungen speichern", addManual: "➕ Manuell hinzufügen", addHoliday: "🎉 Feiertag hinzufügen" },
+        week: "Diese Woche", month: "Diesen Monat", settings: "Einstellungen", log: "Protokoll",
+        cols: { date: "Datum", in: "Kommen", out: "Gehen", brk: "Pause (Min)", total: "Summe (Std)", type: "Typ", note: "Notiz" },
+        labels: { tz: "Zeitzone", stdH: "Standardstunden/Tag", vacY: "Jahresurlaub (Tage)" },
+        types: { work: "Arbeit", vac: "Urlaub", sick: "Krank", holiday: "Feiertag" },
+        modal: { addLeave: "Abwesenheit/Krank/Feiertag erfassen", addManual: "Manuellen Tag hinzufügen", addHoliday: "Feiertag hinzufügen", edit: "Manuellen Eintrag bearbeiten" },
+        place: { search: "🔍 Suchen...", tz: "Europe/Berlin", holidayName: "Feiertagsname" },
+        pdfName: (d)=>`saati_${d}.pdf`, workdays: "Arbeitstage"
+      }
     }
 
     const $ = (sel) => document.querySelector(sel)
@@ -286,7 +318,7 @@
       render()
     }
 
-    // D3 - Rendering Status (المطلوبة)
+    // D3 - Rendering Status (تم إصلاح تفعيل وتعطيل الأزرار)
     const renderStatus = () => {
         const t = I18N[state.lang]
         const dot = $('#stateDot')
@@ -303,6 +335,7 @@
             // حالة الخمول/غير مسجل
             dot.style.background = '#9ca3af' // رمادي
             lbl.textContent = t.status.idle
+            // تفعيل زر الدخول وتعطيل الباقي
             checkInBtn.disabled = false
             checkOutBtn.disabled = true
             breakBtn.disabled = true
@@ -323,6 +356,7 @@
                 dot.style.background = '#f59e0b' // برتقالي
             }
 
+            // تعطيل زر الدخول وتفعيل الباقي
             checkInBtn.disabled = true
             checkOutBtn.disabled = false
             breakBtn.disabled = false
@@ -342,8 +376,6 @@
         const weekLogs = state.logs.filter(e => dayjs(e.date).isAfter(weekStart.subtract(1,'day')))
         const weekMins = weekLogs.reduce((a,e)=> a + (e.type==='work' ? e.totalMin||0 : 0), 0)
         const weekWorkDays = weekLogs.filter(e => e.type==='work').length
-        const weekStdMins = weekWorkDays * stdMinPerDay
-        const weekBalance = weekMins - weekStdMins
 
         $('#weekHours').textContent = hhmm(weekMins)
         $('#weekDays').textContent = `${weekWorkDays} ${t.workdays}`
@@ -354,8 +386,6 @@
         const monthLogs = state.logs.filter(e => dayjs(e.date).isAfter(monthStart.subtract(1,'day')))
         const monthMins = monthLogs.reduce((a,e)=> a + (e.type==='work' ? e.totalMin||0 : 0), 0)
         const monthWorkDays = monthLogs.filter(e => e.type==='work').length
-        const monthStdMins = monthWorkDays * stdMinPerDay
-        const monthBalance = monthMins - monthStdMins
 
         $('#monthHours').textContent = hhmm(monthMins)
         $('#monthDays').textContent = `${monthWorkDays} ${t.workdays}`
@@ -387,8 +417,6 @@
         }
     }
 
-
-    // ... باقي الدوال (applyLang, renderTable, renderUser, checkIn, checkOut, إلخ) ...
 
     // D5 - The Grand Render function
     function render() {
@@ -436,7 +464,7 @@
         const dateStr = fmt(state.running.startISO);
         // التحقق من تكرار اليوم
         if (state.logs.some(e => e.date === dateStr && e.type === 'work')) {
-             if (!confirm("لقد سجلت يوم عمل بالفعل في هذا التاريخ. هل تريد تسجيل هذا الإدخال كـ 'تعديل'؟")) return;
+             if (!confirm("لقد سجلت يوم عمل بالفعل في هذا التاريخ. هل تريد تسجيل هذا الإدخال كـ 'تعديل'؟ (سيتم حذف الإدخال القديم)")) return;
              state.logs = state.logs.filter(e => !(e.date === dateStr && e.type === 'work'));
         }
         state.logs.push({
@@ -449,153 +477,6 @@
     const addBreak = (min=15) => { if (!state.running) return; state.running.breaksMin += min; persist() }
     const delEntry = (id) => { if (!confirm(I18N[state.lang].title + "\n\nهل أنت متأكد من حذف هذا السجل؟")) return; state.logs = state.logs.filter(e=> e.id!==id); persist() }
 
-
-    // ... (دوال openEdit, addManual, addLeave, addHoliday) تبقى كما هي مع تحديث طفيف للعناوين) ...
-
-    // D9 - Export CSV
-    function exportCSV(){
-      const t = I18N[state.lang]
-      const header = ['date','type','in','out','break_min','total_min_h','note'] // Total minutes changed to Hours
-      const rows = [header.map(h => `"${h}"`).join(',')]
-      state.logs.forEach(e=>{
-        const row = [
-          e.date,
-          (t.types[e.type]||e.type),
-          e.in? dayjs(e.in).tz(state.tz).format('HH:mm') : '',
-          e.out? dayjs(e.out).tz(state.tz).format('HH:mm') : '',
-          e.breakMin||0,
-          minutesToHours(e.totalMin||0), // Export in hours for better reporting
-          (e.note||'').replace(/"/g, '""').replaceAll('\n', ' ').replaceAll(',', ';')
-        ]
-        rows.push(row.map(val => `"${val}"`).join(',')) // Enclose values in quotes for robustness
-      })
-      const blob = new Blob([rows.join('\n')], {type:'text/csv;charset=utf-8'})
-      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `saati_export_${dayjs().format('YYYYMMDD_HHmm')}.csv`; a.click()
-    }
-
-
-    // D10 - Initial Setup and Event Listeners
-    function init() {
-        // Init view
-        applyLang(); initGoogle();
-        if (state.user) { showApp() } // auto-continue
-        document.documentElement.classList.toggle('dark', state.theme==='dark')
-
-        // Bind Main Actions
-        $('#guestBtn').onclick = window.saatiGuestLogin
-        $('#googleSignInMock').onclick = () => { if (!SAATI_GOOGLE_CLIENT_ID) mockGoogle() } // Assuming mockGoogle is defined elsewhere
-        $('#checkInBtn').onclick = checkIn
-        $('#checkOutBtn').onclick = checkOut
-        $('#breakBtn').onclick = () => addBreak(15)
-        $('#addLeaveBtn').onclick = addLeave
-        $('#addManualEntry').onclick = addManual
-        $('#addHolidayBtn').onclick = addHoliday
-        $('#signOutBtn').onclick = signOut
-
-        // Bind Settings and Exports
-        $('#saveSettings').onclick = () => { state.tz = $('#tzInput').value || state.tz; state.stdHours = +$('#stdHours').value || state.stdHours; state.vacYear = +$('#vacDaysYear').value || state.vacYear; persist() }
-        $('#exportCsvBtn').onclick = exportCSV
-        $('#exportPdfBtn').onclick = exportPDF
-        $('#clearBtn').onclick = () => { if (confirm(I18N[state.lang].title + '\n\nمسح كل البيانات (سجل العمل والحالة والإعدادات)؟ هذا الإجراء لا يمكن التراجع عنه!')) { localStorage.clear(); state.logs = []; state.running = null; location.reload() } }
-
-        // Bind UI
-        $('#themeBtn').onclick = () => { state.theme = state.theme==='dark'?'light':'dark'; persist(); initGoogle() }
-        $('#langBtn').onclick = () => { state.lang = state.lang==='ar' ? 'en' : state.lang==='en' ? 'de' : 'ar'; persist(); initGoogle() }
-        $('#searchInput').oninput = renderTable
-
-        // Live clock (Using renderStatus only)
-        setInterval(renderStatus, 1000)
-    }
-
-    // Call init
-    init();
-
-    // ... (هنا يتم تضمين دوال openEdit, addManual, addLeave, addHoliday, mockGoogle, initGoogle, applyLang, renderTable, renderUser, exportPDF كما في الكود الأصلي لكن بترتيب أفضل) ...
-
-    // **********************************************
-    // ** الدوال المتبقية (copy/paste from original) **
-    // **********************************************
-
-    function applyLang() {
-      const t = I18N[state.lang]
-      document.documentElement.lang = state.lang
-      document.documentElement.dir = state.lang === 'ar' ? 'rtl' : 'ltr'
-      $('#appTitle').textContent = t.title
-      $('#appSubtitle').textContent = t.subtitle
-      $('#landingTitle').textContent = t.landing.title
-      $('#landingSubtitle').textContent = t.landing.sub
-      // $('#googleBtnLabel').textContent = t.landing.google // Not needed with Google GSI button
-      $('#landing #guestBtn').textContent = t.landing.guest
-      $('#settingsTitle').textContent = t.settings
-      $('#logTitle').textContent = t.log
-      $('#colDate').textContent = t.cols.date
-      $('#colIn').textContent = t.cols.in
-      $('#colOut').textContent = t.cols.out
-      $('#colBreak').textContent = t.cols.brk
-      $('#colTotal').textContent = t.cols.total
-      $('#colType').textContent = t.cols.type
-      $('#colNote').textContent = t.cols.note
-      $('#tzLabel').textContent = t.labels.tz
-      $('#weekHoursLabel').textContent = t.labels.stdH
-      $('#vacDaysLabel').textContent = t.labels.vacY
-      $('#searchInput').placeholder = t.place.search
-      $('#tzInput').placeholder = t.place.tz
-      $('#weekRange').textContent = `${t.week} (الأسبوع ${now().week()})`
-      $('#monthRange').textContent = t.month
-
-      // Update buttons
-      $('#checkInBtn').textContent = t.buttons.checkIn
-      $('#checkOutBtn').textContent = t.buttons.checkOut
-      $('#breakBtn').textContent = t.buttons.break
-      $('#addLeaveBtn').textContent = t.buttons.leave
-      $('#saveSettings').textContent = t.buttons.save
-      $('#addManualEntry').textContent = t.buttons.addManual
-      $('#addHolidayBtn').textContent = t.buttons.addHoliday
-    }
-
-    function renderTable() {
-      const t = I18N[state.lang]
-      const q = $('#searchInput').value?.toLowerCase() || ''
-      const tbody = $('#logBody'); tbody.innerHTML = ''
-      const rows = [...state.logs].sort((a,b)=> b.date.localeCompare(a.date))
-
-      if (rows.length === 0 && !q){
-        tbody.innerHTML = `<tr class="text-center"><td colspan="8" class="py-4 muted">الرجاء إضافة سجل عمل لبدء التتبع...</td></tr>`
-        return
-      }
-
-      rows.filter(e => JSON.stringify(e).toLowerCase().includes(q)).forEach(entry => {
-        const tr = document.createElement('tr'); tr.className = 'border-b border-black/5 hover:bg-zinc-50/60 dark:hover:bg-zinc-900/50'
-        const td = (html, classes='') => { const x = document.createElement('td'); x.className=`py-2 pe-3 ${classes}`; x.innerHTML = html; return x }
-        const typeBadge = () => {
-          const map = { work:'bg-primary-100 text-primary-700 border-primary-200', vac:'bg-amber-100 text-amber-700 border-amber-200', sick:'bg-rose-100 text-rose-700 border-rose-200', holiday:'bg-indigo-100 text-indigo-700 border-indigo-200' }
-          return `<span class="px-2 py-0.5 rounded-full text-xs font-medium border ${map[entry.type]||'bg-zinc-100 text-zinc-700 border-zinc-200'}">${t.types[entry.type]||entry.type}</span>`
-        }
-        tr.appendChild(td(dayjs(entry.date).tz(state.tz).format('YYYY-MM-DD (ddd)')))
-        tr.appendChild(td(entry.type==='work'? (entry.in? dayjs(entry.in).tz(state.tz).format('HH:mm') : '—') : '—'))
-        tr.appendChild(td(entry.type==='work'? (entry.out? dayjs(entry.out).tz(state.tz).format('HH:mm') : '—') : '—'))
-        tr.appendChild(td(entry.type==='work'? (entry.breakMin||0) : '—'))
-        tr.appendChild(td(entry.type==='work'? hhmm(entry.totalMin||0) : '—', 'font-semibold')) // Highlight total hours
-        tr.appendChild(td(typeBadge()))
-        tr.appendChild(td(entry.note? `<span class="muted">${entry.note}</span>`:'—'))
-        const actions = document.createElement('td'); actions.className='py-2 actions'
-        actions.innerHTML = `<button class="btn bg-white dark:bg-zinc-800 me-1 text-xs" data-act="edit">✏️</button><button class="btn bg-white dark:bg-zinc-800 text-xs text-rose-500" data-act="del">🗑️</button>`
-        actions.querySelector('[data-act="edit"]').onclick = () => openEdit(entry.id)
-        actions.querySelector('[data-act="del"]').onclick = () => delEntry(entry.id)
-        tr.appendChild(actions)
-        tbody.appendChild(tr)
-      })
-    }
-
-    function renderUser(){
-      const chip = document.getElementById('userChip')
-      if (!state.user){ chip.classList.add('hidden'); return }
-      chip.classList.remove('hidden')
-      document.getElementById('userName').textContent = state.user.name||'User'
-      document.getElementById('userEmail').textContent = state.user.email||''
-      const av = document.getElementById('userAvatar')
-      if (state.user.pic){ av.style.backgroundImage = `url('${state.user.pic}')`; av.style.backgroundSize='cover'; av.textContent='' } else { av.style.backgroundImage = 'none'; av.textContent = (state.user.name||'U')[0] }
-    }
 
     function openEdit(id){
       const t = I18N[state.lang]
@@ -740,6 +621,121 @@
       })
     }
 
+    // D9 - Export CSV
+    function exportCSV(){
+      const t = I18N[state.lang]
+      const header = ['date','type','in','out','break_min','total_min_h','note'] // Total minutes changed to Hours
+      const rows = [header.map(h => `"${h}"`).join(',')]
+      state.logs.forEach(e=>{
+        const row = [
+          e.date,
+          (t.types[e.type]||e.type),
+          e.in? dayjs(e.in).tz(state.tz).format('HH:mm') : '',
+          e.out? dayjs(e.out).tz(state.tz).format('HH:mm') : '',
+          e.breakMin||0,
+          minutesToHours(e.totalMin||0), // Export in hours for better reporting
+          (e.note||'').replace(/"/g, '""').replaceAll('\n', ' ').replaceAll(',', ';')
+        ]
+        rows.push(row.map(val => `"${val}"`).join(',')) // Enclose values in quotes for robustness
+      })
+      const blob = new Blob([rows.join('\n')], {type:'text/csv;charset=utf-8'})
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `saati_export_${dayjs().format('YYYYMMDD_HHmm')}.csv`; a.click()
+    }
+
+
+    function applyLang() {
+      const t = I18N[state.lang]
+      document.documentElement.lang = state.lang
+      document.documentElement.dir = state.lang === 'ar' ? 'rtl' : 'ltr'
+      $('#appTitle').textContent = t.title
+      $('#appSubtitle').textContent = t.subtitle
+      $('#landingTitle').textContent = t.landing.title
+      $('#landingSubtitle').textContent = t.landing.sub
+      $('#landing #guestBtn').textContent = t.landing.guest
+      $('#settingsTitle').textContent = t.settings
+      $('#logTitle').textContent = t.log
+      $('#colDate').textContent = t.cols.date
+      $('#colIn').textContent = t.cols.in
+      $('#colOut').textContent = t.cols.out
+      $('#colBreak').textContent = t.cols.brk
+      $('#colTotal').textContent = t.cols.total
+      $('#colType').textContent = t.cols.type
+      $('#colNote').textContent = t.cols.note
+      $('#tzLabel').textContent = t.labels.tz
+      $('#weekHoursLabel').textContent = t.labels.stdH
+      $('#vacDaysLabel').textContent = t.labels.vacY
+      $('#searchInput').placeholder = t.place.search
+      $('#tzInput').placeholder = t.place.tz
+      $('#weekRange').textContent = `${t.week} (الأسبوع ${now().week()})`
+      $('#monthRange').textContent = t.month
+
+      // تحديث نصوص الأزرار، مع إزالة نص الأيقونة في العربية
+      if (state.lang === 'ar') {
+         $$('.lang-text').forEach(el => {
+            if (el.parentElement.id === 'checkInBtn') el.textContent = t.buttons.checkIn;
+            else if (el.parentElement.id === 'checkOutBtn') el.textContent = t.buttons.checkOut;
+            else if (el.parentElement.id === 'breakBtn') el.textContent = t.buttons.break;
+            else if (el.parentElement.id === 'addLeaveBtn') el.textContent = t.buttons.leave;
+         });
+         $('#saveSettings').textContent = '💾 ' + t.buttons.save;
+         $('#addManualEntry').textContent = '➕ ' + t.buttons.addManual;
+         $('#addHolidayBtn').textContent = '🎉 ' + t.buttons.addHoliday;
+      } else {
+         $('#checkInBtn').innerHTML = t.buttons.checkIn;
+         $('#checkOutBtn').innerHTML = t.buttons.checkOut;
+         $('#breakBtn').innerHTML = t.buttons.break;
+         $('#addLeaveBtn').innerHTML = t.buttons.leave;
+         $('#saveSettings').textContent = t.buttons.save;
+         $('#addManualEntry').textContent = t.buttons.addManual;
+         $('#addHolidayBtn').textContent = t.buttons.addHoliday;
+      }
+
+    }
+
+    function renderTable() {
+      const t = I18N[state.lang]
+      const q = $('#searchInput').value?.toLowerCase() || ''
+      const tbody = $('#logBody'); tbody.innerHTML = ''
+      const rows = [...state.logs].sort((a,b)=> b.date.localeCompare(a.date))
+
+      if (rows.length === 0 && !q){
+        tbody.innerHTML = `<tr class="text-center"><td colspan="8" class="py-4 muted">الرجاء إضافة سجل عمل لبدء التتبع...</td></tr>`
+        return
+      }
+
+      rows.filter(e => JSON.stringify(e).toLowerCase().includes(q)).forEach(entry => {
+        const tr = document.createElement('tr'); tr.className = 'border-b border-black/5 hover:bg-zinc-50/60 dark:hover:bg-zinc-900/50'
+        const td = (html, classes='') => { const x = document.createElement('td'); x.className=`py-2 pe-3 ${classes}`; x.innerHTML = html; return x }
+        const typeBadge = () => {
+          const map = { work:'bg-primary-100 text-primary-700 border-primary-200', vac:'bg-amber-100 text-amber-700 border-amber-200', sick:'bg-rose-100 text-rose-700 border-rose-200', holiday:'bg-indigo-100 text-indigo-700 border-indigo-200' }
+          return `<span class="px-2 py-0.5 rounded-full text-xs font-medium border ${map[entry.type]||'bg-zinc-100 text-zinc-700 border-zinc-200'}">${t.types[entry.type]||entry.type}</span>`
+        }
+        tr.appendChild(td(dayjs(entry.date).tz(state.tz).format('YYYY-MM-DD (ddd)')))
+        tr.appendChild(td(entry.type==='work'? (entry.in? dayjs(entry.in).tz(state.tz).format('HH:mm') : '—') : '—'))
+        tr.appendChild(td(entry.type==='work'? (entry.out? dayjs(entry.out).tz(state.tz).format('HH:mm') : '—') : '—'))
+        tr.appendChild(td(entry.type==='work'? (entry.breakMin||0) : '—'))
+        tr.appendChild(td(entry.type==='work'? hhmm(entry.totalMin||0) : '—', 'font-semibold')) // Highlight total hours
+        tr.appendChild(td(typeBadge()))
+        tr.appendChild(td(entry.note? `<span class="muted">${entry.note}</span>`:'—'))
+        const actions = document.createElement('td'); actions.className='py-2 actions'
+        actions.innerHTML = `<button class="btn bg-white dark:bg-zinc-800 me-1 text-xs" data-act="edit">✏️</button><button class="btn bg-white dark:bg-zinc-800 text-xs text-rose-500" data-act="del">🗑️</button>`
+        actions.querySelector('[data-act="edit"]').onclick = () => openEdit(entry.id)
+        actions.querySelector('[data-act="del"]').onclick = () => delEntry(entry.id)
+        tr.appendChild(actions)
+        tbody.appendChild(tr)
+      })
+    }
+
+    function renderUser(){
+      const chip = document.getElementById('userChip')
+      if (!state.user){ chip.classList.add('hidden'); return }
+      chip.classList.remove('hidden')
+      document.getElementById('userName').textContent = state.user.name||'User'
+      document.getElementById('userEmail').textContent = state.user.email||''
+      const av = document.getElementById('userAvatar')
+      if (state.user.pic){ av.style.backgroundImage = `url('${state.user.pic}')`; av.style.backgroundSize='cover'; av.textContent='' } else { av.style.backgroundImage = 'none'; av.textContent = (state.user.name||'U')[0] }
+    }
+
     function initGoogle(){
       const t = I18N[state.lang]
       const btn = $('#googleSignInMock')
@@ -822,6 +818,43 @@
       $('#searchInput').value = currentQuery
       renderTable()
     }
+
+    // D10 - Initial Setup and Event Listeners
+    function init() {
+        // Init view
+        applyLang(); initGoogle();
+        if (state.user) { showApp() } // auto-continue
+        document.documentElement.classList.toggle('dark', state.theme==='dark')
+
+        // Bind Main Actions
+        $('#guestBtn').onclick = window.saatiGuestLogin
+        $('#googleSignInMock').onclick = () => { if (!SAATI_GOOGLE_CLIENT_ID) mockGoogle() }
+        $('#checkInBtn').onclick = checkIn
+        $('#checkOutBtn').onclick = checkOut
+        $('#breakBtn').onclick = () => addBreak(15)
+        $('#addLeaveBtn').onclick = addLeave
+        $('#addManualEntry').onclick = addManual
+        $('#addHolidayBtn').onclick = addHoliday
+        $('#signOutBtn').onclick = signOut
+
+        // Bind Settings and Exports
+        $('#saveSettings').onclick = () => { state.tz = $('#tzInput').value || state.tz; state.stdHours = +$('#stdHours').value || state.stdHours; state.vacYear = +$('#vacDaysYear').value || state.vacYear; persist() }
+        $('#exportCsvBtn').onclick = exportCSV
+        $('#exportPdfBtn').onclick = exportPDF
+        $('#clearBtn').onclick = () => { if (confirm(I18N[state.lang].title + '\n\nمسح كل البيانات (سجل العمل والحالة والإعدادات)؟ هذا الإجراء لا يمكن التراجع عنه!')) { localStorage.clear(); state.logs = []; state.running = null; location.reload() } }
+
+        // Bind UI
+        $('#themeBtn').onclick = () => { state.theme = state.theme==='dark'?'light':'dark'; persist(); initGoogle() }
+        $('#langBtn').onclick = () => { state.lang = state.lang==='ar' ? 'en' : state.lang==='en' ? 'de' : 'ar'; persist(); initGoogle() }
+        $('#searchInput').oninput = renderTable
+
+        // Live clock (Using renderStatus only)
+        setInterval(renderStatus, 1000)
+    }
+
+    // Call init
+    init();
+
   })()
   </script>
 </body>

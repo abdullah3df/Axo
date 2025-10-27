@@ -45,7 +45,27 @@
     html { -webkit-tap-highlight-color: transparent; }
     .container-narrow { max-width: 1200px; }
     .muted { @apply text-ink-500 dark:text-ink-300; }
-    .form-input { @apply mt-1 w-full rounded-xl border border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-800 px-3 py-2; }
+    
+    /* ********** إصلاح القوائم المنسدلة (Selects) ********** */
+    .form-input { 
+      @apply mt-1 w-full rounded-xl border border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-800 px-3 py-2; 
+    }
+    /* ضمان وضوح عنصر الاختيار (select) وتناسبه مع حقل الإدخال */
+    .form-input:is(select) { 
+        @apply appearance-none pr-10 pl-3 bg-no-repeat bg-[length:1.25rem_1.25rem] bg-[right_0.75rem_center] cursor-pointer;
+        /* هذا النمط يضيف سهمًا سفليًا للقائمة المنسدلة ويدعم RTL */
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23374151' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+        /* تعديل موقع السهم ليتناسب مع RTL */
+        background-position: left 0.75rem center;
+        padding-left: 2.5rem; /* مساحة للسهم على اليسار */
+        padding-right: 0.75rem; /* مسافة على اليمين */
+    }
+    html[dir="rtl"] .form-input:is(select) {
+        background-position: right 0.75rem center;
+        padding-right: 2.5rem; /* مساحة للسهم على اليمين */
+        padding-left: 0.75rem; /* مسافة على اليسار */
+    }
+    /* **************************************************** */
 
     /* Buttons General Style */
     .btn { @apply inline-flex items-center justify-center px-5 py-3 rounded-xl font-semibold border transition shadow-soft; }
@@ -86,11 +106,12 @@
         @apply btn-mega bg-accent-600 border-accent-600 text-white hover:bg-accent-700 active:bg-accent-800 shadow-accent-500/50;
     }
 
-    /* ********** حالة التعطيل اليدوية عبر JS ********** */
-    .btn-mega.opacity-30 {
-        @apply opacity-30 shadow-soft cursor-not-allowed transform-none;
+    /* ********** حالة التعطيل اليدوية عبر JS (لضمان الوضوح) ********** */
+    /* نستخدم تعتيما خفيفا لجعل الزر باهتا لكن مرئيا بوضوح */
+    .disabled-mega-style {
+        @apply opacity-50 shadow-soft cursor-not-allowed transform-none;
     }
-    /* ************************************************* */
+    /* ***************************************************************** */
 
     @media print { header, .actions, footer, .log-actions { display:none!important } body{ background:#fff!important; color:#000!important } .card{ box-shadow:none!important; border:none!important } }
   </style>
@@ -463,17 +484,19 @@
             DOM.editBreakBtn.disabled = !state.running;
             
             // ************ منطق التحكم في وضوح الأزرار الكبيرة ************
+            // استخدام فئة مخصصة بدلاً من opacity-30 لتجنب التعارضات
+            const DISABLED_CLASS = 'disabled-mega-style';
             
             if (!state.running){
                 // خارج العمل: زر الدخول (الأخضر) واضح
-                DOM.checkInBtn.classList.remove('opacity-30'); 
-                DOM.checkOutBtn.classList.add('opacity-30');    
+                DOM.checkInBtn.classList.remove(DISABLED_CLASS); 
+                DOM.checkOutBtn.classList.add(DISABLED_CLASS);    
                 
                 DOM.stateDot.style.background = '#94a3b8'; DOM.stateLabel.textContent = 'غير مسجّل';
             } else {
                 // نشط: زر الخروج (الأحمر) واضح
-                DOM.checkInBtn.classList.add('opacity-30');    
-                DOM.checkOutBtn.classList.remove('opacity-30'); 
+                DOM.checkInBtn.classList.add(DISABLED_CLASS);    
+                DOM.checkOutBtn.classList.remove(DISABLED_CLASS); 
                 
                 DOM.stateDot.style.background = '#10b981'; DOM.stateLabel.textContent = `نشِط — استراحة: ${state.running.breaksMin}د`;
             }
@@ -585,6 +608,9 @@
         openModal(title, bodyHTML, onOk) {
             DOM.modalTitle.textContent = title;
             DOM.modalBody.innerHTML = bodyHTML;
+            // يجب إعادة تهيئة عناصر Select بعد إضافتها
+            DOM.modalBody.querySelectorAll('select').forEach(select => select.classList.add('form-input'));
+
             DOM.modal.returnValue = '';
             DOM.modal.showModal();
             const handler = () => { 
@@ -607,7 +633,7 @@
               <div class='grid grid-cols-2 gap-3'>
                 <label class='block'><span class='text-sm muted'>استراحة (د)</span><input id='em_break' type='number' step='1' class='form-input' value='${e.breakMin||0}'></label>
                 <label class='block'><span class='text-sm muted'>النوع</span>
-                  <select id='em_type' class='form-input'>
+                  <select id='em_type'>
                     <option value='work' ${e.type==='work'?'selected':''}>عمل</option>
                     <option value='vac' ${e.type==='vac'?'selected':''}>إجازة</option>
                     <option value='sick' ${e.type==='sick'?'selected':''}>مرضية</option>
@@ -632,7 +658,7 @@
               <div class='grid md:grid-cols-2 gap-3'>
                 <label class='block'><span class='text-sm muted'>التاريخ</span><input id='m_date' type='date' class='form-input' value='${d}'></label>
                 <label class='block'><span class='text-sm muted'>النوع</span>
-                  <select id='m_type' class='form-input'>
+                  <select id='m_type'>
                     <option value='work'>عمل</option><option value='vac'>إجازة</option><option value='sick'>مرضية</option><option value='holiday'>عطلة رسمية</option>
                   </select>
                 </label>
@@ -658,7 +684,7 @@
             this.openModal('تسجيل إجازة/مرضية/عطلة', `
               <label class='block'><span class='text-sm muted'>التاريخ</span><input id='l_date' type='date' class='form-input' value='${d}'></label>
               <label class='block'><span class='text-sm muted'>النوع</span>
-                <select id='l_type' class='form-input'>
+                <select id='l_type'>
                   <option value='vac'>إجازة</option><option value='sick'>مرضية</option><option value='holiday'>عطلة رسمية</option>
                 </select>
               </label>
@@ -729,21 +755,22 @@
         }
 
         bindEvents() {
-            // ************ منطق مُعدَّل لمُعالجة النقر (التحقق من opacity-30) ************
-            
+            // ************ منطق مُعدَّل لمُعالجة النقر (التحقق من disabled-mega-style) ************
+            const DISABLED_CLASS = 'disabled-mega-style';
+
             DOM.checkInBtn.addEventListener('click', ()=>{
                 // لا تنفذ إذا كان الزر باهتاً
-                if (DOM.checkInBtn.classList.contains('opacity-30')) return; 
+                if (DOM.checkInBtn.classList.contains(DISABLED_CLASS)) return; 
                 this.dataStore.checkIn();
             });
             
             DOM.checkOutBtn.addEventListener('click', ()=>{
                 // لا تنفذ إذا كان الزر باهتاً
-                if (DOM.checkOutBtn.classList.contains('opacity-30')) return; 
+                if (DOM.checkOutBtn.classList.contains(DISABLED_CLASS)) return; 
                 this.dataStore.checkOut();
             });
             
-            // الأزرار الثانوية لا تحتاج إلى تعديل لأنها تستخدم خاصية disabled القياسية
+            // الأزرار الثانوية 
             DOM.breakBtn.addEventListener('click', this.dataStore.addBreak.bind(this.dataStore));
             DOM.editBreakBtn.addEventListener('click', this.uiRenderer.openEditBreak.bind(this.uiRenderer)); 
             

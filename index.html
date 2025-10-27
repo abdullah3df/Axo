@@ -69,12 +69,11 @@
     }
 
     /* ********** أزرار الدخول/الخروج الجديدة (Mega Button) ********** */
-    /* الزر الضخم المشترك */
     .btn-mega {
         /* تطبيق الحجم الضخم */
-        @apply w-full flex items-center justify-center text-[80px] sm:text-[100px] lg:text-[120px] font-extrabold rounded-2xl shadow-xl transition-all;
-        /* حجم أزرار الهاتف */
-        height: 200px; 
+        @apply w-full flex items-center justify-center font-extrabold rounded-2xl shadow-xl transition-all;
+        height: 200px; /* ارتفاع ثابت لجميع الأجهزة */
+        font-size: 120px; /* ضمان حجم الرمز الكبير */
     }
     
     /* زر الدخول (الأخضر) */
@@ -87,7 +86,7 @@
         @apply btn-mega bg-accent-600 border-accent-600 text-white hover:bg-accent-700 active:bg-accent-800 shadow-accent-500/50;
     }
 
-    /* حالة التعطيل */
+    /* حالة التعطيل - (شفافية بسيطة لإظهار أنه غير نشط ولكن لا يزال مرئياً) */
     .btn-mega[disabled] {
         @apply opacity-30 shadow-soft cursor-not-allowed transform-none;
     }
@@ -138,7 +137,12 @@
           <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 actions">
             <button id="checkInBtn" type="button" class="btn-checkin-mega" title="تسجيل دخول">⬆️</button>
             <button id="checkOutBtn" type="button" class="btn-checkout-mega" title="تسجيل خروج">⬇️</button>
-            <button id="breakBtn" type="button" class="btn btn-ghost btn-lg col-span-1 md:col-span-2">استراحة (+15د)</button>
+            
+            <div class="col-span-1 md:col-span-2 flex flex-wrap gap-3">
+                <button id="breakBtn" type="button" class="btn btn-ghost btn-lg flex-grow">استراحة (+15د)</button>
+                <button id="editBreakBtn" type="button" class="btn btn-ghost btn-lg flex-grow">تعديل الاستراحة</button>
+            </div>
+            
             <button id="addLeaveBtn" type="button" class="btn btn-ghost btn-lg col-span-1 md:col-span-2">تسجيل إجازة 🏖️</button>
           </div>
         </section>
@@ -248,6 +252,7 @@
         checkInBtn: document.getElementById('checkInBtn'),
         checkOutBtn: document.getElementById('checkOutBtn'),
         breakBtn: document.getElementById('breakBtn'),
+        editBreakBtn: document.getElementById('editBreakBtn'), // الزر الجديد
         stdHours: document.getElementById('stdHours'),
         vacDaysYear: document.getElementById('vacDaysYear'),
         currentTzDisplay: document.getElementById('currentTzDisplay'),
@@ -388,6 +393,12 @@
             this.state.running.breaksMin += min; 
             this.saveState(); 
         }
+        
+        setBreak(min) { 
+            if (!this.state.running) return; 
+            this.state.running.breaksMin = Math.max(0, min); 
+            this.saveState(); 
+        }
 
         saveEntry(entry) {
             if (entry.type==='work'){
@@ -451,18 +462,13 @@
             DOM.checkInBtn.disabled = !!state.running; 
             DOM.checkOutBtn.disabled = !state.running; 
             DOM.breakBtn.disabled = !state.running;
+            DOM.editBreakBtn.disabled = !state.running; // تفعيل/تعطيل زر تعديل الاستراحة
 
             // تحديث حالة المؤشر
             if (!state.running){
                 DOM.stateDot.style.background = '#94a3b8'; DOM.stateLabel.textContent = 'غير مسجّل';
-                // إظهار زر الدخول الأخضر مع تفعيله وإظهار الأحمر مع تعطيله
-                DOM.checkInBtn.classList.remove('opacity-30');
-                DOM.checkOutBtn.classList.add('opacity-30');
             } else {
-                DOM.stateDot.style.background = '#10b981'; DOM.stateLabel.textContent = 'نشِط — داخل';
-                // إظهار زر الخروج الأحمر مع تفعيله وإظهار الأخضر مع تعطيله
-                DOM.checkInBtn.classList.add('opacity-30');
-                DOM.checkOutBtn.classList.remove('opacity-30');
+                DOM.stateDot.style.background = '#10b981'; DOM.stateLabel.textContent = `نشِط — استراحة: ${state.running.breaksMin}د`;
             }
         }
 
@@ -672,6 +678,21 @@
             })
         }
 
+        openEditBreak() {
+            const running = this.dataStore.getState().running
+            if (!running) return;
+
+            this.openModal('تعديل وقت الاستراحة', `
+              <p class="muted">وقت الاستراحة الحالي: <strong>${running.breaksMin} دقيقة</strong></p>
+              <label class='block'><span class='text-sm muted'>قيمة الاستراحة الجديدة (بالدقائق)</span>
+                <input id='break_min' type='number' step='1' min='0' class='form-input' value='${running.breaksMin}'>
+              </label>
+            `, ()=>{
+                const newBreakMin = +(DOM.get('#break_min').value||0)
+                this.dataStore.setBreak(newBreakMin);
+            })
+        }
+
         delEntry(id) {
             if (confirm('تأكيد الحذف؟ لا يمكن التراجع.')) { 
                 this.dataStore.deleteEntry(id);
@@ -704,6 +725,7 @@
             DOM.checkInBtn.addEventListener('click', this.dataStore.checkIn.bind(this.dataStore));
             DOM.checkOutBtn.addEventListener('click', this.dataStore.checkOut.bind(this.dataStore));
             DOM.breakBtn.addEventListener('click', this.dataStore.addBreak.bind(this.dataStore));
+            DOM.editBreakBtn.addEventListener('click', this.uiRenderer.openEditBreak.bind(this.uiRenderer)); // الحدث الجديد لتعديل الاستراحة
             
             DOM.get('#addLeaveBtn').addEventListener('click', this.uiRenderer.openAddLeave.bind(this.uiRenderer));
             DOM.get('#addManualEntry').addEventListener('click', this.uiRenderer.openAddManual.bind(this.uiRenderer));

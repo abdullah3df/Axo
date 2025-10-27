@@ -47,13 +47,13 @@
     <div class="mt-6 grid gap-3">
       <!-- Google button placeholder (real OAuth if client id is set) -->
       <div id="googleBtnWrap" class="grid place-items-center">
-        <button id="googleSignInMock" class="btn bg-white dark:bg-zinc-800 flex items-center gap-2">
+        <button id="googleSignInMock" type="button" class="btn bg-white dark:bg-zinc-800 flex items-center gap-2">
           <img alt="G" width="18" height="18" src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"/>
           <span id="googleBtnLabel">المتابعة باستخدام Google</span>
         </button>
         <div id="googleHint" class="text-xs muted mt-1">(اختياري) يمكنك تفعيل تسجيل Google لاحقًا بإضافة Client ID.</div>
       </div>
-      <button id="guestBtn" class="btn bg-emerald-500 text-white border-emerald-600/30">🧑‍💻 المتابعة كضيف (محلي)</button>
+      <button id="guestBtn" type="button" class="btn bg-emerald-500 text-white border-emerald-600/30">🧑‍💻 المتابعة كضيف (محلي)</button>
     </div>
 
     <div class="mt-6 text-left text-sm rounded-xl bg-amber-50 text-amber-900 p-4 border border-amber-200 dark:bg-amber-100/10 dark:text-amber-200 dark:border-amber-300/20">
@@ -605,9 +605,19 @@
     }
 
     // ===== Events =====
-    // Landing
-    document.getElementById('guestBtn').onclick = () => { state.user = { name:'Guest', email:'', pic:'' }; persist(); showApp() }
-    document.getElementById('googleSignInMock').onclick = () => { if (SAATI_GOOGLE_CLIENT_ID) return; mockGoogle() }
+    // Landing — robust binding (also via delegation)
+    const bindLanding = () => {
+      const gBtn = document.getElementById('guestBtn')
+      if (gBtn) gBtn.onclick = (e) => { e.preventDefault(); e.stopPropagation(); state.user = { name:'Guest', email:'', pic:'' }; persist(); showApp() }
+      const mBtn = document.getElementById('googleSignInMock')
+      if (mBtn) mBtn.onclick = (e) => { e.preventDefault(); e.stopPropagation(); if (SAATI_GOOGLE_CLIENT_ID) return; mockGoogle() }
+    }
+    // Event delegation fallback
+    document.addEventListener('click', (e)=>{
+      const guest = e.target.closest && e.target.closest('#guestBtn')
+      if (guest) { e.preventDefault(); state.user = { name:'Guest', email:'', pic:'' }; persist(); showApp() }
+    })
+    bindLanding()
 
     // Topbar
     $('#checkInBtn').onclick = checkIn

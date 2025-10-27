@@ -56,7 +56,7 @@
         </label>
       </div>
       <div class="grid md:grid-cols-2 gap-3">
-        <button id="guestBtn" type="button" class="btn btn-lg bg-zinc-900 text-white dark:bg-white dark:text-zinc-900">دخول كضيف</button>
+        <button id="guestBtn" type="button" onclick="window.saatiGuestLogin && window.saatiGuestLogin()" class="btn btn-lg bg-zinc-900 text-white dark:bg-white dark:text-zinc-900">دخول كضيف</button>
         <div id="googleBtnWrap" class="grid place-items-center md:place-items-stretch">
           <button id="googleSignInMock" type="button" class="btn btn-lg bg-white dark:bg-zinc-800 border hover:border-black/20">المتابعة باستخدام Google</button>
           <div id="googleHint" class="text-xs muted mt-1 text-center md:text-start">يمكن تفعيل Google الحقيقي لاحقًا بإضافة Client ID.</div>
@@ -578,22 +578,26 @@
 
     // ===== Events =====
     // Landing — robust binding (also via delegation)
-    const bindLanding = () => {
-      const gBtn = document.getElementById('guestBtn')
-      if (gBtn) gBtn.addEventListener('click', (e) => {
-        e.preventDefault(); e.stopPropagation();
+    window.saatiGuestLogin = () => {
+      try {
         const nm = (document.getElementById('li_name')?.value || 'Guest').trim()
         const em = (document.getElementById('li_email')?.value || '').trim()
         state.user = { name: nm || 'Guest', email: em, pic: '' }
         persist(); showApp()
-      }, { once: false })
+      } catch (e) {
+        console.error('Guest login error', e); alert('Guest login failed. Please refresh and try again.')
+      }
+    }
+    const bindLanding = () => {
+      const gBtn = document.getElementById('guestBtn')
+      if (gBtn) gBtn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); window.saatiGuestLogin() }, { once: false })
       const mBtn = document.getElementById('googleSignInMock')
       if (mBtn) mBtn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); if (SAATI_GOOGLE_CLIENT_ID) return; mockGoogle() }, { once: false })
     }
     // Event delegation fallback (in case buttons re-render)
     document.addEventListener('click', (e)=>{
       const guest = e.target.closest && e.target.closest('#guestBtn')
-      if (guest) { e.preventDefault(); const nm=(document.getElementById('li_name')?.value||'Guest').trim(); const em=(document.getElementById('li_email')?.value||'').trim(); state.user={ name:nm||'Guest', email:em, pic:'' }; persist(); showApp() }
+      if (guest) { e.preventDefault(); window.saatiGuestLogin() }
     })
     bindLanding()
 
@@ -646,4 +650,4 @@
     document.documentElement.classList.toggle('dark', state.theme==='dark')
   })()
   </script></body>
-  </html>
+</html>

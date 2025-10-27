@@ -86,9 +86,9 @@
         @apply btn-mega bg-accent-600 border-accent-600 text-white hover:bg-accent-700 active:bg-accent-800 shadow-accent-500/50;
     }
 
-    /* حالة التعطيل - (شفافية بسيطة لإظهار أنه غير نشط ولكن لا يزال مرئياً) */
-    .btn-mega[disabled] {
-        @apply opacity-30 shadow-soft cursor-not-allowed transform-none;
+    /* حالة التعطيل - (نزيل خاصية disabled من CSS ونعتمد على JS لتطبيق opacity-30 لضمان الوضوح) */
+    .btn-mega.opacity-30 {
+        @apply shadow-soft cursor-not-allowed transform-none;
     }
     /* ************************************************* */
 
@@ -458,16 +458,27 @@
             DOM.todayStr.textContent = now(state.tz).format('dddd, D MMMM YYYY');
             DOM.clock.textContent = now(state.tz).format('HH:mm:ss');
             
-            // تفعيل/تعطيل الأزرار
-            DOM.checkInBtn.disabled = !!state.running; 
-            DOM.checkOutBtn.disabled = !state.running; 
+            // تفعيل/تعطيل الأزرار الثانوية (باستخدام خاصية disabled الافتراضية)
             DOM.breakBtn.disabled = !state.running;
-            DOM.editBreakBtn.disabled = !state.running; // تفعيل/تعطيل زر تعديل الاستراحة
+            DOM.editBreakBtn.disabled = !state.running;
+            
+            // تفعيل/تعطيل أزرار Mega Button (باستخدام خاصية disabled وفئة opacity-30)
 
-            // تحديث حالة المؤشر
             if (!state.running){
+                // خارج العمل: تفعيل زر الدخول (الأخضر)
+                DOM.checkInBtn.disabled = false; 
+                DOM.checkOutBtn.disabled = true; 
+                DOM.checkInBtn.classList.remove('opacity-30'); // إزالة الشفافية (واضح)
+                DOM.checkOutBtn.classList.add('opacity-30');    // إضافة الشفافية (باهت)
+                
                 DOM.stateDot.style.background = '#94a3b8'; DOM.stateLabel.textContent = 'غير مسجّل';
             } else {
+                // نشط: تفعيل زر الخروج (الأحمر)
+                DOM.checkInBtn.disabled = true; 
+                DOM.checkOutBtn.disabled = false; 
+                DOM.checkInBtn.classList.add('opacity-30');    // إضافة الشفافية (باهت)
+                DOM.checkOutBtn.classList.remove('opacity-30'); // إزالة الشفافية (واضح)
+                
                 DOM.stateDot.style.background = '#10b981'; DOM.stateLabel.textContent = `نشِط — استراحة: ${state.running.breaksMin}د`;
             }
         }

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>HE Cut Pro v10.5.1 — Dual Joint</title>
+  <title>HE Cut Pro v10.6 — Side Joint View</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
@@ -122,7 +122,7 @@
       <div>
         <h1 class="text-xl sm:text-2xl font-bold tracking-tight">
           <span data-i18n="appTitle">HE Cut Pro</span>
-          <span class="text-sky-400 text-base align-middle">v10.5.1</span>
+          <span class="text-sky-400 text-base align-middle">v10.6</span>
         </h1>
         <p class="text-xs sm:text-sm text-slate-400 mt-0.5" data-i18n="subtitle">
           قص الجناح العلوي والسفلي — زاوية تجميع من فرق القص + ميلان حر (تمثيلي)
@@ -288,7 +288,7 @@
         </div>
 
         <!-- tilt direction -->
-        <label class="col-span-2 text-slate-300 flex items-center justify_between mt-2">
+        <label class="col-span-2 text-slate-300 flex items-center justify-between mt-2">
           <span class="field-label-main" data-i18n="tiltDirSectionLabel">اتجاه الميلان (رسم فقط)</span>
           <span class="text-[10px] text-slate-400" data-i18n="tiltDirSectionHint">لا يغيّر الحسابات</span>
         </label>
@@ -357,7 +357,7 @@
           <span class="inline-block h-3 w-3 rounded-sm bg-slate-300"></span>
           <span data-i18n="legendWeb">العمود (web)</span>
         </div>
-        <div class="flex items-center gap-2">
+        <div class="flex items_center gap-2">
           <span class="inline-block h-3 w-3 rounded-sm bg-red-500"></span>
           <span data-i18n="legendCuts">خطوط القص (عمودية أو مائلة) حسب إعداداتك</span>
         </div>
@@ -385,7 +385,7 @@
   </main>
 
   <footer class="max-w-6xl mx-auto px-4 pb-6 text-[11px] text-slate-500 flex flex-wrap items-center justify-between gap-2">
-    <span data-i18n="footerLeft">HE Cut Pro v10.5.1 — فرق القص بين الجناحين</span>
+    <span data-i18n="footerLeft">HE Cut Pro v10.6 — فرق القص بين الجناحين</span>
     <span data-i18n="footerRight">للتنفيذ العملي: اعتمد كتالوج المقاطع وتعليمات الورشة.</span>
   </footer>
 
@@ -428,7 +428,7 @@
         legendWeb: "العمود (web)",
         legendCuts: "خطوط القص (عمودية أو مائلة) حسب إعداداتك",
         legendNote: "الرسم تمثيلي — الأبعاد الرقمية هي المرجع",
-        footerLeft: "HE Cut Pro v10.5.1 — فرق القص بين الجناحين",
+        footerLeft: "HE Cut Pro v10.6 — فرق القص بين الجناحين",
         footerRight: "للتنفيذ العملي: اعتمد كتالوج المقاطع وتعليمات الورشة.",
         summaryTitle: "ملخص الحساب",
         profileLabel: "البروفايل",
@@ -454,18 +454,140 @@
         frontCaption: "خطوط القص تمثّل قيم Δtop و Δbottom التي أدخلتها.",
         pairTitle: "النتيجة بعد جمع قطعتين",
         pairHint: "هذا الرسم يوضح كيف تتشكل الزاوية التقريبية بين قطعتين بعد القص، اعتماداً على فرق القص بين الجناح العلوي والسفلي.",
-        pairZeroNote: "القطعتان تقريباً على استقامة واحدة (فرق القص صغير جداً).",
+        pairZeroNote: "القطعتان تقريباً على استقامة واحدة (فرق القص صغير جدًا).",
         pairAngleText: "زاوية التجميع التقريبية بين القطعتين:"
       },
       en: {
-        /* ... نفس محتوى النسخة السابقة بالإنجليزي ... */
+        appTitle: "HE Cut Pro",
+        subtitle: "Top & Bottom Flange Cutting — Assembly Angle from Cut Difference + Free Tilt (Visual)",
+        panel1Title: "Settings & Calculation",
+        panel2Title: "Front View — Free Tilt per Flange",
+        seriesLabel: "Section Series",
+        seriesHint: "HEA / HEB / HEM",
+        sizeLabel: "Size",
+        sizeHint: "HE 100 … HE 400",
+        cutWingsLabel: "Flanges Used in Cut Calculation from Angle",
+        cutWingsHint: "Angle depends on cut difference between top and bottom",
+        cutModeTop: "Cut on Top Flange",
+        cutModeBottom: "Cut on Bottom Flange",
+        cutModeBoth: "Independent Flange Cuts (Manual Input)",
+        angleLabel: "Target Assembly Angle Between Two Pieces θ (degrees)",
+        angleHint: "Used only to suggest cut values",
+        deltaSectionLabel: "Flange Cut (per piece before assembly) mm",
+        deltaTopLabel: "Top Flange Cut",
+        deltaBottomLabel: "Bottom Flange Cut",
+        slopeSectionLabel: "Cut Line Tilt in Drawing (from vertical)",
+        slopeSectionHint: "Free per flange — visual only",
+        alphaTopTitle: "Top Cut Line Tilt Angle",
+        alphaBottomTitle: "Bottom Cut Line Tilt Angle",
+        tiltDirSectionLabel: "Tilt Direction (drawing only)",
+        tiltDirSectionHint: "Does not affect calculations",
+        tiltTopLabel: "Top Tilt Direction",
+        tiltBottomLabel: "Bottom Tilt Direction",
+        tiltIn: "Towards Center",
+        tiltOut: "Outwards",
+        resetBtn: "Reset",
+        theoryText: "<b>Engineering Concept:</b><br>• The assembly angle between two pieces depends on the <b>difference</b> between top flange cut Δtop and bottom flange cut Δbottom.<br>• If Δtop = Δbottom ⇒ difference = 0 ⇒ resulting angle ≈ 0° (pieces align straight after joining).<br>• The larger |Δtop − Δbottom|, the larger the assembly angle between pieces.<br>• Angles αtop and αbottom + tilt direction only control the red line appearance in drawing and do not change calculations.",
+        legendFlanges: "Flanges (top / bottom)",
+        legendWeb: "Web",
+        legendCuts: "Cut lines (vertical or sloped) per your settings",
+        legendNote: "Drawing is representative — numerical dimensions are reference",
+        footerLeft: "HE Cut Pro v10.6 — Flange Cut Difference",
+        footerRight: "For practical execution: refer to section catalog and workshop instructions.",
+        summaryTitle: "Calculation Summary",
+        profileLabel: "Profile",
+        flangeWidthLabel: "Flange width b (approx)",
+        cutModeDescTop: "Cut on top flange",
+        cutModeDescBottom: "Cut on bottom flange",
+        cutModeDescBoth: "Independent flange cuts (angle from difference)",
+        targetAngleLabel: "Target assembly angle (from slider)",
+        deltaTopLabelTable: "Top flange cut per piece (Δtop)",
+        deltaBottomLabelTable: "Bottom flange cut per piece (Δbottom)",
+        diffCutLabel: "Cut difference |Δtop − Δbottom|",
+        pairAngleLabel: "Approximate assembly angle from cut difference",
+        pairAngleZeroNote: "≈ 0° (because Δtop = Δbottom or very close)",
+        remainingTopLabel: "Remaining width in top flange after cut",
+        remainingBottomLabel: "Remaining width in bottom flange after cut",
+        alphaTopLabelTable: "Top cut line tilt angle in drawing (αtop)",
+        alphaBottomLabelTable: "Bottom cut line tilt angle in drawing (αbottom)",
+        tiltTopDirLabel: "Top tilt direction (drawing)",
+        tiltBottomDirLabel: "Bottom tilt direction (drawing)",
+        noteDiffZero: "If Δtop = Δbottom exactly ⇒ difference = 0 ⇒ resulting angle from cuts ≈ 0° even if you enter an angle in the slider.",
+        frontAnglePrefix: "θ ≈",
+        frontAngleSuffix: "(target)",
+        frontCaption: "Cut lines represent Δtop and Δbottom values you entered.",
+        pairTitle: "Result After Joining Two Pieces",
+        pairHint: "This drawing shows how the approximate angle forms between two pieces after cutting, depending on the cut difference between top and bottom flanges.",
+        pairZeroNote: "Pieces are almost aligned (cut difference is very small).",
+        pairAngleText: "Approximate assembly angle between pieces:"
       },
       de: {
-        /* ... نفس محتوى النسخة السابقة بالألماني ... */
+        appTitle: "HE Cut Pro",
+        subtitle: "Obere und untere Flanschbearbeitung — Montagewinkel aus Schnittdifferenz + freie Neigung (Visualisierung)",
+        panel1Title: "Einstellungen & Berechnung",
+        panel2Title: "Vorderansicht — Freie Neigung pro Flansch",
+        seriesLabel: "Profilserie",
+        seriesHint: "HEA / HEB / HEM",
+        sizeLabel: "Größe",
+        sizeHint: "HE 100 … HE 400",
+        cutWingsLabel: "Flansche für Schnittberechnung aus Winkel",
+        cutWingsHint: "Winkel hängt von Schnittdifferenz zwischen oben und unten ab",
+        cutModeTop: "Schnitt am oberen Flansch",
+        cutModeBottom: "Schnitt am unteren Flansch",
+        cutModeBoth: "Unabhängige Flanschschnitte (Manuelle Eingabe)",
+        angleLabel: "Zielmontagewinkel zwischen zwei Teilen θ (Grad)",
+        angleHint: "Wird nur zur Vorschlag von Schnittwerten verwendet",
+        deltaSectionLabel: "Flanschschnitt (pro Teil vor Montage) mm",
+        deltaTopLabel: "Oberer Flanschschnitt",
+        deltaBottomLabel: "Unterer Flanschschnitt",
+        slopeSectionLabel: "Schnittlinienneigung in Zeichnung (von vertikal)",
+        slopeSectionHint: "Frei pro Flansch — nur visuell",
+        alphaTopTitle: "Neigungswinkel der oberen Schnittlinie",
+        alphaBottomTitle: "Neigungswinkel der unteren Schnittlinie",
+        tiltDirSectionLabel: "Neigungsrichtung (nur Zeichnung)",
+        tiltDirSectionHint: "Ändert Berechnungen nicht",
+        tiltTopLabel: "Neigungsrichtung oben",
+        tiltBottomLabel: "Neigungsrichtung unten",
+        tiltIn: "Zur Mitte",
+        tiltOut: "Nach außen",
+        resetBtn: "Zurücksetzen",
+        theoryText: "<b>Ingenieurkonzept:</b><br>• Der Montagewinkel zwischen zwei Teilen hängt von der <b>Differenz</b> zwischen oberem Flanschschnitt Δtop und unterem Flanschschnitt Δbottom ab.<br>• Wenn Δtop = Δbottom ⇒ Differenz = 0 ⇒ resultierender Winkel ≈ 0° (Teile sind gerade nach dem Fügen).<br>• Je größer |Δtop − Δbottom|, desto größer der Montagewinkel zwischen den Teilen.<br>• Die Winkel αtop und αbottom + Neigungsrichtung steuern nur das Aussehen der roten Linie in der Zeichnung und ändern die Berechnungen nicht.",
+        legendFlanges: "Flansche (oben / unten)",
+        legendWeb: "Steg",
+        legendCuts: "Schnittlinien (vertikal oder geneigt) nach Ihren Einstellungen",
+        legendNote: "Zeichnung ist repräsentativ — numerische Maße sind Referenz",
+        footerLeft: "HE Cut Pro v10.6 — Flanschschnittdifferenz",
+        footerRight: "Für praktische Ausführung: Profilkatalog und Werkstattanweisungen beachten.",
+        summaryTitle: "Berechnungszusammenfassung",
+        profileLabel: "Profil",
+        flangeWidthLabel: "Flanschbreite b (ca.)",
+        cutModeDescTop: "Schnitt am oberen Flansch",
+        cutModeDescBottom: "Schnitt am unteren Flansch",
+        cutModeDescBoth: "Unabhängige Flanschschnitte (Winkel aus Differenz)",
+        targetAngleLabel: "Zielmontagewinkel (aus Schieber)",
+        deltaTopLabelTable: "Oberer Flanschschnitt pro Teil (Δtop)",
+        deltaBottomLabelTable: "Unterer Flanschschnitt pro Teil (Δbottom)",
+        diffCutLabel: "Schnittdifferenz |Δtop − Δbottom|",
+        pairAngleLabel: "Ungefährer Montagewinkel aus Schnittdifferenz",
+        pairAngleZeroNote: "≈ 0° (weil Δtop = Δbottom oder sehr nahe)",
+        remainingTopLabel: "Verbleibende Breite im oberen Flansch nach Schnitt",
+        remainingBottomLabel: "Verbleibende Breite im unteren Flansch nach Schnitt",
+        alphaTopLabelTable: "Neigungswinkel der oberen Schnittlinie in Zeichnung (αtop)",
+        alphaBottomLabelTable: "Neigungswinkel der unteren Schnittlinie in Zeichnung (αbottom)",
+        tiltTopDirLabel: "Neigungsrichtung oben (Zeichnung)",
+        tiltBottomDirLabel: "Neigungsrichtung unten (Zeichnung)",
+        noteDiffZero: "Wenn Δtop = Δbottom genau ⇒ Differenz = 0 ⇒ resultierender Winkel aus Schnitten ≈ 0° selbst wenn Sie einen Winkel im Schieber eingeben.",
+        frontAnglePrefix: "θ ≈",
+        frontAngleSuffix: "(Ziel)",
+        frontCaption: "Schnittlinien repräsentieren Δtop und Δbottom Werte, die Sie eingegeben haben.",
+        pairTitle: "Ergebnis nach dem Fügen zweier Teile",
+        pairHint: "Diese Zeichnung zeigt, wie sich der ungefähre Winkel zwischen zwei Teilen nach dem Schneiden bildet, abhängig von der Schnittdifferenz zwischen oberem und unterem Flansch.",
+        pairZeroNote: "Die Teile sind fast auf einer Linie (Schnittdifferenz ist sehr klein).",
+        pairAngleText: "Ungefährer Montagewinkel zwischen den Teilen:"
       }
     };
 
-    /* ===== باقي الكود نفس النسخة السابقة حتى دالة renderPairJoint ===== */
+    /* ===== باقي الكود ===== */
 
     const HE_DATA = {
       HEA: {100:{b:100},120:{b:120},140:{b:140},160:{b:160},180:{b:180},200:{b:200},220:{b:220},240:{b:240},260:{b:260},280:{b:280},300:{b:300},320:{b:300},340:{b:300},360:{b:300},400:{b:300}},
@@ -516,6 +638,12 @@
       if(diff<=eps) return 0;
       const halfRad=Math.atan(diff/(CALIB*b));
       return 2*halfRad*180/Math.PI;
+    }
+
+    let calcTimeout;
+    function debouncedCalc() {
+      clearTimeout(calcTimeout);
+      calcTimeout = setTimeout(() => calc(), 100);
     }
 
     function calc(){
@@ -683,107 +811,107 @@
       $frontWrapper.innerHTML=svg;
     }
 
-    /* ======= شكل التجميع بعد التصحيح — القطعتان جنب بعض عند نقطة واحدة ======= */
+    // ========= شكل التجميع الجانبي (قطعتان جنب بعض مع فتحة جذر) =========
+    function renderPairJoint({ dict, s, sz, pairAngleFromCuts, deltaTop, deltaBottom, b }) {
+      const width = 360, height = 220;
+      const cx = width / 2, cy = height / 2 + 8;
 
-    function renderPairJoint({dict,s,sz,pairAngleFromCuts,b}){
-      const width=340,height=210;
-      const cx=width/2,cy=height/2+10;
+      const raw = Number(pairAngleFromCuts) || 0;
+      const theta = Math.max(0, Math.min(75, raw));
+      const half = theta / 2;
 
-      const rawAngle=pairAngleFromCuts||0;
-      const theta=Math.min(75,Math.max(0,rawAngle));
-      const half=theta/2;
+      const span = 120;
+      const profileH = 112;
+      const flangeTh = 18;
+      const webTh = 12;
 
-      // تمثيل نصف مقطع H يبدأ من نقطة الجمع ويمتد للخارج (جانب واحد فقط)
-      const span=90;                  // طول الامتداد من نقطة الجمع
-      const profileHeight=110;
-      const flangeTh=18;
-      const webTh=12;
-      const webOffsetX=18;           // إزاحة العمود عن نقطة الجمع
-      const topY=-profileHeight/2;
-      const botY=profileHeight/2;
+      const noseInset = 12;
+      const webOffsetX = noseInset + 10;
+
+      const rootGap = 6;
+      const rootColor = "#0ea5e9";
 
       const halfProfile = `
-        <!-- الجناح العلوي من نقطة الجمع نحو الخارج -->
-        <rect x="0" y="${topY}" width="${span}" height="${flangeTh}"
+        <rect x="${noseInset}" y="${-profileH/2}"
+              width="${span - noseInset}" height="${flangeTh}"
               fill="url(#metalGradPair)" stroke="#94a3b8" stroke-width="1"/>
-        <!-- الجناح السفلي -->
-        <rect x="0" y="${botY-flangeTh}" width="${span}" height="${flangeTh}"
+        <rect x="${noseInset}" y="${profileH/2 - flangeTh}"
+              width="${span - noseInset}" height="${flangeTh}"
               fill="url(#metalGradPair)" stroke="#94a3b8" stroke-width="1"/>
-        <!-- العمود -->
-        <rect x="${webOffsetX}" y="${topY+flangeTh}" width="${webTh}"
-              height="${profileHeight-2*flangeTh}"
+        <rect x="${webOffsetX}" y="${-profileH/2 + flangeTh}"
+              width="${webTh}" height="${profileH - 2*flangeTh}"
               fill="url(#webGradPair)" stroke="#94a3b8" stroke-width="1"/>
       `;
 
-      const angleText = theta===0
-        ? dict.pairZeroNote
-        : `${dict.pairAngleText} ${theta.toFixed(2)}°`;
+      const arcR = 58;
+      const arcPath = (() => {
+        const a = theta * Math.PI / 180;
+        const x1 = cx + arcR, y1 = cy;
+        const x2 = cx + arcR * Math.cos(a), y2 = cy - arcR * Math.sin(a);
+        return `M ${x1} ${y1} A ${arcR} ${arcR} 0 0 0 ${x2} ${y2}`;
+      })();
 
-      const arcRadius = 55;
-      const arcStartX = cx + arcRadius;
-      const arcStartY = cy;
-      const endX = cx + arcRadius * Math.cos(theta * Math.PI / 180);
-      const endY = cy - arcRadius * Math.sin(theta * Math.PI / 180);
+      const gapPoly = (() => {
+        const g = rootGap;
+        const p1 = `${cx} ${cy}`;
+        const p2 = `${cx + g} ${cy - g}`;
+        const p3 = `${cx + g} ${cy + g}`;
+        return `M ${p1} L ${p2} L ${p3} Z`;
+      })();
 
       const svg = `
-      <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
-        <defs>
-          <linearGradient id="metalGradPair" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#cbd5f5"/>
-            <stop offset="40%" stop-color="#e5e7eb"/>
-            <stop offset="70%" stop-color="#9ca3af"/>
-            <stop offset="100%" stop-color="#6b7280"/>
-          </linearGradient>
-          <linearGradient id="webGradPair" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="#e5e7eb"/>
-            <stop offset="100%" stop-color="#9ca3af"/>
-          </linearGradient>
-          <filter id="shadowPair" x="-20%" y="-20%" width="140%" height="140%">
-            <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#020617" flood-opacity="0.85"/>
-          </filter>
-        </defs>
+        <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+          <defs>
+            <linearGradient id="metalGradPair" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#cbd5f5"/>
+              <stop offset="40%" stop-color="#e5e7eb"/>
+              <stop offset="70%" stop-color="#9ca3af"/>
+              <stop offset="100%" stop-color="#6b7280"/>
+            </linearGradient>
+            <linearGradient id="webGradPair" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#e5e7eb"/>
+              <stop offset="100%" stop-color="#9ca3af"/>
+            </linearGradient>
+            <filter id="shadowPair" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#020617" flood-opacity="0.85"/>
+            </filter>
+          </defs>
 
-        <g filter="url(#shadowPair)">
-          <!-- القطعة اليسرى (نصف مقطع يخرج نحو اليسار) -->
-          <g transform="translate(${cx},${cy}) rotate(${-half}) scale(-1,1)">
-            ${halfProfile}
+          <g filter="url(#shadowPair)">
+            <!-- القطعة اليسرى -->
+            <g transform="translate(${cx},${cy}) rotate(${-half})">
+              ${halfProfile}
+            </g>
+            <!-- القطعة اليمنى (انعكاس أفقي + دوران) -->
+            <g transform="translate(${cx},${cy}) scale(-1,1) rotate(${-half})">
+              ${halfProfile}
+            </g>
           </g>
-          <!-- القطعة اليمنى (نصف مقطع يخرج نحو اليمين) -->
-          <g transform="translate(${cx},${cy}) rotate(${half})">
-            ${halfProfile}
-          </g>
-        </g>
 
-        <!-- نقطة التقاء الجناحين المقصوصين -->
-        <circle cx="${cx}" cy="${cy}" r="3.2" fill="#f97373"/>
+          <!-- فتحة الجذر -->
+          <path d="${gapPoly}" fill="${rootColor}" opacity="0.75"/>
 
-        <!-- قوس الزاوية بين القطعتين -->
-        <path d="M ${arcStartX} ${arcStartY}
-                 A ${arcRadius} ${arcRadius} 0 0 1 ${endX} ${endY}"
-              fill="none" stroke="#f97373" stroke-width="2" stroke-linecap="round"/>
+          <!-- قوس الزاوية -->
+          <path d="${arcPath}" fill="none" stroke="#f97373" stroke-width="2" stroke-linecap="round"/>
+          <text x="${cx + arcR + 8}" y="${cy - 6}" font-size="11" fill="#fda4af" font-weight="600">
+            θ ≈ ${theta.toFixed(1)}°
+          </text>
 
-        <!-- قيمة الزاوية -->
-        <text x="${cx + arcRadius + 8}" y="${cy - 6}" font-size="11" fill="#fda4af"
-              font-weight="600" text-anchor="start">
-          θ ≈ ${theta.toFixed(1)}°
-        </text>
+          <text x="${width/2}" y="22" font-size="13" fill="#e5e7eb"
+                text-anchor="middle" font-weight="600">
+            ${s} ${sz} — ${dict.pairTitle}
+          </text>
 
-        <!-- عنوان فوق الرسم -->
-        <text x="${width/2}" y="24" font-size="13" fill="#e5e7eb"
-              text-anchor="middle" font-weight="600">
-          ${s} ${sz} — ${dict.pairTitle}
-        </text>
-
-        <!-- سطر توضيحي أسفل الرسم -->
-        <text x="${width/2}" y="${height-14}" font-size="9.5" fill="#cbd5f5" text-anchor="middle">
-          ${angleText}
-        </text>
-      </svg>`;
+          <text x="${width/2}" y="${height - 14}" font-size="9.5" fill="#cbd5f5" text-anchor="middle">
+            ${theta === 0 ? dict.pairZeroNote : dict.pairAngleText + ' ' + theta.toFixed(2) + '°'}
+          </text>
+        </svg>
+      `;
 
       $pairWrapper.innerHTML = svg;
     }
 
-    /* ===== بقيّة أحداث الواجهة (لغات، ثيم، reset …) نفس الإصدار السابق ===== */
+    /* ===== أحداث الواجهة: لغات، ثيم، reset … ===== */
 
     function applyTranslations(lang){
       currentLang=lang;
@@ -801,23 +929,23 @@
       calc();
     }
 
-    [$series,$size].forEach(el=>el.addEventListener('input',()=>{mode='angle';calc();}));
-    $angle.addEventListener('input',()=>{mode='angle';calc();});
-    $angleRange.addEventListener('input',()=>{mode='angle';$angle.value=$angleRange.value;calc();});
+    [$series,$size].forEach(el=>el.addEventListener('input',()=>{mode='angle';debouncedCalc();}));
+    $angle.addEventListener('input',()=>{mode='angle';debouncedCalc();});
+    $angleRange.addEventListener('input',()=>{mode='angle';$angle.value=$angleRange.value;debouncedCalc();});
 
     $deltaTop.addEventListener('focus',e=>e.target.select());
     $deltaBottom.addEventListener('focus',e=>e.target.select());
-    $deltaTop.addEventListener('change',()=>{mode='cuts';$deltaTopRange.value=$deltaTop.value||0;calc();});
-    $deltaBottom.addEventListener('change',()=>{mode='cuts';$deltaBottomRange.value=$deltaBottom.value||0;calc();});
-    $deltaTopRange.addEventListener('input',()=>{mode='cuts';$deltaTop.value=$deltaTopRange.value;calc();});
-    $deltaBottomRange.addEventListener('input',()=>{mode='cuts';$deltaBottom.value=$deltaBottomRange.value;calc();});
+    $deltaTop.addEventListener('change',()=>{mode='cuts';$deltaTopRange.value=$deltaTop.value||0;debouncedCalc();});
+    $deltaBottom.addEventListener('change',()=>{mode='cuts';$deltaBottomRange.value=$deltaBottom.value||0;debouncedCalc();});
+    $deltaTopRange.addEventListener('input',()=>{mode='cuts';$deltaTop.value=$deltaTopRange.value;debouncedCalc();});
+    $deltaBottomRange.addEventListener('input',()=>{mode='cuts';$deltaBottom.value=$deltaBottomRange.value;debouncedCalc();});
 
-    $alphaTop.addEventListener('input',()=>calc());
-    $alphaTopRange.addEventListener('input',()=>{$alphaTop.value=$alphaTopRange.value;calc();});
-    $alphaBottom.addEventListener('input',()=>calc());
-    $alphaBottomRange.addEventListener('input',()=>{$alphaBottom.value=$alphaBottomRange.value;calc();});
+    $alphaTop.addEventListener('input',()=>debouncedCalc());
+    $alphaTopRange.addEventListener('input',()=>{$alphaTop.value=$alphaTopRange.value;debouncedCalc();});
+    $alphaBottom.addEventListener('input',()=>debouncedCalc());
+    $alphaBottomRange.addEventListener('input',()=>{$alphaBottom.value=$alphaBottomRange.value;debouncedCalc();});
 
-    $cutWingsRadios.forEach(r=>r.addEventListener('change',()=>{mode='angle';calc();}));
+    $cutWingsRadios.forEach(r=>r.addEventListener('change',()=>{mode='angle';debouncedCalc();}));
 
     $btnReset.addEventListener('click',()=>{
       mode='angle';
@@ -832,7 +960,7 @@
       document.querySelector('input[name="cutWings"][value="top"]').checked=true;
       document.querySelector('input[name="tiltDirTop"][value="in"]').checked=true;
       document.querySelector('input[name="tiltDirBottom"][value="in"]').checked=true;
-      calc();
+      debouncedCalc();
     });
 
     $themeToggle.addEventListener('click',()=>{
@@ -853,9 +981,11 @@
       btn.addEventListener('click',()=>applyTranslations(btn.dataset.lang));
     });
 
-    populateSizes();
-    document.getElementById('size').value='180';
-    applyTranslations('ar');
+    document.addEventListener('DOMContentLoaded', function() {
+      populateSizes();
+      document.getElementById('size').value='180';
+      applyTranslations('ar');
+    });
   </script>
 </body>
-  </html>
+</html>

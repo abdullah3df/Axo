@@ -3,689 +3,1150 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>HE Cut Pro v18 — Final Joint Cut</title>
+  <title>HE Cut Pro v21 — Dual Front View</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
-    html,body{font-family:Cairo,system-ui,ui-sans-serif;}
+    html,body{
+      font-family:Cairo,system-ui,ui-sans-serif;
+    }
     svg,svg *{user-select:none}
-    body{min-height:100vh;transition:background .3s,color .3s}
+    body{
+      min-height:100vh;
+      transition:background .3s,color .3s;
+    }
     body.theme-dark{
       background:
         radial-gradient(circle at top left,rgba(56,189,248,.2),transparent 55%),
         radial-gradient(circle at bottom right,rgba(129,140,248,.25),#020617);
       color:#e5e7eb;
     }
-    body.theme-light{background:#ffffff;color:#111827}
-    .glass{backdrop-filter:blur(20px)}
-    body.theme-dark .glass{background:rgba(15,23,42,.85);border-color:rgba(56,189,248,.3)}
-    body.theme-light .glass{background:rgba(255,255,255,.9);border-color:#e5e7eb}
-    input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:.5rem;border-radius:999px;background:#0f172a;outline:none}
+    body.theme-light{
+      background:#f9fafb;
+      color:#111827;
+    }
+    .glass{
+      backdrop-filter:blur(20px);
+    }
+    body.theme-dark .glass{
+      background:rgba(15,23,42,.88);
+      border-color:rgba(56,189,248,.32);
+    }
+    body.theme-light .glass{
+      background:rgba(255,255,255,.9);
+      border-color:#e5e7eb;
+    }
+
+    input[type=range]{
+      -webkit-appearance:none;
+      appearance:none;
+      width:100%;
+      height:.5rem;
+      border-radius:999px;
+      background:#0f172a;
+      outline:none;
+    }
     body.theme-light input[type=range]{background:#e5e7eb}
     input[type=range]::-webkit-slider-thumb{
-      -webkit-appearance:none;appearance:none;width:20px;height:20px;border-radius:999px;
-      background:#38bdf8;border:3px solid #fff;box-shadow:0 0 0 4px rgba(56,189,248,.5);cursor:pointer
+      -webkit-appearance:none;
+      appearance:none;
+      width:18px;height:18px;
+      border-radius:999px;
+      background:#38bdf8;
+      border:2px solid #fff;
+      box-shadow:0 0 0 4px rgba(56,189,248,.5);
+      cursor:pointer;
     }
-    .lang-btn{transition:all .2s ease}
-    .lang-btn-active{transform:scale(1.1);box-shadow:0 0 0 3px rgba(56,189,248,.4)}
-    .field-label-main{font-weight:600;font-size:.9rem}
-    .field-label-sub{font-size:.7rem;opacity:.8}
+    input[type=range]::-moz-range-thumb{
+      width:18px;height:18px;
+      border-radius:999px;
+      background:#38bdf8;
+      border:2px solid #fff;
+      box-shadow:0 0 0 4px rgba(56,189,248,.5);
+      cursor:pointer;
+    }
+    .lang-btn{
+      transition:all .18s ease;
+    }
+    .lang-btn-active{
+      background:rgba(56,189,248,.2);
+      color:#e5e7eb;
+      transform:scale(1.05);
+      box-shadow:0 0 0 2px rgba(56,189,248,.5);
+    }
+    body.theme-light .lang-btn-active{
+      color:#0f172a;
+    }
+    .field-label-main{font-weight:600;font-size:.9rem;}
+    .field-label-sub{font-size:.7rem;opacity:.8;}
+
+    .tab-btn{
+      border-radius:999px;
+      padding:.4rem .9rem;
+      font-size:.75rem;
+      display:inline-flex;
+      align-items:center;
+      gap:.35rem;
+      cursor:pointer;
+      border:1px solid transparent;
+      transition:all .16s ease;
+    }
+    .tab-btn-active{
+      background:linear-gradient(135deg,#38bdf8,#a855f7);
+      color:#0f172a;
+      border-color:rgba(15,23,42,.8);
+      box-shadow:0 10px 25px rgba(15,23,42,.4);
+    }
+
+    .view-hidden{display:none;}
+
+    .pill{
+      border-radius:999px;
+      padding:.15rem .55rem;
+      font-size:.65rem;
+    }
   </style>
 </head>
 <body class="text-slate-100 theme-dark">
 
-<header class="border-b border-slate-700/60 bg-slate-900/80 backdrop-blur sticky top-0 z-20">
+<!-- HEADER -->
+<header class="border-b border-slate-700/60 bg-slate-900/85 backdrop-blur sticky top-0 z-20">
   <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
     <div>
-      <h1 class="text-xl sm:text-2xl font-bold tracking-tight">
+      <h1 class="text-xl sm:text-2xl font-bold tracking-tight flex items-center gap-2">
         <span data-i18n="appTitle">HE Cut Pro</span>
-        <span class="text-sky-400 text-base align-middle">v18 — Final Joint Cut</span>
+        <span class="text-sky-400 text-sm sm:text-base align-middle">v21 — Dual Front View</span>
       </h1>
       <p class="text-xs sm:text-sm text-slate-400 mt-0.5" data-i18n="subtitle">
-        الوجه الأمامي + شكل الجمع النهائي بعد القص (بدون خطوط حمراء في الجمع)
+        قص أجنحة HEA / HEB / HEM — معاينة قطعة واحدة + جمع قطعتين من الجهة الأمامية
       </p>
     </div>
+
     <div class="flex items-center gap-3">
-      <div class="flex items-center gap-2 bg-slate-900/60 border border-slate-600/70 rounded-xl p-1 text-xs">
-        <button class="lang-btn px-2 py-1 rounded-lg hover:bg-sky-500/20" data-lang="ar" title="العربية">🇸🇦 عربي</button>
-        <button class="lang-btn px-2 py-1 rounded-lg hover:bg-sky-500/20" data-lang="en" title="English">🇺🇸 EN</button>
-        <button class="lang-btn px-2 py-1 rounded-lg hover:bg-sky-500/20" data-lang="de" title="Deutsch">🇩🇪 DE</button>
+      <!-- language -->
+      <div class="flex items-center gap-1 bg-slate-900/60 border border-slate-600/70 rounded-2xl p-1 text-xs">
+        <button class="lang-btn px-2 py-1 rounded-xl hover:bg-sky-500/20" data-lang="ar" title="العربية">عربي</button>
+        <button class="lang-btn px-2 py-1 rounded-xl hover:bg-sky-500/20" data-lang="en" title="English">EN</button>
+        <button class="lang-btn px-2 py-1 rounded-xl hover:bg-sky-500/20" data-lang="de" title="Deutsch">DE</button>
       </div>
-      <button id="themeToggle" class="w-9 h-9 rounded-full border border-slate-600 flex items-center justify-center text-lg bg-slate-900/70 hover:bg-slate-800" title="Toggle theme">☾</button>
+      <!-- theme -->
+      <button id="themeToggle"
+              class="w-9 h-9 rounded-full border border-slate-600 flex items-center justify-center text-lg bg-slate-900/70 hover:bg-slate-800"
+              title="Toggle light / dark">☾</button>
     </div>
   </div>
 </header>
 
-<main class="max-w-6xl mx-auto px-4 py-6 sm:py-10 grid grid-cols-1 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1.1fr)] gap-6">
+<!-- MAIN -->
+<main class="max-w-6xl mx-auto px-4 py-6 sm:py-10 grid grid-cols-1 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1.15fr)] gap-6">
 
-  <!-- SETTINGS -->
+  <!-- SETTINGS PANEL -->
   <section class="glass rounded-2xl shadow-xl shadow-sky-950/50 border border-slate-700/70 p-4 sm:p-5">
-    <h2 class="font-semibold text-lg sm:text-xl mb-4" data-i18n="panel1Title">الإعدادات & الحساب</h2>
+    <h2 class="font-semibold text-lg sm:text-xl mb-4 flex items-center gap-2">
+      <span class="inline-flex h-6 w-6 rounded-full bg-sky-500/20 border border-sky-400/60 items-center justify-center text-[11px]">1</span>
+      <span data-i18n="panel1Title">الإعدادات &amp; الحساب</span>
+    </h2>
+
     <div class="grid grid-cols-2 gap-3 text-sm">
 
-      <!-- series -->
+      <!-- SERIES -->
       <label class="col-span-2 text-slate-300 flex flex-col gap-0.5">
         <span class="field-label-main" data-i18n="seriesLabel">سلسلة المقطع</span>
-        <span class="field-label-sub text-sky-300/80">HEA / HEB / HEM</span>
+        <span class="field-label-sub text-sky-300/80" data-i18n="seriesHint">HEA / HEB / HEM</span>
       </label>
-      <select id="series" class="col-span-2 rounded-lg border border-slate-700 bg-slate-900/70 px-3 py-2 focus:outline-none focus:ring-1 focus:ring-sky-400">
+      <select id="series"
+              class="col-span-2 rounded-lg border border-slate-700 bg-slate-900/70 px-3 py-2 focus:outline-none focus:ring-1 focus:ring-sky-400">
         <option value="HEA">HEA</option>
         <option value="HEB" selected>HEB</option>
         <option value="HEM">HEM</option>
       </select>
 
-      <!-- size -->
-      <label class="col-span-2 text-slate-300 mt-2 flex flex-col gap-0.5">
+      <!-- SIZE -->
+      <label class="col-span-2 text-slate-300 flex flex-col gap-0.5 mt-1">
         <span class="field-label-main" data-i18n="sizeLabel">المقاس</span>
-        <span class="field-label-sub text-slate-400">HE 100 … HE 400</span>
+        <span class="field-label-sub text-slate-400" data-i18n="sizeHint">HE 100 … HE 400 (تقريبي)</span>
       </label>
-      <select id="size" class="col-span-2 rounded-lg border border-slate-700 bg-slate-900/70 px-3 py-2"></select>
+      <select id="size"
+              class="col-span-2 rounded-lg border border-slate-700 bg-slate-900/70 px-3 py-2 focus:outline-none focus:ring-1 focus:ring-sky-400">
+      </select>
 
-      <!-- cut wings mode -->
-      <label class="col-span-2 text-slate-300 mt-2 flex flex-col gap-0.5">
-        <span class="field-label-main" data-i18n="cutWingsLabel">الأجنحة المعتمدة في الحساب</span>
-        <span class="field-label-sub text-slate-400" data-i18n="cutWingsHint">
-          الزاوية تأتي من فرق القص بين Δtop و Δbottom
-        </span>
+      <!-- CUT WINGS MODE -->
+      <label class="col-span-2 text-slate-300 flex flex-col gap-0.5 mt-1">
+        <span class="field-label-main" data-i18n="cutWingsLabel">الأجنحة المعتمدة في حساب القص من الزاوية</span>
+        <span class="field-label-sub text-slate-400" data-i18n="cutWingsHint">زاوية التجميع تعتمد على فرق القص بين العلوي والسفلي</span>
       </label>
       <div class="col-span-2 flex flex-wrap gap-3 text-xs text-slate-200">
-        <label><input type="radio" name="cutWings" value="top" checked> <span data-i18n="cutModeTop">قص على العلوي</span></label>
-        <label><input type="radio" name="cutWings" value="bottom"> <span data-i18n="cutModeBottom">قص على السفلي</span></label>
-        <label title="قيم مختلفة لقص العلوي والسفلي، الزاوية من الفرق بينهما.">
-          <input type="radio" name="cutWings" value="both"> <span data-i18n="cutModeBoth">قص مستقل للجناحين</span>
+        <label class="inline-flex items-center gap-1">
+          <input type="radio" name="cutWings" value="top" checked class="text-sky-400 focus:ring-sky-500">
+          <span data-i18n="cutModeTop">قص على الجناح العلوي فقط</span>
+        </label>
+        <label class="inline-flex items-center gap-1">
+          <input type="radio" name="cutWings" value="bottom" class="text-sky-400 focus:ring-sky-500">
+          <span data-i18n="cutModeBottom">قص على الجناح السفلي فقط</span>
+        </label>
+        <label class="inline-flex items-center gap-1">
+          <input type="radio" name="cutWings" value="both" class="text-sky-400 focus:ring-sky-500">
+          <span data-i18n="cutModeBoth">قص مستقل (إدخال يدوي)</span>
         </label>
       </div>
 
-      <!-- angle -->
-      <label class="col-span-2 text-slate-300 mt-2 flex flex-col gap-0.5">
-        <span class="field-label-main" data-i18n="angleLabel">زاوية التجميع المستهدفة θ (°)</span>
-        <span class="field-label-sub text-slate-400" data-i18n="angleHint">تستخدم لاقتراح مقدار قص تقريبي</span>
+      <!-- ANGLE INPUT -->
+      <label class="col-span-2 text-slate-300 flex flex-col gap-0.5 mt-1">
+        <span class="field-label-main" data-i18n="angleLabel">زاوية التجميع المستهدفة بين قطعتين θ (درجة)</span>
+        <span class="field-label-sub text-slate-400" data-i18n="angleHint">تُستخدم فقط لحساب قيمة قص مقترحة — يمكنك تعديل القص يدوياً</span>
       </label>
       <div class="col-span-2 flex items-center gap-3">
         <input id="angleRange" type="range" min="1" max="45" step="0.5" value="30"/>
-        <input id="angle" type="number" min="1" max="45" step="0.5" value="30" class="w-16 rounded-lg border border-slate-700 bg-slate-900/80 px-2 py-1 text-center"/>
+        <div class="flex items-center gap-1 text-xs text-slate-200">
+          <input id="angle" type="number" min="1" max="45" step="0.5" value="30"
+                 class="w-16 rounded-lg border border-slate-700 bg-slate-900/80 px-2 py-1 focus:outline-none focus:ring-1 focus:ring-sky-400 text-center"/>
+          <span>°</span>
+        </div>
       </div>
 
-      <!-- cuts -->
-      <label class="col-span-2 text-slate-300 mt-2 field-label-main" data-i18n="deltaSectionLabel">قص الجناح لكل قطعة (mm)</label>
-      <div>
-        <div class="text-xs text-slate-400 mb-1" data-i18n="deltaTopLabel">Δtop — قص الجناح العلوي</div>
-        <input id="deltaTop" type="number" min="0" step="0.1" value="0" class="w-full rounded-lg border border-slate-700 bg-slate-900/80 px-2 py-1 text-center"/>
-        <input id="deltaTopRange" type="range" min="0" max="200" step="0.5" value="0" class="mt-1"/>
-      </div>
-      <div>
-        <div class="text-xs text-slate-400 mb-1" data-i18n="deltaBottomLabel">Δbottom — قص الجناح السفلي</div>
-        <input id="deltaBottom" type="number" min="0" step="0.1" value="0" class="w-full rounded-lg border border-slate-700 bg-slate-900/80 px-2 py-1 text-center"/>
-        <input id="deltaBottomRange" type="range" min="0" max="200" step="0.5" value="0" class="mt-1"/>
-      </div>
-
-      <!-- visual tilt -->
-      <label class="col-span-2 text-slate-300 mt-3 flex flex-col gap-0.5">
-        <span class="field-label-main" data-i18n="slopeSectionLabel">ميلان خط القص في الرسم (من العمودي)</span>
-        <span class="field-label-sub text-amber-300" data-i18n="slopeSectionHint">للتوضيح البصري فقط — لا يؤثر على الحساب</span>
+      <!-- CUT VALUES -->
+      <label class="col-span-2 text-slate-300 flex flex-col gap-0.5 mt-1">
+        <span class="field-label-main" data-i18n="deltaSectionLabel">قص الجناح (لكل قطعة قبل التجميع) mm</span>
+        <span class="field-label-sub text-slate-400" data-i18n="deltaSectionHint">
+          يمكنك إدخال القص يدوياً لكل من العلوي والسفلي — الزاوية تحسب من الفرق بينهما.
+        </span>
       </label>
       <div class="col-span-2 grid grid-cols-2 gap-3">
         <div>
-          <div class="text-xs text-slate-400 mb-1" data-i18n="alphaTopTitle">زاوية ميلان الخط العلوي</div>
+          <div class="text-xs text-slate-400 mb-1" data-i18n="deltaTopLabel">قص الجناح العلوي Δtop</div>
+          <div class="flex items-center gap-2 mb-1">
+            <input id="deltaTop" type="number" min="0" step="0.1" value="0"
+                   class="w-24 rounded-lg border border-slate-700 bg-slate-900/80 px-2 py-1 focus:outline-none focus:ring-1 focus:ring-emerald-400 text-xs text-center"/>
+            <span class="text-[10px] text-slate-400">mm</span>
+          </div>
+          <input id="deltaTopRange" type="range" min="0" max="200" step="0.5" value="0"/>
+        </div>
+        <div>
+          <div class="text-xs text-slate-400 mb-1" data-i18n="deltaBottomLabel">قص الجناح السفلي Δbottom</div>
+          <div class="flex items-center gap-2 mb-1">
+            <input id="deltaBottom" type="number" min="0" step="0.1" value="0"
+                   class="w-24 rounded-lg border border-slate-700 bg-slate-900/80 px-2 py-1 focus:outline-none focus:ring-1 focus:ring-emerald-400 text-xs text-center"/>
+            <span class="text-[10px] text-slate-400">mm</span>
+          </div>
+          <input id="deltaBottomRange" type="range" min="0" max="200" step="0.5" value="0"/>
+        </div>
+      </div>
+
+      <!-- VISUAL SLOPE -->
+      <label class="col-span-2 text-slate-300 flex items-center justify-between mt-3">
+        <span class="field-label-main" data-i18n="slopeSectionLabel">ميلان خط القص في الرسم (من العمودي)</span>
+        <span class="field-label-sub text-amber-300 text-[10px]" data-i18n="slopeSectionHint">تمثيل بصري فقط — لا يغيّر الحساب الهندسي</span>
+      </label>
+
+      <div class="col-span-2 grid grid-cols-2 gap-3">
+        <div>
+          <div class="text-xs text-slate-400 mb-1" data-i18n="alphaTopTitle">زاوية ميلان الخط العلوي αtop</div>
           <div class="flex items-center gap-2">
             <input id="alphaTopRange" type="range" min="0" max="60" step="1" value="0"/>
-            <input id="alphaTop" type="number" min="0" max="60" step="1" value="0" class="w-14 rounded-lg border border-slate-700 bg-slate-900/80 px-2 py-1 text-center"/>
+            <div class="flex items-center gap-1 text-xs text-slate-200">
+              <input id="alphaTop" type="number" min="0" max="60" step="1" value="0"
+                     class="w-14 rounded-lg border border-slate-700 bg-slate-900/80 px-2 py-1 text-center focus:outline-none focus:ring-1 focus:ring-sky-400"/>
+              <span>°</span>
+            </div>
           </div>
         </div>
         <div>
-          <div class="text-xs text-slate-400 mb-1" data-i18n="alphaBottomTitle">زاوية ميلان الخط السفلي</div>
+          <div class="text-xs text-slate-400 mb-1" data-i18n="alphaBottomTitle">زاوية ميلان الخط السفلي αbottom</div>
           <div class="flex items-center gap-2">
             <input id="alphaBottomRange" type="range" min="0" max="60" step="1" value="0"/>
-            <input id="alphaBottom" type="number" min="0" max="60" step="1" value="0" class="w-14 rounded-lg border border-slate-700 bg-slate-900/80 px-2 py-1 text-center"/>
+            <div class="flex items-center gap-1 text-xs text-slate-200">
+              <input id="alphaBottom" type="number" min="0" max="60" step="1" value="0"
+                     class="w-14 rounded-lg border border-slate-700 bg-slate-900/80 px-2 py-1 text-center focus:outline-none focus:ring-1 focus:ring-sky-400"/>
+              <span>°</span>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- tilt dir -->
-      <label class="col-span-2 text-slate-300 mt-3 flex flex-col gap-0.5">
-        <span class="field-label-main" data-i18n="tiltDirSectionLabel">اتجاه الميلان (رسم فقط)</span>
-        <span class="field-label-sub text-slate-400" data-i18n="tiltDirSectionHint">لا يغير الحسابات الهندسية</span>
+      <!-- TILT DIR -->
+      <label class="col-span-2 text-slate-300 flex flex-col gap-0.5 mt-2">
+        <span class="field-label-main" data-i18n="tiltDirSectionLabel">اتجاه ميلان الخط (رسم فقط)</span>
+        <span class="field-label-sub text-slate-400" data-i18n="tiltDirSectionHint">نحو الداخل أو الخارج — بلا تأثير على الحساب</span>
       </label>
       <div class="col-span-2 grid grid-cols-2 gap-3 text-xs text-slate-200">
         <div>
-          <div class="mb-1 text-slate-400" data-i18n="tiltTopLabel">اتجاه ميلان العلوي</div>
+          <div class="mb-1 text-slate-400" data-i18n="tiltTopLabel">اتجاه ميلان الخط العلوي</div>
           <div class="flex gap-2">
-            <label><input type="radio" name="tiltDirTop" value="in" checked> <span data-i18n="tiltIn">نحو الوسط</span></label>
-            <label><input type="radio" name="tiltDirTop" value="out"> <span data-i18n="tiltOut">خارج</span></label>
+            <label class="inline-flex items-center gap-1">
+              <input type="radio" name="tiltDirTop" value="in" checked class="text-sky-400 focus:ring-sky-500">
+              <span data-i18n="tiltIn">نحو الوسط</span>
+            </label>
+            <label class="inline-flex items-center gap-1">
+              <input type="radio" name="tiltDirTop" value="out" class="text-sky-400 focus:ring-sky-500">
+              <span data-i18n="tiltOut">إلى الخارج</span>
+            </label>
           </div>
         </div>
         <div>
-          <div class="mb-1 text-slate-400" data-i18n="tiltBottomLabel">اتجاه ميلان السفلي</div>
+          <div class="mb-1 text-slate-400" data-i18n="tiltBottomLabel">اتجاه ميلان الخط السفلي</div>
           <div class="flex gap-2">
-            <label><input type="radio" name="tiltDirBottom" value="in" checked> <span data-i18n="tiltIn">نحو الوسط</span></label>
-            <label><input type="radio" name="tiltDirBottom" value="out"> <span data-i18n="tiltOut">خارج</span></label>
+            <label class="inline-flex items-center gap-1">
+              <input type="radio" name="tiltDirBottom" value="in" checked class="text-emerald-400 focus:ring-emerald-500">
+              <span data-i18n="tiltIn">نحو الوسط</span>
+            </label>
+            <label class="inline-flex items-center gap-1">
+              <input type="radio" name="tiltDirBottom" value="out" class="text-emerald-400 focus:ring-emerald-500">
+              <span data-i18n="tiltOut">إلى الخارج</span>
+            </label>
           </div>
         </div>
       </div>
 
     </div>
 
-    <!-- readout -->
-    <div class="mt-5 rounded-xl border border-slate-700/80 bg-slate-900/70 px-3.5 py-3 text-sm" id="readout"></div>
+    <!-- READOUT -->
+    <div id="readout" class="mt-5 rounded-xl border border-slate-700/80 bg-slate-900/70 px-3.5 py-3 text-sm"></div>
 
-    <div class="mt-4">
-      <button id="btnReset" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-sm border border-slate-600" data-i18n="resetBtn">
-        إعادة الضبط
-      </button>
+    <!-- BUTTONS -->
+    <div class="mt-4 flex flex-wrap gap-2">
+      <button id="btnReset"
+              class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs sm:text-sm border border-slate-600"
+              data-i18n="resetBtn">إعادة الضبط</button>
     </div>
-    <p class="text-[11px] text-slate-400 mt-3" data-i18n="theoryText">
-      الفكرة: زاوية التجميع بين قطعتين تأتي من فرق القص بين Δtop و Δbottom. إذا كانا متساويين تقريباً ⇒ الزاوية الناتجة ≈ 0°.
-    </p>
+
+    <p id="theoryText" class="text-[11px] text-slate-400 mt-3 leading-relaxed"></p>
   </section>
 
-  <!-- DRAWINGS -->
+  <!-- PREVIEW PANEL -->
   <section class="glass rounded-2xl shadow-xl shadow-sky-950/50 border border-slate-700/70 p-4 sm:p-5 flex flex-col">
-    <h2 class="font-semibold text-lg sm:text-xl mb-4" data-i18n="panel2Title">الوجه الأمامي — قطعة واحدة + الجمع النهائي</h2>
-
-    <!-- SINGLE PIECE FRONT -->
-    <div class="border border-slate-700/70 rounded-2xl bg-slate-900/70 px-3 py-4 flex items-center justify-center">
-      <div id="frontWrapper"></div>
-    </div>
-    <p class="text-[11px] text-slate-400 mt-2" data-i18n="frontHint">
-      الخطوط الحمراء هنا فقط لتوضيح مكان القص على الجناح (شكل تمثيلي).
-    </p>
-
-    <!-- PAIR JOINT -->
-    <div class="mt-6">
-      <h3 class="text-sm font-semibold text-slate-200 mb-3" data-i18n="pairTitle">النتيجة بعد الجمع — شكل حقيقي بعد القص</h3>
-      <div class="border border-slate-700/70 rounded-2xl bg-slate-900/70 px-3 py-3 flex items-center justify-center">
-        <div id="pairWrapper" class="min-h-[210px] w-full flex items-center justify-center"></div>
+    <div class="flex items-center justify-between gap-2 mb-4">
+      <div class="flex items-center gap-2">
+        <span class="inline-flex h-6 w-6 rounded-full bg-emerald-500/20 border border-emerald-400/60 items-center justify-center text-[11px]">2</span>
+        <h2 class="font-semibold text-lg sm:text-xl" data-i18n="panel2Title">المعاينة الأمامية — قطعة / قطعتان</h2>
       </div>
-      <p class="text-[11px] text-slate-400 mt-2" data-i18n="pairHint">
-        تظهر هنا قطعتان بعد القص، كل قطعة تأخذ شكلها الجديد، مع تقارب بسيط عند مكان القص وفراغ صغير جداً بين الجناحين.
+
+      <!-- TABS -->
+      <div class="bg-slate-900/70 border border-slate-700/80 rounded-full px-1 py-0.5 flex items-center gap-1 text-[11px]">
+        <button id="tabSingle" class="tab-btn tab-btn-active" data-view="single">
+          <span>①</span><span data-i18n="tabSingle">قطعة واحدة</span>
+        </button>
+        <button id="tabJoint" class="tab-btn" data-view="joint">
+          <span>②</span><span data-i18n="tabJoint">جمع قطعتين</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- SINGLE PIECE VIEW -->
+    <div id="viewSingle" class="flex-1 flex flex-col">
+      <div class="flex-1 border border-slate-700/70 rounded-2xl bg-slate-900/70 px-3 py-4 flex items-center justify-center">
+        <div id="frontWrapper"></div>
+      </div>
+      <div class="grid grid-cols-2 gap-3 text-[11px] text-slate-400 mt-4">
+        <div class="flex items-center gap-2">
+          <span class="inline-block h-3 w-3 rounded-sm bg-slate-400/80"></span>
+          <span data-i18n="legendFlanges">الجناحان (علوي / سفلي)</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="inline-block h-3 w-3 rounded-sm bg-slate-300"></span>
+          <span data-i18n="legendWeb">العمود (web)</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="inline-block h-3 w-3 rounded-sm bg-red-500"></span>
+          <span data-i18n="legendCuts">الخطوط الحمراء = اتجاه ومستوى القص في قطعة واحدة</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="inline-block h-3 w-3 rounded-full border border-sky-400"></span>
+          <span data-i18n="legendNote">الرسم تمثيلي — الأرقام في الملخص هي المرجع الهندسي</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- JOINT VIEW -->
+    <div id="viewJoint" class="flex-1 flex flex-col view-hidden">
+      <div class="flex-1 border border-slate-700/70 rounded-2xl bg-slate-900/70 px-3 py-4 flex items-center justify-center">
+        <div id="jointWrapper"></div>
+      </div>
+      <p class="text-[11px] text-slate-400 mt-3" data-i18n="jointHint">
+        في هذا الرسم تظهر قطعتان من الأمام بعد القص — الأجنحة مقصوصة فعلاً حسب Δtop و Δbottom، مع فراغ صغير جداً عند نقاط التماس
+        (≈ 0.003) وزاوية تجميع محسوبة من فرق القص.
       </p>
     </div>
+
   </section>
 </main>
 
-<footer class="max-w-6xl mx-auto px-4 pb-6 text-[11px] text-slate-500 flex justify-between">
-  <span data-i18n="footerLeft">HE Cut Pro v18 — Final Joint Cut</span>
-  <span data-i18n="footerRight">للتنفيذ العملي: اعتمد كتالوج المقاطع وتعليمات الورشة.</span>
+<footer class="max-w-6xl mx-auto px-4 pb-6 text-[11px] text-slate-500 flex flex-wrap items-center justify-between gap-2">
+  <span data-i18n="footerLeft">HE Cut Pro v21 — فرق القص بين الجناحين</span>
+  <span data-i18n="footerRight">للتنفيذ العملي: اعتمد كتالوج المقاطع وتعليمات الورشة وقواعد السلامة.</span>
 </footer>
 
 <!-- I18N -->
 <script>
   const I18N = {
-    ar:{
-      appTitle:"HE Cut Pro",
-      subtitle:"الوجه الأمامي + شكل الجمع النهائي بعد القص",
-      panel1Title:"الإعدادات & الحساب",
-      panel2Title:"الوجه الأمامي — قطعة واحدة + الجمع النهائي",
-      seriesLabel:"سلسلة المقطع",
-      sizeLabel:"المقاس",
-      cutWingsLabel:"الأجنحة المعتمدة في الحساب",
-      cutWingsHint:"الزاوية تأتي من فرق القص بين Δtop و Δbottom",
-      cutModeTop:"قص على العلوي",
-      cutModeBottom:"قص على السفلي",
-      cutModeBoth:"قص مستقل للجناحين",
-      angleLabel:"زاوية التجميع المستهدفة θ (°)",
-      angleHint:"تستخدم لاقتراح مقدار قص تقريبي",
-      deltaSectionLabel:"قص الجناح لكل قطعة (mm)",
-      deltaTopLabel:"Δtop — قص الجناح العلوي",
-      deltaBottomLabel:"Δbottom — قص الجناح السفلي",
-      slopeSectionLabel:"ميلان خط القص في الرسم (من العمودي)",
-      slopeSectionHint:"للتوضيح البصري فقط — لا يؤثر على الحساب",
-      alphaTopTitle:"زاوية ميلان الخط العلوي",
-      alphaBottomTitle:"زاوية ميلان الخط السفلي",
-      tiltDirSectionLabel:"اتجاه الميلان (رسم فقط)",
-      tiltDirSectionHint:"لا يغير الحسابات الهندسية",
-      tiltTopLabel:"اتجاه ميلان العلوي",
-      tiltBottomLabel:"اتجاه ميلان السفلي",
-      tiltIn:"نحو الوسط",
-      tiltOut:"خارج",
-      resetBtn:"إعادة الضبط",
-      theoryText:"الفكرة: زاوية التجميع بين قطعتين تأتي من فرق القص بين Δtop و Δbottom. إذا كانا متساويين تقريباً ⇒ الزاوية الناتجة ≈ 0°.",
-      frontHint:"الخطوط الحمراء هنا فقط لتوضيح مكان القص على الجناح (شكل تمثيلي).",
-      pairTitle:"النتيجة بعد الجمع — شكل حقيقي بعد القص",
-      pairHint:"تظهر هنا قطعتان بعد القص، كل قطعة تأخذ شكلها الجديد، مع تقارب بسيط عند مكان القص وفراغ صغير جداً بين الجناحين.",
-      footerLeft:"HE Cut Pro v18 — Final Joint Cut",
-      footerRight:"للتنفيذ العملي: اعتمد كتالوج المقاطع وتعليمات الورشة.",
-      summaryTitle:"ملخص الحساب",
-      profileLabel:"البروفايل",
-      flangeWidthLabel:"عرض الجناح b (تقريبي)",
-      targetAngleLabel:"زاوية التجميع الهدف (من الشريط)",
-      diffCutLabel:"الفرق بين القصين |Δtop − Δbottom|",
-      pairAngleLabel:"زاوية تجميع تقريبية من فرق القص",
-      pairZeroNote:"≈ 0° (لأن Δtop ≈ Δbottom)",
-      remainingTopLabel:"العرض المتبقي في الجناح العلوي بعد القص",
-      remainingBottomLabel:"العرض المتبقي في الجناح السفلي بعد القص",
-      pairAngleText:"زاوية التجميع التقريبية بين القطعتين:"
+    ar: {
+      appTitle: "HE Cut Pro",
+      subtitle: "قص أجنحة HEA / HEB / HEM — معاينة قطعة واحدة + جمع قطعتين من الجهة الأمامية",
+      panel1Title: "الإعدادات & الحساب",
+      panel2Title: "المعاينة الأمامية — قطعة / قطعتان",
+      seriesLabel: "سلسلة المقطع",
+      seriesHint: "HEA / HEB / HEM",
+      sizeLabel: "المقاس",
+      sizeHint: "HE 100 … HE 400 (تقريبي)",
+      cutWingsLabel: "الأجنحة المعتمدة في حساب القص من الزاوية",
+      cutWingsHint: "زاوية التجميع تعتمد على فرق القص بين العلوي والسفلي",
+      cutModeTop: "قص على الجناح العلوي فقط",
+      cutModeBottom: "قص على الجناح السفلي فقط",
+      cutModeBoth: "قص مستقل (إدخال يدوي)",
+      angleLabel: "زاوية التجميع المستهدفة بين قطعتين θ (درجة)",
+      angleHint: "تُستخدم فقط لحساب قيمة قص مقترحة — يمكنك تعديل القص يدوياً",
+      deltaSectionLabel: "قص الجناح (لكل قطعة قبل التجميع) mm",
+      deltaSectionHint: "يمكنك إدخال القص يدوياً لكل من العلوي والسفلي — الزاوية تحسب من الفرق بينهما.",
+      deltaTopLabel: "قص الجناح العلوي Δtop",
+      deltaBottomLabel: "قص الجناح السفلي Δbottom",
+      slopeSectionLabel: "ميلان خط القص في الرسم (من العمودي)",
+      slopeSectionHint: "تمثيل بصري فقط — لا يغيّر الحساب الهندسي",
+      alphaTopTitle: "زاوية ميلان الخط العلوي αtop",
+      alphaBottomTitle: "زاوية ميلان الخط السفلي αbottom",
+      tiltDirSectionLabel: "اتجاه ميلان الخط (رسم فقط)",
+      tiltDirSectionHint: "نحو الداخل أو الخارج — بلا تأثير على الحساب",
+      tiltTopLabel: "اتجاه ميلان الخط العلوي",
+      tiltBottomLabel: "اتجاه ميلان الخط السفلي",
+      tiltIn: "نحو الوسط",
+      tiltOut: "إلى الخارج",
+      resetBtn: "إعادة الضبط",
+      legendFlanges: "الجناحان (علوي / سفلي)",
+      legendWeb: "العمود (web)",
+      legendCuts: "الخطوط الحمراء = اتجاه ومستوى القص في قطعة واحدة",
+      legendNote: "الرسم تمثيلي — الأبعاد الرقمية هي المرجع",
+      footerLeft: "HE Cut Pro v21 — فرق القص بين الجناحين",
+      footerRight: "للتنفيذ العملي: اعتمد كتالوج المقاطع وتعليمات الورشة وقواعد السلامة.",
+      tabSingle: "قطعة واحدة",
+      tabJoint: "جمع قطعتين",
+      jointHint: "في هذا الرسم تظهر قطعتان من الأمام بعد القص — الأجنحة مقصوصة فعلاً حسب Δtop و Δbottom، مع فراغ صغير جداً عند نقاط التماس (≈ 0.003) وزاوية تجميع محسوبة من فرق القص.",
+      summaryTitle: "ملخص الحساب",
+      profileLabel: "البروفايل",
+      flangeWidthLabel: "عرض الجناح b (تقريبي)",
+      cutModeDescTop: "قص على الجناح العلوي فقط",
+      cutModeDescBottom: "قص على الجناح السفلي فقط",
+      cutModeDescBoth: "قص مستقل للجناحين (زاوية من فرق القص)",
+      targetAngleLabel: "زاوية التجميع الهدف (من الشريط)",
+      deltaTopLabelTable: "Δtop — قص الجناح العلوي لكل قطعة",
+      deltaBottomLabelTable: "Δbottom — قص الجناح السفلي لكل قطعة",
+      diffCutLabel: "الفرق بين القصين |Δtop − Δbottom|",
+      pairAngleLabel: "زاوية تجميع تقريبية ناتجة من فرق القص",
+      pairAngleZeroNote: "≈ 0° (Δtop = Δbottom تقريباً — القطعتان تقريباً على استقامة واحدة)",
+      remainingTopLabel: "العرض المتبقي في الجناح العلوي بعد القص",
+      remainingBottomLabel: "العرض المتبقي في الجناح السفلي بعد القص",
+      alphaTopLabelTable: "αtop في الرسم",
+      alphaBottomLabelTable: "αbottom في الرسم",
+      tiltTopDirLabel: "اتجاه ميلان العلوي (رسم)",
+      tiltBottomDirLabel: "اتجاه ميلان السفلي (رسم)",
+      noteDiffZero: "إذا كان Δtop = Δbottom بالضبط ⇒ الفرق = 0 ⇒ الزاوية الناتجة من القص ≈ 0° حتى لو اخترت زاوية في الشريط.",
+      jointAngleLabel: "زاوية التجميع المحسوبة من فرق القص:",
+      jointGapLabel: "فراغ نظري صغير عند نقطة التماس (≈ 0.003)."
     },
-    en:{
-      appTitle:"HE Cut Pro",
-      subtitle:"Front View + Final Joint Shape after Cutting",
-      panel1Title:"Settings & Calculation",
-      panel2Title:"Front View — Single Piece + Final Joint",
-      seriesLabel:"Section Series",
-      sizeLabel:"Size",
-      cutWingsLabel:"Flanges Used in Calculation",
-      cutWingsHint:"Angle comes from cut difference between Δtop and Δbottom",
-      cutModeTop:"Cut Top",
-      cutModeBottom:"Cut Bottom",
-      cutModeBoth:"Independent Cuts",
-      angleLabel:"Target Assembly Angle θ (°)",
-      angleHint:"Used to suggest approximate cut value",
-      deltaSectionLabel:"Flange Cut per Piece (mm)",
-      deltaTopLabel:"Δtop — Top Flange Cut",
-      deltaBottomLabel:"Δbottom — Bottom Flange Cut",
-      slopeSectionLabel:"Cut Line Tilt in Drawing (from vertical)",
-      slopeSectionHint:"Visual only — does not affect calculation",
-      alphaTopTitle:"Top Cut Line Tilt Angle",
-      alphaBottomTitle:"Bottom Cut Line Tilt Angle",
-      tiltDirSectionLabel:"Tilt Direction (drawing only)",
-      tiltDirSectionHint:"Does not change geometry",
-      tiltTopLabel:"Top Tilt Direction",
-      tiltBottomLabel:"Bottom Tilt Direction",
-      tiltIn:"Towards Center",
-      tiltOut:"Outwards",
-      resetBtn:"Reset",
-      theoryText:"Idea: The assembly angle between two pieces comes from the cut difference between Δtop and Δbottom. If they are almost equal ⇒ resulting angle ≈ 0°.",
-      frontHint:"Red lines here are only to show cut position on flange (illustrative).",
-      pairTitle:"Result After Joining — Real Shape after Cutting",
-      pairHint:"Two pieces after cutting, each takes its new shape, with a small approach at the cut point and a very small gap between flanges.",
-      footerLeft:"HE Cut Pro v18 — Final Joint Cut",
-      footerRight:"For execution: refer to section catalog & workshop instructions.",
-      summaryTitle:"Calculation Summary",
-      profileLabel:"Profile",
-      flangeWidthLabel:"Flange width b (approx)",
-      targetAngleLabel:"Target assembly angle (from slider)",
-      diffCutLabel:"Cut difference |Δtop − Δbottom|",
-      pairAngleLabel:"Approx. assembly angle from cut difference",
-      pairZeroNote:"≈ 0° (because Δtop ≈ Δbottom)",
-      remainingTopLabel:"Remaining width in top flange after cut",
-      remainingBottomLabel:"Remaining width in bottom flange after cut",
-      pairAngleText:"Approx. assembly angle between pieces:"
+    en: {
+      appTitle: "HE Cut Pro",
+      subtitle: "HEA / HEB / HEM flange cutting — single piece + two-piece joint front view",
+      panel1Title: "Settings & Calculation",
+      panel2Title: "Front Preview — Single / Joint",
+      seriesLabel: "Section Series",
+      seriesHint: "HEA / HEB / HEM",
+      sizeLabel: "Size",
+      sizeHint: "HE 100 … HE 400 (approx.)",
+      cutWingsLabel: "Flanges used in angle-based cut calculation",
+      cutWingsHint: "Assembly angle depends on cut difference between top and bottom",
+      cutModeTop: "Cut on top flange only",
+      cutModeBottom: "Cut on bottom flange only",
+      cutModeBoth: "Independent cuts (manual input)",
+      angleLabel: "Target assembly angle between two pieces θ (deg)",
+      angleHint: "Used only to propose a cut value — you can override by manual cuts.",
+      deltaSectionLabel: "Flange cut (per piece before assembly) mm",
+      deltaSectionHint: "You can enter cuts manually for top and bottom — angle is derived from the difference.",
+      deltaTopLabel: "Top flange cut Δtop",
+      deltaBottomLabel: "Bottom flange cut Δbottom",
+      slopeSectionLabel: "Cut line tilt in drawing (from vertical)",
+      slopeSectionHint: "Visual only — does not change geometry",
+      alphaTopTitle: "Top cut line tilt angle αtop",
+      alphaBottomTitle: "Bottom cut line tilt angle αbottom",
+      tiltDirSectionLabel: "Tilt direction (drawing only)",
+      tiltDirSectionHint: "Inwards or outwards — no effect on math",
+      tiltTopLabel: "Top tilt direction",
+      tiltBottomLabel: "Bottom tilt direction",
+      tiltIn: "Towards center",
+      tiltOut: "Outwards",
+      resetBtn: "Reset",
+      legendFlanges: "Flanges (top / bottom)",
+      legendWeb: "Web",
+      legendCuts: "Red lines = cut position & tilt for a single piece",
+      legendNote: "Drawing is representative — numeric dimensions are the reference",
+      footerLeft: "HE Cut Pro v21 — Flange cut difference",
+      footerRight: "For fabrication: refer to section catalog, workshop procedures, and safety rules.",
+      tabSingle: "Single Piece",
+      tabJoint: "Two-Piece Joint",
+      jointHint: "Here you see two pieces from the front after cutting — flanges are actually shortened according to Δtop and Δbottom, with a tiny gap at the contact points (≈ 0.003) and an assembly angle derived from the cut difference.",
+      summaryTitle: "Calculation Summary",
+      profileLabel: "Profile",
+      flangeWidthLabel: "Flange width b (approx.)",
+      cutModeDescTop: "Cut on top flange only",
+      cutModeDescBottom: "Cut on bottom flange only",
+      cutModeDescBoth: "Independent cuts (angle from difference)",
+      targetAngleLabel: "Target assembly angle (from slider)",
+      deltaTopLabelTable: "Δtop — top flange cut per piece",
+      deltaBottomLabelTable: "Δbottom — bottom flange cut per piece",
+      diffCutLabel: "Cut difference |Δtop − Δbottom|",
+      pairAngleLabel: "Approx. assembly angle from cut difference",
+      pairAngleZeroNote: "≈ 0° (Δtop = Δbottom — pieces nearly straight)",
+      remainingTopLabel: "Remaining top flange width after cut",
+      remainingBottomLabel: "Remaining bottom flange width after cut",
+      alphaTopLabelTable: "αtop in drawing",
+      alphaBottomLabelTable: "αbottom in drawing",
+      tiltTopDirLabel: "Top tilt direction (drawing)",
+      tiltBottomDirLabel: "Bottom tilt direction (drawing)",
+      noteDiffZero: "If Δtop = Δbottom exactly ⇒ diff = 0 ⇒ resulting angle from cuts ≈ 0° even if you set a slider angle.",
+      jointAngleLabel: "Assembly angle derived from cut difference:",
+      jointGapLabel: "Small theoretical gap at contact point (≈ 0.003)."
     },
-    de:{
-      appTitle:"HE Cut Pro",
-      subtitle:"Nur Vorderansicht + endgültige Fügung nach dem Schnitt",
-      panel1Title:"Einstellungen & Berechnung",
-      panel2Title:"Vorderansicht — Einzelteil + Fügung",
-      seriesLabel:"Profilserie",
-      sizeLabel:"Größe",
-      cutWingsLabel:"Flansche für Berechnung",
-      cutWingsHint:"Winkel aus Schnittdifferenz Δtop und Δbottom",
-      cutModeTop:"Schnitt oben",
-      cutModeBottom:"Schnitt unten",
-      cutModeBoth:"Unabhängige Schnitte",
-      angleLabel:"Zielmontagewinkel θ (°)",
-      angleHint:"Nur zur Vorschlag eines Schnittwertes",
-      deltaSectionLabel:"Flanschschnitt pro Teil (mm)",
-      deltaTopLabel:"Δtop — Oberer Flanschschnitt",
-      deltaBottomLabel:"Δbottom — Unterer Flanschschnitt",
-      slopeSectionLabel:"Schnittlinienneigung in Zeichnung (von vertikal)",
-      slopeSectionHint:"Nur visuell — ändert Berechnung nicht",
-      alphaTopTitle:"Neigungswinkel obere Schnittlinie",
-      alphaBottomTitle:"Neigungswinkel untere Schnittlinie",
-      tiltDirSectionLabel:"Neigungsrichtung (nur Zeichnung)",
-      tiltDirSectionHint:"Ändert Geometrie nicht",
-      tiltTopLabel:"Neigungsrichtung oben",
-      tiltBottomLabel:"Neigungsrichtung unten",
-      tiltIn:"Zur Mitte",
-      tiltOut:"Nach außen",
-      resetBtn:"Zurücksetzen",
-      theoryText:"Idee: Der Montagewinkel zwischen zwei Teilen entsteht aus der Schnittdifferenz Δtop und Δbottom. Wenn sie fast gleich sind ⇒ resultierender Winkel ≈ 0°.",
-      frontHint:"Rote Linien zeigen nur die Schnittposition am Flansch (Illustration).",
-      pairTitle:"Ergebnis nach Fügen — reale Form nach dem Schnitt",
-      pairHint:"Zwei Teile nach dem Schneiden, jedes nimmt seine neue Form an, mit leichter Annäherung an der Schnittstelle und sehr kleinem Spalt zwischen den Flanschen.",
-      footerLeft:"HE Cut Pro v18 — Final Joint Cut",
-      footerRight:"Für Ausführung: Profilkatalog & Werkstatt beachten.",
-      summaryTitle:"Berechnungsübersicht",
-      profileLabel:"Profil",
-      flangeWidthLabel:"Flanschbreite b (ca.)",
-      targetAngleLabel:"Zielmontagewinkel (vom Schieber)",
-      diffCutLabel:"Schnittdifferenz |Δtop − Δbottom|",
-      pairAngleLabel:"Ca. Montagewinkel aus Schnittdifferenz",
-      pairZeroNote:"≈ 0° (weil Δtop ≈ Δbottom)",
-      remainingTopLabel:"Verbleibende Breite im oberen Flansch nach Schnitt",
-      remainingBottomLabel:"Verbleibende Breite im unteren Flansch nach Schnitt",
-      pairAngleText:"Ungefährer Montagewinkel zwischen den Teilen:"
+    de: {
+      appTitle: "HE Cut Pro",
+      subtitle: "HEA / HEB / HEM Flanschschnitte — Einzelteil + Zwei-Teil-Fuge in Vorderansicht",
+      panel1Title: "Einstellungen & Berechnung",
+      panel2Title: "Vorderansicht — Einzelteil / Fuge",
+      seriesLabel: "Profilserie",
+      seriesHint: "HEA / HEB / HEM",
+      sizeLabel: "Größe",
+      sizeHint: "HE 100 … HE 400 (ca.)",
+      cutWingsLabel: "Flansche für winkelbasierte Schnittberechnung",
+      cutWingsHint: "Montagewinkel hängt von der Schnittdifferenz zwischen oben und unten ab",
+      cutModeTop: "Nur am oberen Flansch schneiden",
+      cutModeBottom: "Nur am unteren Flansch schneiden",
+      cutModeBoth: "Unabhängige Schnitte (manuelle Eingabe)",
+      angleLabel: "Zielmontagewinkel zwischen zwei Teilen θ (Grad)",
+      angleHint: "Nur zur Vorschlag eines Schnittwertes — manuelle Schnitte sind möglich.",
+      deltaSectionLabel: "Flanschschnitt (pro Teil vor Montage) mm",
+      deltaSectionHint: "Sie können Schnitte für oben und unten manuell eingeben — der Winkel wird aus der Differenz berechnet.",
+      deltaTopLabel: "Oberer Flanschschnitt Δtop",
+      deltaBottomLabel: "Unterer Flanschschnitt Δbottom",
+      slopeSectionLabel: "Schnittlinienneigung in Zeichnung (von vertikal)",
+      slopeSectionHint: "Nur visuell — keine Änderung der Geometrie",
+      alphaTopTitle: "Neigungswinkel der oberen Schnittlinie αtop",
+      alphaBottomTitle: "Neigungswinkel der unteren Schnittlinie αbottom",
+      tiltDirSectionLabel: "Neigungsrichtung (nur Zeichnung)",
+      tiltDirSectionHint: "Zur Mitte oder nach außen — ohne Einfluss auf Berechnungen",
+      tiltTopLabel: "Neigungsrichtung oben",
+      tiltBottomLabel: "Neigungsrichtung unten",
+      tiltIn: "Zur Mitte",
+      tiltOut: "Nach außen",
+      resetBtn: "Zurücksetzen",
+      legendFlanges: "Flansche (oben / unten)",
+      legendWeb: "Steg",
+      legendCuts: "Rote Linien = Schnittlage und -neigung für ein Einzelteil",
+      legendNote: "Zeichnung ist repräsentativ — numerische Maße sind maßgebend",
+      footerLeft: "HE Cut Pro v21 — Flanschschnittdifferenz",
+      footerRight: "Für die Ausführung: Profilkatalog, Werkstattanweisungen und Sicherheitsregeln beachten.",
+      tabSingle: "Einzelteil",
+      tabJoint: "Zwei-Teil-Fuge",
+      jointHint: "Hier sehen Sie zwei Teile in Vorderansicht nach dem Schneiden — Flansche sind gemäß Δtop und Δbottom tatsächlich verkürzt, mit einem sehr kleinen Spalt an den Kontaktpunkten (≈ 0,003) und einem Montagewinkel aus der Schnittdifferenz.",
+      summaryTitle: "Berechnungsübersicht",
+      profileLabel: "Profil",
+      flangeWidthLabel: "Flanschbreite b (ca.)",
+      cutModeDescTop: "Schnitt nur am oberen Flansch",
+      cutModeDescBottom: "Schnitt nur am unteren Flansch",
+      cutModeDescBoth: "Unabhängige Flanschschnitte (Winkel aus Differenz)",
+      targetAngleLabel: "Zielmontagewinkel (aus Schieber)",
+      deltaTopLabelTable: "Δtop — oberer Flanschschnitt pro Teil",
+      deltaBottomLabelTable: "Δbottom — unterer Flanschschnitt pro Teil",
+      diffCutLabel: "Schnittdifferenz |Δtop − Δbottom|",
+      pairAngleLabel: "Ungefährer Montagewinkel aus Schnittdifferenz",
+      pairAngleZeroNote: "≈ 0° (Δtop = Δbottom — Teile nahezu gerade)",
+      remainingTopLabel: "Verbleibende Breite oben nach Schnitt",
+      remainingBottomLabel: "Verbleibende Breite unten nach Schnitt",
+      alphaTopLabelTable: "αtop in Zeichnung",
+      alphaBottomLabelTable: "αbottom in Zeichnung",
+      tiltTopDirLabel: "Neigungsrichtung oben (Zeichnung)",
+      tiltBottomDirLabel: "Neigungsrichtung unten (Zeichnung)",
+      noteDiffZero: "Wenn Δtop = Δbottom genau ⇒ Differenz = 0 ⇒ resultierender Winkel aus Schnitten ≈ 0°, auch wenn im Schieber ein Winkel gewählt wird.",
+      jointAngleLabel: "Montagewinkel aus Schnittdifferenz:",
+      jointGapLabel: "Kleiner theoretischer Spalt am Kontaktpunkt (≈ 0,003)."
     }
   };
 </script>
 
 <!-- LOGIC -->
 <script>
-  const HE_DATA={
+  // تقريب بيانات عرض الأجنحة b
+  const HE_DATA = {
     HEA:{100:{b:100},120:{b:120},140:{b:140},160:{b:160},180:{b:180},200:{b:200},220:{b:220},240:{b:240},260:{b:260},280:{b:280},300:{b:300},320:{b:300},340:{b:300},360:{b:300},400:{b:300}},
     HEB:{100:{b:100},120:{b:120},140:{b:140},160:{b:160},180:{b:180},200:{b:200},220:{b:220},240:{b:240},260:{b:260},280:{b:280},300:{b:300},320:{b:300},340:{b:300},360:{b:300},400:{b:300}},
     HEM:{100:{b:120},120:{b:120},140:{b:140},160:{b:160},180:{b:180},200:{b:200},220:{b:220},240:{b:240},260:{b:260},280:{b:260},300:{b:300},320:{b:300},340:{b:300},360:{b:300},400:{b:300}}
   };
-  const CALIB=1.0339;
-  const GAP_MM=0.003; // gap نظري صغير جداً
 
-  const $series=document.getElementById('series');
-  const $size=document.getElementById('size');
-  const $angle=document.getElementById('angle');
-  const $angleRange=document.getElementById('angleRange');
-  const $deltaTop=document.getElementById('deltaTop');
-  const $deltaBottom=document.getElementById('deltaBottom');
-  const $deltaTopRange=document.getElementById('deltaTopRange');
-  const $deltaBottomRange=document.getElementById('deltaBottomRange');
-  const $alphaTop=document.getElementById('alphaTop');
-  const $alphaTopRange=document.getElementById('alphaTopRange');
-  const $alphaBottom=document.getElementById('alphaBottom');
-  const $alphaBottomRange=document.getElementById('alphaBottomRange');
-  const $readout=document.getElementById('readout');
-  const $frontWrapper=document.getElementById('frontWrapper');
-  const $pairWrapper=document.getElementById('pairWrapper');
-  const $btnReset=document.getElementById('btnReset');
-  const $themeToggle=document.getElementById('themeToggle');
-  const $langButtons=document.querySelectorAll('.lang-btn');
+  const CALIB = 1.0339; // معايرة بسيطة لتقريب الواقع
+  const GAP_DEG = 0.03; // فراغ نظري صغير في زاوية التجميع
 
-  let mode='angle';
-  let currentLang='ar';
+  // عناصر DOM
+  const $series = document.getElementById('series');
+  const $size = document.getElementById('size');
+  const $angle = document.getElementById('angle');
+  const $angleRange = document.getElementById('angleRange');
+  const $deltaTop = document.getElementById('deltaTop');
+  const $deltaBottom = document.getElementById('deltaBottom');
+  const $deltaTopRange = document.getElementById('deltaTopRange');
+  const $deltaBottomRange = document.getElementById('deltaBottomRange');
+  const $alphaTop = document.getElementById('alphaTop');
+  const $alphaTopRange = document.getElementById('alphaTopRange');
+  const $alphaBottom = document.getElementById('alphaBottom');
+  const $alphaBottomRange = document.getElementById('alphaBottomRange');
+  const $readout = document.getElementById('readout');
+  const $frontWrapper = document.getElementById('frontWrapper');
+  const $jointWrapper = document.getElementById('jointWrapper');
+  const $btnReset = document.getElementById('btnReset');
+  const $themeToggle = document.getElementById('themeToggle');
+  const $tabSingle = document.getElementById('tabSingle');
+  const $tabJoint = document.getElementById('tabJoint');
+  const $viewSingle = document.getElementById('viewSingle');
+  const $viewJoint = document.getElementById('viewJoint');
+  const $theoryText = document.getElementById('theoryText');
+
+  const $langButtons = document.querySelectorAll('.lang-btn');
+  const $cutWingsRadios = document.querySelectorAll('input[name="cutWings"]');
+
+  let currentLang = 'ar';
+  let mode = 'angle'; // 'angle' أو 'cuts'
 
   function getCutMode(){
-    return document.querySelector('input[name="cutWings"]:checked')?.value || 'top';
+    const c = document.querySelector('input[name="cutWings"]:checked');
+    return c ? c.value : 'top';
   }
   function getTiltDirTop(){
-    const c=document.querySelector('input[name="tiltDirTop"]:checked');
-    return c?c.value:'in';
+    const c = document.querySelector('input[name="tiltDirTop"]:checked');
+    return c ? c.value : 'in';
   }
   function getTiltDirBottom(){
-    const c=document.querySelector('input[name="tiltDirBottom"]:checked');
-    return c?c.value:'in';
+    const c = document.querySelector('input[name="tiltDirBottom"]:checked');
+    return c ? c.value : 'in';
   }
+
   function populateSizes(){
-    const s=$series.value;
-    const sizes=Object.keys(HE_DATA[s]).map(Number).sort((a,b)=>a-b);
-    $size.innerHTML=sizes.map(v=>`<option value="${v}" ${v===180?'selected':''}>${v}</option>`).join('');
+    const s = $series.value;
+    const sizes = Object.keys(HE_DATA[s]).map(Number).sort((a,b)=>a-b);
+    $size.innerHTML = sizes.map(v=>`<option value="${v}" ${v===180?'selected':''}>${v}</option>`).join('');
   }
+
+  // زاوية التجميع من فرق القص
   function angleFromCuts(dt,db,b){
-    if(b<=0)return 0;
-    const diff=Math.abs(dt-db);
-    if(diff<0.001)return 0;
-    return 2*Math.atan(diff/(b*CALIB))*180/Math.PI;
+    if(b<=0) return 0;
+    const diff = Math.abs(dt-db);
+    if(diff<0.0001) return 0;
+    const halfRad = Math.atan(diff/(b*CALIB));
+    return 2*halfRad*180/Math.PI;
   }
 
   function applyTranslations(lang){
-    currentLang=lang;
-    const dict=I18N[lang]||I18N.ar;
-    document.documentElement.lang=lang;
-    document.documentElement.dir=(lang==='ar')?'rtl':'ltr';
+    currentLang = lang;
+    const dict = I18N[lang] || I18N.ar;
+    document.documentElement.lang = lang;
+    document.documentElement.dir = (lang==='ar')?'rtl':'ltr';
+
     document.querySelectorAll('[data-i18n]').forEach(el=>{
-      const k=el.getAttribute('data-i18n');
-      if(dict[k]) el.innerHTML=dict[k];
+      const key = el.getAttribute('data-i18n');
+      if(dict[key]) el.innerHTML = dict[key];
     });
     $langButtons.forEach(btn=>{
-      btn.classList.toggle('lang-btn-active',btn.dataset.lang===lang);
+      btn.classList.toggle('lang-btn-active', btn.dataset.lang===lang);
     });
+
+    // نص الفكرة الهندسية
+    if(lang==='ar'){
+      $theoryText.innerHTML =
+        "• زاوية التجميع بين قطعتين لا تعتمد على قيمة القص نفسها، بل على <b>الفرق بين قص الجناح العلوي Δtop والسفلي Δbottom</b>.<br>" +
+        "• إذا كان Δtop = Δbottom ⇒ الفرق = 0 ⇒ الزاوية الناتجة من القص ≈ 0° (القطعتان تقريباً على استقامة واحدة).<br>" +
+        "• كلما زاد |Δtop − Δbottom| زادت زاوية التجميع المحسوبة.<br>" +
+        "• زاويتا ميلان الخط (αtop, αbottom) واتجاه الميلان تؤثر فقط على شكل الخط في الرسم ولا تغيّر الحسابات.";
+    } else if(lang==='en'){
+      $theoryText.innerHTML =
+        "• The assembly angle between two pieces does not depend on the absolute cut value, but on the <b>difference between top cut Δtop and bottom cut Δbottom</b>.<br>" +
+        "• If Δtop = Δbottom ⇒ difference = 0 ⇒ resulting angle from cuts ≈ 0° (pieces nearly straight).<br>" +
+        "• The larger |Δtop − Δbottom| is, the larger the computed assembly angle.<br>" +
+        "• Tilt angles (αtop, αbottom) and tilt direction affect only the line shape in the drawing and do not change calculations.";
+    } else {
+      $theoryText.innerHTML =
+        "• Der Montagewinkel zwischen zwei Teilen hängt nicht vom absoluten Schnittwert ab, sondern von der <b>Differenz zwischen oberem Schnitt Δtop und unterem Schnitt Δbottom</b>.<br>" +
+        "• Wenn Δtop = Δbottom ⇒ Differenz = 0 ⇒ resultierender Winkel aus Schnitten ≈ 0° (Teile nahezu gerade).<br>" +
+        "• Je größer |Δtop − Δbottom|, desto größer der berechnete Montagewinkel.<br>" +
+        "• Neigungswinkel (αtop, αbottom) und Richtung beeinflussen nur die Linienform in der Zeichnung und ändern die Berechnung nicht.";
+    }
+
     calc();
   }
 
-  function calc(){
-    const dict=I18N[currentLang]||I18N.ar;
-    const s=$series.value;
-    const sz=Number($size.value);
-    const cutMode=getCutMode();
-    const tiltDirTop=getTiltDirTop();
-    const tiltDirBottom=getTiltDirBottom();
-    const data=HE_DATA[s][sz]||{b:180};
-    const b=data.b;
+  function buildState(){
+    const s = $series.value;
+    const sz = Number($size.value);
+    const cutMode = getCutMode();
+    const tiltDirTop = getTiltDirTop();
+    const tiltDirBottom = getTiltDirBottom();
+    const data = HE_DATA[s][sz] || {b:180};
+    const b = data.b;
 
-    const maxCut=Math.round(b*0.6);
-    $deltaTopRange.max=maxCut;
-    $deltaBottomRange.max=maxCut;
+    const maxCut = Math.round(b*0.6);
 
-    let angDeg=Number($angle.value);
-    let dt=Number($deltaTop.value);
-    let db=Number($deltaBottom.value);
-    let alphaTopDeg=Number($alphaTop.value);
-    let alphaBottomDeg=Number($alphaBottom.value);
-    if(isNaN(dt))dt=0;if(isNaN(db))db=0;
-    if(isNaN(alphaTopDeg))alphaTopDeg=0;if(isNaN(alphaBottomDeg))alphaBottomDeg=0;
+    let angDeg = Number($angle.value);
+    let dt = Number($deltaTop.value);
+    let db = Number($deltaBottom.value);
+    let alphaTopDeg = Number($alphaTop.value);
+    let alphaBottomDeg = Number($alphaBottom.value);
 
-    alphaTopDeg=Math.max(0,Math.min(60,alphaTopDeg));
-    alphaBottomDeg=Math.max(0,Math.min(60,alphaBottomDeg));
-    $alphaTop.value=alphaTopDeg.toFixed(0);
-    $alphaTopRange.value=alphaTopDeg;
-    $alphaBottom.value=alphaBottomDeg.toFixed(0);
-    $alphaBottomRange.value=alphaBottomDeg;
+    if(isNaN(dt)) dt=0;
+    if(isNaN(db)) db=0;
+    if(isNaN(alphaTopDeg)) alphaTopDeg=0;
+    if(isNaN(alphaBottomDeg)) alphaBottomDeg=0;
 
-    if(mode==='angle'){
-      if(!isFinite(angDeg)||angDeg<1)angDeg=1;
-      if(angDeg>45)angDeg=45;
-      const halfRad=(angDeg*Math.PI/180)/2;
-      const deltaGeom=Math.min(maxCut,b*Math.tan(halfRad)*CALIB);
-      if(cutMode==='top'){dt=deltaGeom;db=0;}
-      else if(cutMode==='bottom'){dt=0;db=deltaGeom;}
-      else {dt=deltaGeom;db=0;}
-    }else{
-      dt=Math.max(0,Math.min(dt,maxCut));
-      db=Math.max(0,Math.min(db,maxCut));
-      angDeg=Math.min(45,Math.max(0,angleFromCuts(dt,db,b)));
+    alphaTopDeg = Math.max(0,Math.min(60,alphaTopDeg));
+    alphaBottomDeg = Math.max(0,Math.min(60,alphaBottomDeg));
+
+    if(mode === 'angle'){
+      if(!isFinite(angDeg) || angDeg<1) angDeg = 1;
+      if(angDeg>45) angDeg = 45;
+      const halfRad = (angDeg*Math.PI/180)/2;
+      const deltaGeom = Math.min(maxCut, b*Math.tan(halfRad)*CALIB);
+      if(cutMode==='top'){ dt = deltaGeom; db = 0; }
+      else if(cutMode==='bottom'){ dt = 0; db = deltaGeom; }
+      else { dt = deltaGeom; db = 0; } // قص مستقل: نقترح قيمه للعلوي فقط
+    } else {
+      dt = Math.max(0,Math.min(dt,maxCut));
+      db = Math.max(0,Math.min(db,maxCut));
+      angDeg = Math.min(45,Math.max(0,angleFromCuts(dt,db,b)));
     }
 
-    $angle.value=angDeg.toFixed(1);
-    $angleRange.value=angDeg;
-    $deltaTop.value=dt.toFixed(1);
-    $deltaBottom.value=db.toFixed(1);
-    $deltaTopRange.value=dt;
-    $deltaBottomRange.value=db;
+    // sync inputs
+    $angle.value = angDeg.toFixed(1);
+    $angleRange.value = angDeg;
+    $deltaTop.value = dt.toFixed(1);
+    $deltaBottom.value = db.toFixed(1);
+    $deltaTopRange.value = dt;
+    $deltaBottomRange.value = db;
+    $alphaTop.value = alphaTopDeg.toFixed(0);
+    $alphaTopRange.value = alphaTopDeg;
+    $alphaBottom.value = alphaBottomDeg.toFixed(0);
+    $alphaBottomRange.value = alphaBottomDeg;
 
-    const pairAngle=angleFromCuts(dt,db,b); // زاوية من فرق القص فقط
-    const remainingTop=Math.max(b-dt,0);
-    const remainingBottom=Math.max(b-db,0);
-    const diffCut=Math.abs(dt-db);
+    const pairAngleRaw = angleFromCuts(dt,db,b);
+    const pairAngle = Math.max(0,pairAngleRaw - GAP_DEG); // فراغ بسيط في زاوية القياس
+    const remainingTop = Math.max(b-dt,0);
+    const remainingBottom = Math.max(b-db,0);
+    const diffCut = Math.abs(dt-db);
 
-    const sumTitle=dict.summaryTitle;
-    $readout.innerHTML=`
-      <div class="text-sky-300 text-xs mb-1">${sumTitle}</div>
+    return {
+      s, sz, b,
+      cutMode,
+      tiltDirTop, tiltDirBottom,
+      angDeg,
+      dt, db,
+      maxCut,
+      alphaTopDeg, alphaBottomDeg,
+      pairAngleRaw, pairAngle,
+      remainingTop, remainingBottom,
+      diffCut
+    };
+  }
+
+  function renderReadout(state){
+    const dict = I18N[currentLang] || I18N.ar;
+    const {
+      s, sz, b,
+      cutMode,
+      angDeg,
+      dt, db,
+      remainingTop, remainingBottom,
+      alphaTopDeg, alphaBottomDeg,
+      tiltDirTop, tiltDirBottom,
+      pairAngle, diffCut
+    } = state;
+
+    const cutModeText =
+      cutMode==='top' ? dict.cutModeDescTop :
+      cutMode==='bottom' ? dict.cutModeDescBottom :
+      dict.cutModeDescBoth;
+
+    const pairAngleText = pairAngle===0
+      ? dict.pairAngleZeroNote
+      : `${pairAngle.toFixed(2)}°`;
+
+    const tiltTopTxt = tiltDirTop==='in' ? dict.tiltIn : dict.tiltOut;
+    const tiltBottomTxt = tiltDirBottom==='in' ? dict.tiltIn : dict.tiltOut;
+
+    $readout.innerHTML = `
+      <div class="text-sky-300 text-xs mb-1">${dict.summaryTitle}</div>
       <div class="grid grid-cols-2 gap-x-3 gap-y-1 text-xs">
-        <div>${dict.profileLabel}:</div><div class="text-right"><b>${s} ${sz}</b></div>
-        <div>${dict.flangeWidthLabel}:</div><div class="text-right"><b>${b.toFixed(0)} mm</b></div>
-        <div>${dict.targetAngleLabel}:</div><div class="text-right text-sky-300"><b>${angDeg.toFixed(2)}°</b></div>
-        <div>Δtop:</div><div class="text-right text-emerald-300"><b>${dt.toFixed(1)} mm</b></div>
-        <div>Δbottom:</div><div class="text-right text-emerald-300"><b>${db.toFixed(1)} mm</b></div>
-        <div>${dict.diffCutLabel}:</div><div class="text-right text-amber-300"><b>${diffCut.toFixed(1)} mm</b></div>
-        <div>${dict.remainingTopLabel}:</div><div class="text-right"><b>${remainingTop.toFixed(1)} mm</b></div>
-        <div>${dict.remainingBottomLabel}:</div><div class="text-right"><b>${remainingBottom.toFixed(1)} mm</b></div>
-        <div>${dict.pairAngleLabel}:</div><div class="text-right text-sky-300"><b>${pairAngle===0?dict.pairZeroNote:pairAngle.toFixed(2)+'°'}</b></div>
+        <div>${dict.profileLabel}:</div>
+        <div class="text-right"><b>${s} ${sz}</b></div>
+
+        <div>${dict.flangeWidthLabel}:</div>
+        <div class="text-right"><b>${b.toFixed(0)} mm</b></div>
+
+        <div>${dict.cutWingsLabel}:</div>
+        <div class="text-right"><b>${cutModeText}</b></div>
+
+        <div>${dict.targetAngleLabel}:</div>
+        <div class="text-right text-sky-300"><b>${angDeg.toFixed(2)}°</b></div>
+
+        <div>${dict.deltaTopLabelTable}:</div>
+        <div class="text-right text-emerald-300"><b>${dt.toFixed(1)} mm</b></div>
+
+        <div>${dict.deltaBottomLabelTable}:</div>
+        <div class="text-right text-emerald-300"><b>${db.toFixed(1)} mm</b></div>
+
+        <div>${dict.diffCutLabel}:</div>
+        <div class="text-right text-amber-300"><b>${diffCut.toFixed(1)} mm</b></div>
+
+        <div>${dict.pairAngleLabel}:</div>
+        <div class="text-right text-sky-300"><b>${pairAngleText}</b></div>
+
+        <div>${dict.remainingTopLabel}:</div>
+        <div class="text-right"><b>${remainingTop.toFixed(1)} mm</b></div>
+
+        <div>${dict.remainingBottomLabel}:</div>
+        <div class="text-right"><b>${remainingBottom.toFixed(1)} mm</b></div>
+
+        <div>${dict.alphaTopLabelTable}:</div>
+        <div class="text-right"><b>${alphaTopDeg.toFixed(0)}°</b></div>
+
+        <div>${dict.alphaBottomLabelTable}:</div>
+        <div class="text-right"><b>${alphaBottomDeg.toFixed(0)}°</b></div>
+
+        <div>${dict.tiltTopDirLabel}:</div>
+        <div class="text-right"><b>${tiltTopTxt}</b></div>
+
+        <div>${dict.tiltBottomDirLabel}:</div>
+        <div class="text-right"><b>${tiltBottomTxt}</b></div>
+      </div>
+      <div class="text-[10px] text-slate-400 mt-2">
+        ${dict.noteDiffZero}
       </div>
     `;
-
-    renderFront({s,sz,b,angDeg,dt,db,alphaTopDeg,alphaBottomDeg,tiltDirTop,tiltDirBottom});
-    renderJoint({s,sz,b,dt,db,alphaTopDeg,alphaBottomDeg,pairAngle});
   }
 
-  function renderFront({s,sz,b,angDeg,dt,db,alphaTopDeg,alphaBottomDeg,tiltDirTop,tiltDirBottom}){
-    const w=320,h=260,pad=30;
-    const midX=w/2,topY=pad,botY=h-pad;
-    const normH=200;
-    const scale=Math.min(1.1,Math.max(0.7,sz/220));
-    const ph=normH*scale;
-    const th=Math.max(18,ph*0.18);
-    const wh=Math.max(12,ph*0.12);
-    const cy=(topY+botY)/2;
-    const tfy=cy-ph/2,bfy=cy+ph/2;
-    const halfSpan=70+(b-180)*0.25;
-    const fl=midX-halfSpan,fr=midX+halfSpan;
-    const fw=fr-fl;
+  // رسم قطعة واحدة مع خطوط حمراء
+  function renderSingleFront(state){
+    const {
+      s, sz, b,
+      angDeg,
+      dt, db,
+      alphaTopDeg, alphaBottomDeg,
+      tiltDirTop, tiltDirBottom
+    } = state;
 
-    const ft=b>0?dt/b:0;
-    const fb=b>0?db/b:0;
-    const cutXTop=fr-ft*fw;
-    const cutXBottom=fr-fb*fw;
+    const w = 320, h = 260, pad = 30;
+    const midX = w/2, topY = pad, botY = h-pad;
+    const scale = Math.min(1.1,Math.max(0.7,sz/220));
+    const profileH = 200*scale;
+    const flangeTh = Math.max(18,profileH*0.18);
+    const webTh = Math.max(12,profileH*0.12);
+    const cy = (topY+botY)/2;
+    const tfy = cy-profileH/2;
+    const bfy = cy+profileH/2;
+    const span = 70+(b-180)*0.25;
+    const fl = midX-span;
+    const fr = midX+span;
+    const fw = fr-fl;
 
-    const phiTopRad=alphaTopDeg*Math.PI/180;
-    const phiBottomRad=alphaBottomDeg*Math.PI/180;
-    const dirSignTop=tiltDirTop==='in'?-1:1;
-    const dirSignBottom=tiltDirBottom==='in'?-1:1;
-    const dxTop=Math.tan(phiTopRad)*th*dirSignTop;
-    const dxBottom=Math.tan(phiBottomRad)*th*dirSignBottom;
+    const ft = b>0?dt/b:0;
+    const fb = b>0?db/b:0;
+    const cutXTop = fr-ft*fw;
+    const cutXBottom = fr-fb*fw;
 
-    const svg=`
-    <svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
-      <defs>
-        <linearGradient id="metalGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#cbd5f5"/><stop offset="40%" stop-color="#e5e7eb"/>
-          <stop offset="70%" stop-color="#9ca3af"/><stop offset="100%" stop-color="#6b7280"/>
-        </linearGradient>
-        <linearGradient id="webGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stop-color="#e5e7eb"/><stop offset="100%" stop-color="#9ca3af"/>
-        </linearGradient>
-        <filter id="shadowFront" x="-20%" y="-20%" width="140%" height="140%">
-          <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#020617" flood-opacity="0.8"/>
-        </filter>
-      </defs>
-      <g filter="url(#shadowFront)">
-        <rect x="${fl}" y="${tfy}" width="${fw}" height="${th}" fill="url(#metalGrad)" stroke="#94a3b8" stroke-width="1"/>
-        <rect x="${fl}" y="${bfy-th}" width="${fw}" height="${th}" fill="url(#metalGrad)" stroke="#94a3b8" stroke-width="1"/>
-        <rect x="${midX-wh/2}" y="${tfy+th}" width="${wh}" height="${ph-2*th}" fill="url(#webGrad)" stroke="#94a3b8" stroke-width="1"/>
-      </g>
-      ${dt>0.1?`<line x1="${cutXTop}" y1="${tfy}" x2="${cutXTop+dxTop}" y2="${tfy+th}" stroke="#f97373" stroke-width="4" stroke-linecap="round"/>`:''}
-      ${db>0.1?`<line x1="${cutXBottom}" y1="${bfy-th}" x2="${cutXBottom+dxBottom}" y2="${bfy}" stroke="#f97373" stroke-width="4" stroke-linecap="round"/>`:''}
-      <text x="${midX}" y="${tfy-12}" font-size="13" fill="#e5e7eb" text-anchor="middle" font-weight="600">${s} ${sz}</text>
-      <text x="${midX}" y="${bfy+18}" font-size="11" fill="#fda4af" text-anchor="middle" font-weight="600">θ (target) ≈ ${angDeg.toFixed(1)}°</text>
-    </svg>`;
-    $frontWrapper.innerHTML=svg;
+    const phiTopRad = alphaTopDeg*Math.PI/180;
+    const phiBottomRad = alphaBottomDeg*Math.PI/180;
+    const dirSignTop = tiltDirTop==='in' ? -1 : 1;
+    const dirSignBottom = tiltDirBottom==='in' ? -1 : 1;
+    const dxTop = Math.tan(phiTopRad)*flangeTh*dirSignTop;
+    const dxBottom = Math.tan(phiBottomRad)*flangeTh*dirSignBottom;
+
+    const showTopLine = dt>0.0001;
+    const showBottomLine = db>0.0001;
+
+    const angleText = `θ ≈ ${angDeg.toFixed(1)}°`;
+
+    const svg = `
+      <svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+        <defs>
+          <linearGradient id="metalGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#cbd5f5"/>
+            <stop offset="40%" stop-color="#e5e7eb"/>
+            <stop offset="70%" stop-color="#9ca3af"/>
+            <stop offset="100%" stop-color="#6b7280"/>
+          </linearGradient>
+          <linearGradient id="webGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#e5e7eb"/>
+            <stop offset="100%" stop-color="#9ca3af"/>
+          </linearGradient>
+          <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="6" stdDeviation="6"
+                          flood-color="#020617" flood-opacity="0.8"/>
+          </filter>
+        </defs>
+
+        <g filter="url(#shadow)">
+          <rect x="${fl}" y="${tfy}"
+                width="${fw}" height="${flangeTh}"
+                fill="url(#metalGrad)" stroke="#94a3b8" stroke-width="1"/>
+          <rect x="${fl}" y="${bfy-flangeTh}"
+                width="${fw}" height="${flangeTh}"
+                fill="url(#metalGrad)" stroke="#94a3b8" stroke-width="1"/>
+          <rect x="${midX-webTh/2}" y="${tfy+flangeTh}"
+                width="${webTh}"
+                height="${profileH-2*flangeTh}"
+                fill="url(#webGrad)" stroke="#94a3b8" stroke-width="1"/>
+        </g>
+
+        ${showTopLine ? `
+          <line x1="${cutXTop}" y1="${tfy}"
+                x2="${cutXTop+dxTop}" y2="${tfy+flangeTh}"
+                stroke="#f97373" stroke-width="4" stroke-linecap="round"/>` : ''}
+
+        ${showBottomLine ? `
+          <line x1="${cutXBottom}" y1="${bfy-flangeTh}"
+                x2="${cutXBottom+dxBottom}" y2="${bfy}"
+                stroke="#f97373" stroke-width="4" stroke-linecap="round"/>` : ''}
+
+        <text x="${midX}" y="${tfy-12}" font-size="13"
+              fill="#e5e7eb" text-anchor="middle" font-weight="600">
+          ${s} ${sz}
+        </text>
+        <text x="${midX}" y="${bfy+18}" font-size="11"
+              fill="#fda4af" text-anchor="middle" font-weight="600">
+          ${angleText}
+        </text>
+        <text x="${midX}" y="${bfy+34}" font-size="10"
+              fill="#cbd5f5" text-anchor="middle">
+          Δtop و Δbottom تطبّقان على هذه القطعة (الرسم تمثيلي).
+        </text>
+      </svg>
+    `;
+
+    $frontWrapper.innerHTML = svg;
   }
 
-  // Joint: قطعتان جنب بعض، كل واحدة مقصوصة فعلاً في الجناح
-  function renderJoint({s,sz,b,dt,db,alphaTopDeg,alphaBottomDeg,pairAngle}){
-    const w=500,h=220;
-    const midY=h/2;
-    const normH=170;
-    const scale=Math.min(1.1,Math.max(0.7,sz/220));
-    const ph=normH*scale;
-    const th=Math.max(14,ph*0.17);
-    const wh=Math.max(10,ph*0.11);
-    const halfSpanBase=60+(b-180)*0.22;
+  // رسم قطعتين من الأمام بعد القص — بدون خطوط حمراء، لكن الأجنحة مقصوصة
+  function renderJointFront(state){
+    const dict = I18N[currentLang] || I18N.ar;
+    const {
+      s, sz, b,
+      dt, db,
+      pairAngle
+    } = state;
 
-    const gapPx=4; // gap صغير رمزي بين القطعتين عند الجناح العلوي
-    const midX=w/2;
-    const leftMidX=midX- (halfSpanBase+wh+gapPx);
-    const rightMidX=midX+ (halfSpanBase+wh+gapPx);
+    const w = 460, h = 230;
+    const midX = w/2;
+    const cy = h/2;
 
-    const tfy=midY-ph/2;
-    const bfy=midY+ph/2;
+    const profileH = 130;
+    const flangeTh = 16;
+    const webTh = 12;
 
-    function buildPiece(midX,opts){
-      const {cutTop,cutBottom,alphaTopDeg,alphaBottomDeg,side} = opts;
-      const halfSpan=halfSpanBase;
-      const fl=midX-halfSpan;
-      const fr=midX+halfSpan;
-      const fw=fr-fl;
+    // نحافظ على نفس منطق توسعة الجناح تقريباً
+    const spanBase = 70+(b-180)*0.25;
+    const flangeW = spanBase*2;
 
-      const fracTop=b>0?cutTop/b:0;
-      const fracBottom=b>0?cutBottom/b:0;
-      const fracClampTop=Math.max(0,Math.min(0.5,fracTop));
-      const fracClampBottom=Math.max(0,Math.min(0.5,fracBottom));
+    const gapPx = 10; // فراغ صغير ثابت بين القطعتين (يمثل ≈0.003 بشكل بصري)
 
-      const phiTopRad=alphaTopDeg*Math.PI/180;
-      const phiBottomRad=alphaBottomDeg*Math.PI/180;
+    // القطعة اليسرى: طرفها الداخلي عند midX - gap/2
+    const leftInnerX = midX - gapPx/2;
+    const leftOuterX = leftInnerX - flangeW;
 
-      const dirTop = side==='left' ? -1 : 1;   // الميل نحو الداخل
-      const dirBottom = side==='left' ? -1 : 1;
+    // القطعة اليمنى: طرفها الداخلي عند midX + gap/2
+    const rightInnerX = midX + gapPx/2;
+    const rightOuterX = rightInnerX + flangeW;
 
-      const dxTop = Math.tan(phiTopRad)*th*dirTop;
-      const dxBottom = Math.tan(phiBottomRad)*th*dirBottom;
+    const tfy = cy - profileH/2;
+    const bfy = cy + profileH/2;
 
-      let pathTop, pathBottom;
+    // تحويل القص من mm إلى نقطة أفقية (نفس مبدأ النسبة كما في الرسم الأول)
+    const pxTopCut = (b>0) ? flangeW * (dt/b) : 0;
+    const pxBottomCut = (b>0) ? flangeW * (db/b) : 0;
 
-      if(side==='left'){
-        // قص من اليمين
-        const cutXTop = fr - fracClampTop*fw;
-        const cutXBottom = fr - fracClampBottom*fw;
+    const pxTopCutClamped = Math.min(pxTopCut, flangeW*0.5);
+    const pxBottomCutClamped = Math.min(pxBottomCut, flangeW*0.5);
 
-        pathTop = cutTop>0.1
-          ? `M ${fl} ${tfy} L ${cutXTop} ${tfy} L ${cutXTop+dxTop} ${tfy+th} L ${fl} ${tfy+th} Z`
-          : `M ${fl} ${tfy} L ${fr} ${tfy} L ${fr} ${tfy+th} L ${fl} ${tfy+th} Z`;
+    // قطاعات القطعة اليسرى
+    const leftTopX1 = leftOuterX;
+    const leftTopX2 = leftInnerX - pxTopCutClamped;
+    const leftBottomX1 = leftOuterX;
+    const leftBottomX2 = leftInnerX - pxBottomCutClamped;
 
-        pathBottom = cutBottom>0.1
-          ? `M ${fl} ${bfy-th} L ${cutXBottom} ${bfy-th} L ${cutXBottom+dxBottom} ${bfy} L ${fl} ${bfy} Z`
-          : `M ${fl} ${bfy-th} L ${fr} ${bfy-th} L ${fr} ${bfy} L ${fl} ${bfy} Z`;
-      }else{
-        //右 قطعه: قص من اليسار
-        const cutXTop = fl + fracClampTop*fw;
-        const cutXBottom = fl + fracClampBottom*fw;
+    // قطاعات القطعة اليمنى
+    const rightTopX1 = rightInnerX + pxTopCutClamped;
+    const rightTopX2 = rightOuterX;
+    const rightBottomX1 = rightInnerX + pxBottomCutClamped;
+    const rightBottomX2 = rightOuterX;
 
-        pathTop = cutTop>0.1
-          ? `M ${cutXTop} ${tfy} L ${fr} ${tfy} L ${fr} ${tfy+th} L ${cutXTop+dxTop} ${tfy+th} Z`
-          : `M ${fl} ${tfy} L ${fr} ${tfy} L ${fr} ${tfy+th} L ${fl} ${tfy+th} Z`;
+    const angleText = pairAngle===0
+      ? (dict.pairAngleZeroNote || "≈ 0°")
+      : `${pairAngle.toFixed(2)}°`;
 
-        pathBottom = cutBottom>0.1
-          ? `M ${cutXBottom} ${bfy-th} L ${fr} ${bfy-th} L ${fr} ${bfy} L ${cutXBottom+dxBottom} ${bfy} Z`
-          : `M ${fl} ${bfy-th} L ${fr} ${bfy-th} L ${fr} ${bfy} L ${fl} ${bfy} Z`;
-      }
+    // قوس بسيط لعرض الزاوية (رمزي)
+    const arcR = 40;
+    const angleRad = pairAngle*Math.PI/180;
+    const arcX1 = midX - arcR;
+    const arcY1 = cy;
+    const arcX2 = midX - arcR*Math.cos(angleRad);
+    const arcY2 = cy - arcR*Math.sin(angleRad);
 
-      const webX = side==='left' ? (midX - wh/2) : (midX - wh/2);
-      const web = `<rect x="${webX}" y="${tfy+th}" width="${wh}" height="${ph-2*th}" fill="url(#webGradJoint)" stroke="#94a3b8" stroke-width="1"/>`;
+    const svg = `
+      <svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+        <defs>
+          <linearGradient id="metalJoint" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#cbd5f5"/>
+            <stop offset="40%" stop-color="#e5e7eb"/>
+            <stop offset="70%" stop-color="#9ca3af"/>
+            <stop offset="100%" stop-color="#6b7280"/>
+          </linearGradient>
+          <linearGradient id="webJoint" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#e5e7eb"/>
+            <stop offset="100%" stop-color="#9ca3af"/>
+          </linearGradient>
+          <filter id="shadowJoint" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="6" stdDeviation="6"
+                          flood-color="#020617" flood-opacity="0.85"/>
+          </filter>
+        </defs>
 
-      return `
-        <path d="${pathTop}" fill="url(#metalGradJoint)" stroke="#94a3b8" stroke-width="1"/>
-        ${web}
-        <path d="${pathBottom}" fill="url(#metalGradJoint)" stroke="#94a3b8" stroke-width="1"/>
-      `;
-    }
+        <g filter="url(#shadowJoint)">
 
-    const dict=I18N[currentLang]||I18N.ar;
-    const angleText = pairAngle===0 ? dict.pairZeroNote : `${dict.pairAngleText} ${pairAngle.toFixed(2)}°`;
+          <!-- القطعة اليسرى -->
+          <g>
+            <!-- الجناح العلوي مقصوص من الداخل -->
+            <rect x="${leftTopX1}" y="${tfy}"
+                  width="${leftTopX2-leftTopX1}" height="${flangeTh}"
+                  fill="url(#metalJoint)" stroke="#94a3b8" stroke-width="1"/>
+            <!-- الجناح السفلي مقصوص من الداخل -->
+            <rect x="${leftBottomX1}" y="${bfy-flangeTh}"
+                  width="${leftBottomX2-leftBottomX1}" height="${flangeTh}"
+                  fill="url(#metalJoint)" stroke="#94a3b8" stroke-width="1"/>
+            <!-- العمود -->
+            <rect x="${leftOuterX + flangeW/2 - webTh/2}" y="${tfy+flangeTh}"
+                  width="${webTh}" height="${profileH-2*flangeTh}"
+                  fill="url(#webJoint)" stroke="#94a3b8" stroke-width="1"/>
+          </g>
 
-    const svg=`
-    <svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
-      <defs>
-        <linearGradient id="metalGradJoint" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#cbd5f5"/><stop offset="40%" stop-color="#e5e7eb"/>
-          <stop offset="70%" stop-color="#9ca3af"/><stop offset="100%" stop-color="#6b7280"/>
-        </linearGradient>
-        <linearGradient id="webGradJoint" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stop-color="#e5e7eb"/><stop offset="100%" stop-color="#9ca3af"/>
-        </linearGradient>
-        <filter id="shadowJoint" x="-20%" y="-20%" width="140%" height="140%">
-          <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#020617" flood-opacity="0.85"/>
-        </filter>
-      </defs>
+          <!-- القطعة اليمنى -->
+          <g>
+            <!-- الجناح العلوي مقصوص من الداخل -->
+            <rect x="${rightTopX1}" y="${tfy}"
+                  width="${rightTopX2-rightTopX1}" height="${flangeTh}"
+                  fill="url(#metalJoint)" stroke="#94a3b8" stroke-width="1"/>
+            <!-- الجناح السفلي مقصوص من الداخل -->
+            <rect x="${rightBottomX1}" y="${bfy-flangeTh}"
+                  width="${rightBottomX2-rightBottomX1}" height="${flangeTh}"
+                  fill="url(#metalJoint)" stroke="#94a3b8" stroke-width="1"/>
+            <!-- العمود -->
+            <rect x="${rightInnerX + flangeW/2 - webTh/2}" y="${tfy+flangeTh}"
+                  width="${webTh}" height="${profileH-2*flangeTh}"
+                  fill="url(#webJoint)" stroke="#94a3b8" stroke-width="1"/>
+          </g>
 
-      <g filter="url(#shadowJoint)">
-        <!-- القطعة اليسرى: قص يُطبّق على الجناح العلوي (Δtop) -->
-        ${buildPiece(leftMidX,{cutTop:dt,cutBottom:0,alphaTopDeg:alphaTopDeg,alphaBottomDeg:0,side:'left'})}
+        </g>
 
-        <!-- القطعة اليمنى: قص يُطبّق على الجناح السفلي (Δbottom) -->
-        ${buildPiece(rightMidX,{cutTop:0,cutBottom:db,alphaTopDeg:0,alphaBottomDeg:alphaBottomDeg,side:'right'})}
-      </g>
+        <!-- فراغ بسيط بين القطعتين -->
+        <rect x="${midX-gapPx/2}" y="${tfy}"
+              width="${gapPx}" height="${profileH}"
+              fill="transparent" stroke="rgba(148,163,184,0.3)" stroke-dasharray="4 4"/>
 
-      <!-- gap رمزي صغير بين الجناحين العلويين -->
-      <line x1="${leftMidX+halfSpanBase}" y1="${midY-ph/2}" x2="${rightMidX-halfSpanBase}" y2="${midY-ph/2}" stroke="#f97373" stroke-width="1" stroke-dasharray="3,3" opacity="0.6"/>
+        <!-- نقطة قياس تقريبية في منتصف الفراغ -->
+        <circle cx="${midX}" cy="${cy}" r="2.5" fill="#f97373"/>
 
-      <text x="${w/2}" y="22" font-size="13" fill="#e5e7eb" text-anchor="middle" font-weight="600">
-        ${s} ${sz} — Joint After Cut (Front View)
-      </text>
-      <text x="${w/2}" y="${h-14}" font-size="10" fill="#cbd5f5" text-anchor="middle">
-        ${angleText}
-      </text>
-    </svg>`;
-    $pairWrapper.innerHTML=svg;
+        <!-- قوس الزاوية (رمزي) -->
+        <path d="
+          M ${arcX1} ${arcY1}
+          A ${arcR} ${arcR} 0 0 0 ${arcX2} ${arcY2}
+        " fill="none" stroke="#f97373" stroke-width="2" stroke-linecap="round"/>
+
+        <text x="${midX-arcR-6}" y="${cy-8}" font-size="11"
+              fill="#fda4af" text-anchor="end" font-weight="600">
+          θ ≈ ${angleText}
+        </text>
+
+        <text x="${w/2}" y="22" font-size="13" fill="#e5e7eb"
+              text-anchor="middle" font-weight="600">
+          ${s} ${sz} — Joint Front View
+        </text>
+
+        <text x="${w/2}" y="${h-18}" font-size="9.5" fill="#cbd5f5" text-anchor="middle">
+          ${dict.jointAngleLabel || ''} ${pairAngle.toFixed(2)}° — ${dict.jointGapLabel || ''}
+        </text>
+      </svg>
+    `;
+
+    $jointWrapper.innerHTML = svg;
+  }
+
+  function calc(){
+    const state = buildState();
+    renderReadout(state);
+    renderSingleFront(state);
+    renderJointFront(state);
   }
 
   // EVENTS
-  [$series,$size].forEach(el=>el.addEventListener('input',()=>{mode='angle';calc();}));
-  $angle.addEventListener('input',()=>{mode='angle';calc();});
-  $angleRange.addEventListener('input',()=>{$angle.value=$angleRange.value;mode='angle';calc();});
+  [$series,$size].forEach(el=>{
+    el.addEventListener('input',()=>{
+      mode='angle';
+      calc();
+    });
+  });
+
+  $angle.addEventListener('input',()=>{
+    mode='angle';
+    calc();
+  });
+
+  $angleRange.addEventListener('input',()=>{
+    $angle.value = $angleRange.value;
+    mode='angle';
+    calc();
+  });
 
   $deltaTop.addEventListener('focus',e=>e.target.select());
   $deltaBottom.addEventListener('focus',e=>e.target.select());
-  $deltaTop.addEventListener('change',()=>{mode='cuts';$deltaTopRange.value=$deltaTop.value||0;calc();});
-  $deltaBottom.addEventListener('change',()=>{mode='cuts';$deltaBottomRange.value=$deltaBottom.value||0;calc();});
-  $deltaTopRange.addEventListener('input',()=>{$deltaTop.value=$deltaTopRange.value;mode='cuts';calc();});
-  $deltaBottomRange.addEventListener('input',()=>{$deltaBottom.value=$deltaBottomRange.value;mode='cuts';calc();});
+
+  $deltaTop.addEventListener('change',()=>{
+    mode='cuts';
+    $deltaTopRange.value = $deltaTop.value || 0;
+    calc();
+  });
+  $deltaBottom.addEventListener('change',()=>{
+    mode='cuts';
+    $deltaBottomRange.value = $deltaBottom.value || 0;
+    calc();
+  });
+
+  $deltaTopRange.addEventListener('input',()=>{
+    mode='cuts';
+    $deltaTop.value = $deltaTopRange.value;
+    calc();
+  });
+  $deltaBottomRange.addEventListener('input',()=>{
+    mode='cuts';
+    $deltaBottom.value = $deltaBottomRange.value;
+    calc();
+  });
 
   $alphaTop.addEventListener('input',()=>calc());
-  $alphaTopRange.addEventListener('input',()=>{$alphaTop.value=$alphaTopRange.value;calc();});
-  $alphaBottom.addEventListener('input',()=>calc());
-  $alphaBottomRange.addEventListener('input',()=>{$alphaBottom.value=$alphaBottomRange.value;calc();});
-
-  document.querySelectorAll('input[name="tiltDirTop"], input[name="tiltDirBottom"]').forEach(el=>{
-    el.addEventListener('change',()=>calc());
+  $alphaTopRange.addEventListener('input',()=>{
+    $alphaTop.value = $alphaTopRange.value;
+    calc();
   });
-  document.querySelectorAll('input[name="cutWings"]').forEach(el=>{
-    el.addEventListener('change',()=>{mode='angle';calc();});
+  $alphaBottom.addEventListener('input',()=>calc());
+  $alphaBottomRange.addEventListener('input',()=>{
+    $alphaBottom.value = $alphaBottomRange.value;
+    calc();
+  });
+
+  $cutWingsRadios.forEach(r=>{
+    r.addEventListener('change',()=>{
+      mode='angle';
+      calc();
+    });
+  });
+
+  document.querySelectorAll('input[name="tiltDirTop"],input[name="tiltDirBottom"]').forEach(el=>{
+    el.addEventListener('change',()=>calc());
   });
 
   $btnReset.addEventListener('click',()=>{
@@ -693,23 +1154,56 @@
     $series.value='HEB';
     populateSizes();
     $size.value='180';
-    $angle.value=30;$angleRange.value=30;
-    $deltaTop.value=0;$deltaBottom.value=0;
-    $deltaTopRange.value=0;$deltaBottomRange.value=0;
-    $alphaTop.value=0;$alphaTopRange.value=0;
-    $alphaBottom.value=0;$alphaBottomRange.value=0;
+    $angle.value=30;
+    $angleRange.value=30;
+    $deltaTop.value=0;
+    $deltaBottom.value=0;
+    $deltaTopRange.value=0;
+    $deltaBottomRange.value=0;
+    $alphaTop.value=0;
+    $alphaTopRange.value=0;
+    $alphaBottom.value=0;
+    $alphaBottomRange.value=0;
     document.querySelector('input[name="cutWings"][value="top"]').checked=true;
     document.querySelector('input[name="tiltDirTop"][value="in"]').checked=true;
     document.querySelector('input[name="tiltDirBottom"][value="in"]').checked=true;
     calc();
   });
 
+  // ثيم
   $themeToggle.addEventListener('click',()=>{
-    document.body.classList.toggle('theme-dark');
-    document.body.classList.toggle('theme-light');
-    $themeToggle.textContent=document.body.classList.contains('theme-dark')?'☾':'☀';
+    const body = document.body;
+    const isDark = body.classList.contains('theme-dark');
+    if(isDark){
+      body.classList.remove('theme-dark');
+      body.classList.add('theme-light');
+      $themeToggle.textContent='☀';
+    }else{
+      body.classList.remove('theme-light');
+      body.classList.add('theme-dark');
+      $themeToggle.textContent='☾';
+    }
   });
 
+  // Tabs
+  function setView(view){
+    if(view==='single'){
+      $viewSingle.classList.remove('view-hidden');
+      $viewJoint.classList.add('view-hidden');
+      $tabSingle.classList.add('tab-btn-active');
+      $tabJoint.classList.remove('tab-btn-active');
+    }else{
+      $viewSingle.classList.add('view-hidden');
+      $viewJoint.classList.remove('view-hidden');
+      $tabSingle.classList.remove('tab-btn-active');
+      $tabJoint.classList.add('tab-btn-active');
+    }
+  }
+
+  $tabSingle.addEventListener('click',()=>setView('single'));
+  $tabJoint.addEventListener('click',()=>setView('joint'));
+
+  // لغة
   $langButtons.forEach(btn=>{
     btn.addEventListener('click',()=>applyTranslations(btn.dataset.lang));
   });
@@ -718,8 +1212,9 @@
     populateSizes();
     $size.value='180';
     applyTranslations('ar');
+    setView('single');
   });
 </script>
 
 </body>
-</html>
+  </html>

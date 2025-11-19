@@ -3,412 +3,292 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>HE Cut Pro v22 — True Joint Geometry</title>
+  <title>HE Cut Pro v23 — Correct Geometry</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
     html,body{ font-family:Cairo,system-ui,ui-sans-serif; }
     svg,svg *{user-select:none}
-    body{ min-height:100vh; transition:background .3s,color .3s; }
-    body.theme-dark{
-      background: radial-gradient(circle at top left,rgba(56,189,248,.2),transparent 55%), radial-gradient(circle at bottom right,rgba(129,140,248,.25),#020617);
-      color:#e5e7eb;
-    }
-    body.theme-light{ background:#f9fafb; color:#111827; }
-    .glass{ backdrop-filter:blur(20px); }
-    body.theme-dark .glass{ background:rgba(15,23,42,.88); border-color:rgba(56,189,248,.32); }
-    body.theme-light .glass{ background:rgba(255,255,255,.9); border-color:#e5e7eb; }
-    input[type=range]{ -webkit-appearance:none; appearance:none; width:100%; height:.5rem; border-radius:999px; background:#0f172a; outline:none; }
-    body.theme-light input[type=range]{background:#e5e7eb}
-    input[type=range]::-webkit-slider-thumb{ -webkit-appearance:none; appearance:none; width:18px; height:18px; border-radius:999px; background:#38bdf8; border:2px solid #fff; box-shadow:0 0 0 4px rgba(56,189,248,.5); cursor:pointer; }
-    .lang-btn{ transition:all .18s ease; }
-    .lang-btn-active{ background:rgba(56,189,248,.2); color:#e5e7eb; transform:scale(1.05); box-shadow:0 0 0 2px rgba(56,189,248,.5); }
-    body.theme-light .lang-btn-active{ color:#0f172a; }
-    .tab-btn{ border-radius:999px; padding:.4rem .9rem; font-size:.75rem; display:inline-flex; align-items:center; gap:.35rem; cursor:pointer; border:1px solid transparent; transition:all .16s ease; }
-    .tab-btn-active{ background:linear-gradient(135deg,#38bdf8,#a855f7); color:#0f172a; border-color:rgba(15,23,42,.8); box-shadow:0 10px 25px rgba(15,23,42,.4); }
-    .view-hidden{display:none;}
+    body{ min-height:100vh; background:#0f172a; color:#e2e8f0; }
+    .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(148, 163, 184, 0.1); }
+    input[type=range] { -webkit-appearance: none; width: 100%; height: 6px; background: #334155; border-radius: 5px; outline: none; }
+    input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: #38bdf8; cursor: pointer; border: 2px solid #fff; }
+    .stat-box { background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(51, 65, 85, 0.5); border-radius: 8px; padding: 10px; }
+    .canvas-container { background-image: radial-gradient(#334155 1px, transparent 1px); background-size: 20px 20px; }
   </style>
 </head>
-<body class="text-slate-100 theme-dark">
+<body>
 
-<header class="border-b border-slate-700/60 bg-slate-900/85 backdrop-blur sticky top-0 z-20">
-  <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
-    <div>
-      <h1 class="text-xl sm:text-2xl font-bold tracking-tight flex items-center gap-2">
-        <span>HE Cut Pro</span>
-        <span class="text-emerald-400 text-sm sm:text-base align-middle">v22 — True Geometry</span>
-      </h1>
-      <p class="text-xs sm:text-sm text-slate-400 mt-0.5">
-        محاكاة هندسية دقيقة لقص وجمع الكمر (HEA/HEB/HEM)
-      </p>
-    </div>
-    <div class="flex items-center gap-3">
-      <button id="themeToggle" class="w-9 h-9 rounded-full border border-slate-600 flex items-center justify-center text-lg bg-slate-900/70 hover:bg-slate-800">☾</button>
-    </div>
+<header class="border-b border-slate-700 bg-slate-900/90 sticky top-0 z-20">
+  <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+    <h1 class="text-xl font-bold flex gap-2 items-center">
+      <span>HE Cut Pro</span>
+      <span class="text-emerald-400 text-sm bg-emerald-900/30 px-2 py-0.5 rounded">v23 Corrected</span>
+    </h1>
+    <div class="text-xs text-slate-400">حساب القص الرأسي (Elevation)</div>
   </div>
 </header>
 
-<main class="max-w-6xl mx-auto px-4 py-6 sm:py-10 grid grid-cols-1 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1.15fr)] gap-6">
+<main class="max-w-6xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-6">
 
-  <section class="glass rounded-2xl shadow-xl border border-slate-700/70 p-4 sm:p-5">
-    <h2 class="font-semibold text-lg sm:text-xl mb-4 flex items-center gap-2 text-sky-400">
-      <span>1. الإعدادات والحساب</span>
-    </h2>
-
-    <div class="grid grid-cols-2 gap-3 text-sm">
-      <label class="col-span-2 text-slate-300 font-semibold">سلسلة المقطع والمقاس</label>
-      <select id="series" class="rounded-lg border border-slate-700 bg-slate-900/70 px-3 py-2 focus:outline-none focus:ring-1 focus:ring-sky-400">
-        <option value="HEA">HEA</option>
-        <option value="HEB" selected>HEB</option>
-        <option value="HEM">HEM</option>
-      </select>
-      <select id="size" class="rounded-lg border border-slate-700 bg-slate-900/70 px-3 py-2 focus:outline-none focus:ring-1 focus:ring-sky-400"></select>
-
-      <label class="col-span-2 text-slate-300 font-semibold mt-2">طريقة القص</label>
-      <div class="col-span-2 flex flex-wrap gap-3 text-xs text-slate-200 bg-slate-800/40 p-2 rounded-lg">
-        <label class="inline-flex items-center gap-1 cursor-pointer">
-          <input type="radio" name="cutWings" value="top" checked class="accent-sky-400">
-          <span>قص العلوي (انحناء للأعلى)</span>
-        </label>
-        <label class="inline-flex items-center gap-1 cursor-pointer">
-          <input type="radio" name="cutWings" value="bottom" class="accent-sky-400">
-          <span>قص السفلي (انحناء للأسفل)</span>
-        </label>
-      </div>
-
-      <label class="col-span-2 text-slate-300 font-semibold mt-2 flex justify-between">
-        <span>زاوية الانحناء المطلوبة (θ)</span>
-        <span id="angleVal" class="text-sky-400">30°</span>
-      </label>
-      <div class="col-span-2 flex items-center gap-3">
-        <input id="angleRange" type="range" min="0" max="90" step="0.5" value="30"/>
-      </div>
-
-      <div class="col-span-2 mt-4 p-3 rounded-xl border border-slate-700 bg-slate-900/80 text-xs leading-loose">
-        <div class="flex justify-between border-b border-slate-700 pb-1 mb-1">
-          <span class="text-slate-400">عرض الجناح (b):</span>
-          <span id="resB" class="font-bold">-- mm</span>
-        </div>
-        <div class="flex justify-between items-center">
-          <span class="text-slate-400">قيمة القص المطلوبة (Δ):</span>
-          <span id="resCut" class="text-emerald-400 font-bold text-sm">-- mm</span>
-        </div>
-        <div class="text-[10px] text-slate-500 mt-1">
-          * يتم قص هذه القيمة من طرف الجناح المحدد لجعل القطعتين تطبقان بزاوية <span id="resAng">--</span>.
-        </div>
+  <aside class="glass rounded-2xl p-5 h-fit">
+    <h2 class="font-bold text-lg mb-4 text-sky-400">1. الإعدادات</h2>
+    
+    <div class="mb-4">
+      <label class="block text-xs text-slate-400 mb-1">نوع المقطع</label>
+      <div class="flex gap-2">
+        <select id="series" class="flex-1 bg-slate-800 border border-slate-600 rounded px-2 py-2 outline-none focus:border-sky-500">
+          <option value="HEA">HEA</option>
+          <option value="HEB" selected>HEB</option>
+          <option value="HEM">HEM</option>
+        </select>
+        <select id="size" class="flex-1 bg-slate-800 border border-slate-600 rounded px-2 py-2 outline-none focus:border-sky-500"></select>
       </div>
     </div>
 
-    <button id="btnReset" class="mt-4 w-full py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs border border-slate-600 transition">إعادة الضبط</button>
+    <div class="stat-box mb-4 text-xs grid grid-cols-2 gap-2">
+      <div>
+        <span class="block text-slate-500">الارتفاع (h)</span>
+        <span id="dispH" class="font-mono text-sky-300 text-sm">--</span>
+      </div>
+      <div>
+        <span class="block text-slate-500">العرض (b)</span>
+        <span id="dispB" class="font-mono text-sky-300 text-sm">--</span>
+      </div>
+    </div>
+
+    <div class="mb-5">
+      <label class="block text-xs text-slate-400 mb-2">اتجاه الانحناء</label>
+      <div class="flex flex-col gap-2 bg-slate-800/50 p-2 rounded border border-slate-700">
+        <label class="flex items-center gap-2 cursor-pointer">
+          <input type="radio" name="bendDir" value="up" checked class="accent-sky-500">
+          <span class="text-sm">انحناء للأعلى (Valley)</span>
+        </label>
+        <label class="flex items-center gap-2 cursor-pointer">
+          <input type="radio" name="bendDir" value="down" class="accent-sky-500">
+          <span class="text-sm">انحناء للأسفل (Roof)</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="mb-6">
+      <div class="flex justify-between mb-2">
+        <label class="text-xs text-slate-400">زاوية التجميع (θ)</label>
+        <span id="dispAngle" class="text-sky-400 font-bold text-sm">0°</span>
+      </div>
+      <input id="angleRange" type="range" min="0" max="60" step="0.5" value="30">
+    </div>
+
+    <div class="bg-emerald-900/20 border border-emerald-500/30 rounded-xl p-4 text-center">
+      <div class="text-xs text-emerald-200/70 mb-1">قيمة القص المطلوبة (Δ)</div>
+      <div id="finalCut" class="text-2xl font-bold text-emerald-400 font-mono">0.0 mm</div>
+      <div class="text-[10px] text-slate-400 mt-2 leading-tight">
+        يتم إزالة هذه القيمة من الجناح (العلوي أو السفلي) في كلا القطعتين لتحقيق الزاوية.
+      </div>
+    </div>
+    
+    <button id="btnReset" class="mt-4 w-full py-2 text-xs bg-slate-700 hover:bg-slate-600 rounded text-slate-300">إعادة تعيين</button>
+  </aside>
+
+  <section class="flex flex-col gap-4">
+    
+    <div class="glass rounded-2xl p-1 flex-1 min-h-[250px] flex flex-col">
+      <div class="px-4 py-2 border-b border-slate-700/50 flex justify-between items-center">
+        <h3 class="font-semibold text-sm text-slate-300">① وجه القطع (المقطع العرضي)</h3>
+        <span class="text-[10px] text-slate-500">كيف ترى المقطع أثناء القص</span>
+      </div>
+      <div id="viewSection" class="flex-1 relative canvas-container rounded-b-xl"></div>
+    </div>
+
+    <div class="glass rounded-2xl p-1 flex-1 min-h-[300px] flex flex-col">
+      <div class="px-4 py-2 border-b border-slate-700/50 flex justify-between items-center">
+        <h3 class="font-semibold text-sm text-slate-300">② التجميع (مسقط جانبي)</h3>
+        <span class="text-[10px] text-slate-500">شكل الوصلة من جانب العصب (Web)</span>
+      </div>
+      <div id="viewElevation" class="flex-1 relative canvas-container rounded-b-xl"></div>
+    </div>
+
   </section>
 
-  <section class="glass rounded-2xl shadow-xl border border-slate-700/70 p-4 sm:p-5 flex flex-col">
-    <div class="flex items-center justify-between mb-4">
-      <h2 class="font-semibold text-lg sm:text-xl text-emerald-400">2. المعاينة الهندسية</h2>
-      <div class="bg-slate-900/70 border border-slate-700/80 rounded-full px-1 py-0.5 flex items-center gap-1 text-[11px]">
-        <button id="tabSingle" class="tab-btn tab-btn-active">قطعة واحدة</button>
-        <button id="tabJoint" class="tab-btn">الجمع (الزاوية)</button>
-      </div>
-    </div>
-
-    <div class="flex-1 border border-slate-700/70 rounded-2xl bg-[#0f172a] relative overflow-hidden flex items-center justify-center min-h-[300px]">
-      <div class="absolute inset-0 opacity-10" style="background-image: linear-gradient(#334155 1px, transparent 1px), linear-gradient(90deg, #334155 1px, transparent 1px); background-size: 20px 20px;"></div>
-      
-      <div id="canvasWrapper" class="z-10 transition-all duration-500"></div>
-    </div>
-
-    <p id="visualHint" class="text-xs text-slate-400 mt-3 text-center">
-      حرك شريط الزاوية لترى التأثير.
-    </p>
-  </section>
 </main>
 
 <script>
-  const HE_DATA = {
-    HEA:{100:{b:100},120:{b:120},140:{b:140},160:{b:160},180:{b:180},200:{b:200},220:{b:220},240:{b:240},260:{b:260},280:{b:280},300:{b:300}},
-    HEB:{100:{b:100},120:{b:120},140:{b:140},160:{b:160},180:{b:180},200:{b:200},220:{b:220},240:{b:240},260:{b:260},280:{b:280},300:{b:300}},
-    HEM:{100:{b:120},120:{b:120},140:{b:140},160:{b:160},180:{b:180},200:{b:200},220:{b:220},240:{b:240},260:{b:260},280:{b:260},300:{b:300}}
+  // أبعاد تقريبية (الارتفاع h هو الأهم هنا)
+  const DB = {
+    HEA: {100:{h:96,b:100}, 120:{h:114,b:120}, 140:{h:133,b:140}, 160:{h:152,b:160}, 180:{h:171,b:180}, 200:{h:190,b:200}, 220:{h:210,b:220}, 240:{h:230,b:240}, 260:{h:250,b:260}, 280:{h:270,b:280}, 300:{h:290,b:300}},
+    HEB: {100:{h:100,b:100}, 120:{h:120,b:120}, 140:{h:140,b:140}, 160:{h:160,b:160}, 180:{h:180,b:180}, 200:{h:200,b:200}, 220:{h:220,b:220}, 240:{h:240,b:240}, 260:{h:260,b:260}, 280:{h:280,b:280}, 300:{h:300,b:300}},
+    HEM: {100:{h:120,b:106}, 120:{h:140,b:126}, 140:{h:160,b:146}, 160:{h:180,b:166}, 180:{h:200,b:186}, 200:{h:220,b:206}, 220:{h:240,b:226}, 240:{h:270,b:248}, 260:{h:290,b:268}, 280:{h:310,b:288}, 300:{h:340,b:310}}
   };
 
-  // Elements
   const $series = document.getElementById('series');
   const $size = document.getElementById('size');
-  const $angleRange = document.getElementById('angleRange');
-  const $angleVal = document.getElementById('angleVal');
-  const $resB = document.getElementById('resB');
-  const $resCut = document.getElementById('resCut');
-  const $resAng = document.getElementById('resAng');
-  const $canvasWrapper = document.getElementById('canvasWrapper');
-  const $tabSingle = document.getElementById('tabSingle');
-  const $tabJoint = document.getElementById('tabJoint');
-  const $btnReset = document.getElementById('btnReset');
-  const $themeToggle = document.getElementById('themeToggle');
-
-  let currentView = 'single'; // 'single' or 'joint'
-
-  function populateSizes(){
+  const $angle = document.getElementById('angleRange');
+  
+  // Update Size Options
+  function popSizes(){
     const s = $series.value;
-    const sizes = Object.keys(HE_DATA[s] || {}).map(Number).sort((a,b)=>a-b);
-    $size.innerHTML = sizes.map(v=>`<option value="${v}" ${v===180?'selected':''}>${v}</option>`).join('');
+    const keys = Object.keys(DB[s]).map(Number).sort((a,b)=>a-b);
+    $size.innerHTML = keys.map(k => `<option value="${k}" ${k===180?'selected':''}>${k}</option>`).join('');
+    calc();
   }
 
-  function getState(){
-    const s = $series.value;
-    const sz = Number($size.value);
-    const angle = Number($angleRange.value);
-    const cutMode = document.querySelector('input[name="cutWings"]:checked').value;
-    
-    // Get Profile Data (approximate if missing)
-    const data = (HE_DATA[s] && HE_DATA[s][sz]) ? HE_DATA[s][sz] : {b: sz}; 
+  function calc(){
+    const series = $series.value;
+    const sz = $size.value;
+    const data = DB[series][sz];
+    const h = data.h;
     const b = data.b;
-    
-    // Calculate Cut (Delta)
-    // Trig: tan(theta/2) = cut / b  ==> cut = b * tan(theta/2)
-    // This creates the miter needed on ONE piece to form half the angle, 
-    // or the cut on ONE flange to bend the beam.
-    // For bending a beam: Gap = b * tan(angle). 
-    // We apply half cut to each piece if joining two, OR full cut if bending one.
-    // Let's assume we are joining TWO pieces, each cut by half the angle?
-    // No, standard practice: To join two beams at 30deg, each is cut at 15deg.
-    // The linear cut length (Delta) = width * tan(15deg).
-    
-    const halfAngleRad = (angle/2) * (Math.PI/180);
-    const cutVal = b * Math.tan(halfAngleRad);
+    const angle = parseFloat($angle.value);
+    const bendDir = document.querySelector('input[name="bendDir"]:checked').value;
 
-    return { s, sz, b, angle, cutMode, cutVal };
+    // 1. الحساب الهندسي الصحيح
+    // لحساب القص المطلوب لزاوية ثيتا، نستخدم ظل الزاوية مع الارتفاع
+    // Cut = h * tan(theta/2) (لكل قطعة)
+    const radHalf = (angle / 2) * (Math.PI / 180);
+    const delta = h * Math.tan(radHalf);
+
+    // Update UI Text
+    document.getElementById('dispH').textContent = h + ' mm';
+    document.getElementById('dispB').textContent = b + ' mm';
+    document.getElementById('dispAngle').textContent = angle.toFixed(1) + '°';
+    document.getElementById('finalCut').textContent = delta.toFixed(1) + ' mm';
+
+    drawSection(series, sz, b, h, delta, bendDir);
+    drawElevation(series, sz, b, h, angle, bendDir);
   }
 
-  function updateUI(){
-    const st = getState();
-    $angleVal.textContent = st.angle.toFixed(1) + '°';
-    $resB.textContent = st.b + ' mm';
-    $resCut.textContent = st.cutVal.toFixed(1) + ' mm';
-    $resAng.textContent = st.angle.toFixed(1) + '°';
+  // رسم المقطع العرضي (وجه القص)
+  function drawSection(s, sz, b, h, delta, dir){
+    const el = document.getElementById('viewSection');
+    const W = el.clientWidth || 300;
+    const H_cvs = el.clientHeight || 250;
+    
+    // Scale Logic
+    const pad = 40;
+    const scale = Math.min((W-pad)/b, (H_cvs-pad)/h);
+    const cx = W/2; 
+    const cy = H_cvs/2;
+    
+    const sw = b * scale; // scaled width
+    const sh = h * scale; // scaled height
+    const ft = Math.max(6, sh * 0.1); // flange thickness visual
+    const wt = Math.max(4, sw * 0.08); // web thickness visual
+    
+    // Coords relative to center
+    const xL = cx - sw/2;
+    const xR = cx + sw/2;
+    const yT = cy - sh/2;
+    const yB = cy + sh/2;
 
-    if(currentView === 'single') renderSingle(st);
-    else renderJoint(st);
+    // Highlight Logic: Which flange is cut?
+    // If bending UP (Valley), top flanges touch, bottom gap opens? 
+    // NO. To bend UP (ends go up), you cut the TOP flange shorter.
+    // Wait, if you cut top flange shorter, and bring faces together, the beam curves UP.
+    // So: UP (Valley) = Cut Top.
+    // DOWN (Roof) = Cut Bottom.
+    
+    const cutTop = (dir === 'up');
+    
+    let svg = `<svg width="100%" height="100%">
+      <defs>
+        <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#475569"/><stop offset="1" stop-color="#1e293b"/></linearGradient>
+      </defs>
+      <line x1="${xL-10}" y1="${yT}" x2="${xL-10}" y2="${yB}" stroke="#64748b" />
+      <text x="${xL-15}" y="${cy}" fill="#94a3b8" font-size="10" transform="rotate(-90 ${xL-15} ${cy})" text-anchor="middle">h=${h}</text>
+
+      <path d="
+        M ${xL} ${yT} H ${xR} V ${yT+ft} H ${cx+wt/2} V ${yB-ft} H ${xR} V ${yB} H ${xL} V ${yB-ft} H ${cx-wt/2} V ${yT+ft} H ${xL} Z
+      " fill="url(#g1)" stroke="#94a3b8" stroke-width="1"/>
+      
+      ${cutTop ? 
+        `<rect x="${xL}" y="${yT-2}" width="${sw}" height="${ft+4}" fill="none" stroke="#f43f5e" stroke-width="2" stroke-dasharray="4 2"/>
+         <text x="${cx}" y="${yT-10}" fill="#f43f5e" font-size="12" text-anchor="middle" font-weight="bold">قص هذا الجناح (Δ)</text>` 
+        : 
+        `<rect x="${xL}" y="${yB-ft-2}" width="${sw}" height="${ft+4}" fill="none" stroke="#f43f5e" stroke-width="2" stroke-dasharray="4 2"/>
+         <text x="${cx}" y="${yB+20}" fill="#f43f5e" font-size="12" text-anchor="middle" font-weight="bold">قص هذا الجناح (Δ)</text>`
+      }
+    </svg>`;
+    el.innerHTML = svg;
   }
 
-  // --- RENDER LOGIC ---
+  // رسم المسقط الجانبي (التجميع)
+  function drawElevation(s, sz, b, h, angle, dir){
+    const el = document.getElementById('viewElevation');
+    const W = el.clientWidth || 300;
+    const H_cvs = el.clientHeight || 300;
+    
+    const cx = W/2;
+    const cy = H_cvs/2;
+    
+    // Visual scaling
+    const scale = 0.6;
+    const beamLen = 140;
+    const vH = h * scale; 
+    const vF = Math.max(5, vH*0.1);
 
-  function renderSingle(st){
-    const w = 400, h = 300;
-    const cx = w/2, cy = h/2;
-    const scale = 0.8; // simple scale
-    const H = 160 * scale; // visual height
-    const B = (st.b * scale); 
-    const flangeTh = 14;
-    const webTh = 8;
+    // Rotation Logic
+    const halfA = angle / 2;
+    // If bending UP: Left rotates CCW, Right rotates CW. Pivot is at BOTTOM.
+    // If bending DOWN: Left rotates CW, Right rotates CCW. Pivot is at TOP.
     
-    // Coordinates
-    const topY = cy - H/2;
-    const botY = cy + H/2;
-    const leftX = cx - B/2;
-    const rightX = cx + B/2;
-
-    // Calculate Cut Visualization
-    // Cut is usually displayed as a chamfer on the profile end in front view
-    // But here "Front View" usually implies looking at the 'I' shape.
-    // The cut we calculated (Delta) is how much we shorten the flange.
-    // Let's visualize the Side Profile of the beam end? 
-    // The user asked for Front View of the Joint.
-    // Let's draw the Cross Section (I-beam) and lines showing where the cut is.
+    let rotL, rotR, pivotY;
     
-    // Converting 'cutVal' to pixels relative to Width B
-    // visualCut = (cutVal / actualWidth) * visualWidth
-    const pxCut = (st.cutVal / st.b) * B; 
-    
-    // Logic: We show the beam face. 
-    // If Top Cut: The Top Flange is shorter than the Bottom Flange.
-    // In a 2D projection of the face, this looks like the top edge is recessed.
-    // To make it clear, let's draw the beam from the SIDE/TOP (Plan/Elevation)?
-    // No, the previous app drew the "I" shape. 
-    // Let's draw the "I" shape, but indicate the cut with a red line showing the slope.
-    
-    // Slope line:
-    let x1, y1, x2, y2;
-    if(st.cutMode === 'top'){
-        // Cut is on top. Line goes from (Right - Cut) at Top to (Right) at Bottom.
-        // Assuming we keep the bottom length fixed.
-        x1 = rightX - pxCut; 
-        y1 = topY;
-        x2 = rightX;
-        y2 = botY;
+    if(dir === 'up') {
+      pivotY = cy + vH/2; // Bottom
+      rotL = -halfA;
+      rotR = halfA;
     } else {
-        x1 = rightX;
-        y1 = topY;
-        x2 = rightX - pxCut;
-        y2 = botY;
+      pivotY = cy - vH/2; // Top
+      rotL = halfA;
+      rotR = -halfA;
     }
 
-    const svg = `
-      <svg width="100%" height="100%" viewBox="0 0 ${w} ${h}">
-        <defs>
-          <linearGradient id="gradMetal" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="#64748b" />
-            <stop offset="50%" stop-color="#94a3b8" />
-            <stop offset="100%" stop-color="#475569" />
-          </linearGradient>
-        </defs>
-        
-        <g transform="translate(0,0)">
-           <rect x="${leftX}" y="${topY}" width="${B}" height="${flangeTh}" fill="url(#gradMetal)" stroke="#e2e8f0" stroke-width="1"/>
-           <rect x="${leftX}" y="${botY-flangeTh}" width="${B}" height="${flangeTh}" fill="url(#gradMetal)" stroke="#e2e8f0" stroke-width="1"/>
-           <rect x="${cx-webTh/2}" y="${topY+flangeTh}" width="${webTh}" height="${H-2*flangeTh}" fill="#cbd5e1" stroke="#94a3b8"/>
+    const col = "#334155";
+    const strk = "#64748b";
+
+    let svg = `<svg width="100%" height="100%">
+      <defs>
+        <marker id="dot" markerWidth="6" markerHeight="6" refX="3" refY="3"><circle cx="3" cy="3" r="2" fill="#38bdf8"/></marker>
+      </defs>
+      
+      <circle cx="${cx}" cy="${pivotY}" r="3" fill="#38bdf8" />
+
+      <g transform="translate(${cx},${pivotY}) rotate(${rotL})">
+        <g transform="translate(-${beamLen}, ${dir==='up' ? -vH : 0})">
+          <rect x="0" y="0" width="${beamLen}" height="${vH}" fill="${col}" stroke="${strk}"/>
+          <rect x="0" y="0" width="${beamLen}" height="${vF}" fill="#475569"/>
+          <rect x="0" y="${vH-vF}" width="${beamLen}" height="${vF}" fill="#475569"/>
+          <line x1="${beamLen}" y1="0" x2="${beamLen}" y2="${vH}" stroke="#f43f5e" stroke-width="2"/>
         </g>
+      </g>
 
-        <line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y1}" stroke="#f43f5e" stroke-width="3" />
-        <line x1="${x2}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#f43f5e" stroke-width="3" stroke-dasharray="4 2"/>
-        <line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#f43f5e" stroke-width="3" />
-        
-        <path d="M${x1},${y1} L${x2},${y1} L${x2},${y2} L${x1},${y1}" fill="rgba(244, 63, 94, 0.3)" />
+      <g transform="translate(${cx},${pivotY}) rotate(${rotR})">
+        <g transform="translate(0, ${dir==='up' ? -vH : 0})">
+          <rect x="0" y="0" width="${beamLen}" height="${vH}" fill="${col}" stroke="${strk}"/>
+          <rect x="0" y="0" width="${beamLen}" height="${vF}" fill="#475569"/>
+          <rect x="0" y="${vH-vF}" width="${beamLen}" height="${vF}" fill="#475569"/>
+          <line x1="0" y1="0" x2="0" y2="${vH}" stroke="#f43f5e" stroke-width="2"/>
+        </g>
+      </g>
 
-        <text x="${cx}" y="${h-20}" fill="#94a3b8" font-size="12" text-anchor="middle">قطعة مفردة - المنطقة الحمراء هي الجزء المزال</text>
-        <text x="${rightX}" y="${topY-10}" fill="#f43f5e" font-size="12" text-anchor="end">Δ = ${st.cutVal.toFixed(1)}</text>
-      </svg>
-    `;
-    $canvasWrapper.innerHTML = svg;
+      <text x="${cx}" y="${dir==='up'? cy-40 : cy+40}" fill="#38bdf8" font-weight="bold" text-anchor="middle">${angle.toFixed(1)}°</text>
+
+    </svg>`;
+    el.innerHTML = svg;
   }
 
-  function renderJoint(st){
-    // THIS IS THE DEEP FIX
-    // We need to draw two beams rotated by angle/2 around a pivot point.
-    
-    const w = 500, h = 350;
-    const cx = w/2, cy = h/2;
-    
-    const beamLen = 160; // Visual length of one arm
-    const H = 100; // Visual Profile Height
-    const flangeTh = 12;
-    
-    // Pivot Logic
-    // If we cut TOP flange, the gap is at TOP. They touch at BOTTOM. Pivot = Bottom.
-    // If we cut BOTTOM flange, gap is at BOTTOM. Pivot = Top.
-    
-    let pivotYOffset = 0;
-    let rotationDirection = 1; // 1 for bend UP (concave up), -1 for bend DOWN
-    
-    // Visual correction: 
-    // If Cut Mode Top -> Gap at Top -> Beams bend UP relative to flat? No.
-    // Imagine a straight beam. Cut wedge from top. Bend ends UP to close gap.
-    // So shape is V (like a valley) or ^ (like a roof)?
-    // If you remove top material and close gap, the beam bends UP (ends go up, joint goes down). V shape.
-    // Let's verify: Length of bottom > Length of top. 
-    // Curvature = 1/R. Center of curvature is on the side of the shorter fiber.
-    // So Center of curvature is ABOVE the beam. Beam smiles. :)
-    
-    // Actually simpler:
-    // Let's draw them meeting at the pivot.
-    
-    if(st.cutMode === 'top'){
-        pivotYOffset = H/2; // Pivot at Bottom Flange (Since y grows down, cy + H/2)
-        // Bends UP. Left beam rotates CW, Right beam rotates CCW?
-        // No, to form a "Smile" (Ends up), Left rotates CCW (-ang), Right CW (+ang).
-    } else {
-        pivotYOffset = -H/2; // Pivot at Top Flange
-        // Bends DOWN (Frown). Left rotates CW (+ang), Right CCW (-ang).
-    }
-
-    const pivotX = cx;
-    const pivotY = cy + pivotYOffset;
-    
-    const halfAng = st.angle / 2;
-    let rotL, rotR;
-    
-    if(st.cutMode === 'top'){
-        rotL = -halfAng; 
-        rotR = halfAng;
-    } else {
-        rotL = halfAng;
-        rotR = -halfAng;
-    }
-
-    // Helper to draw a beam arm (facing right, origin at bottom-right or top-right based on pivot)
-    // We draw it "straight" then rotate the whole group.
-    // We need the "Join face" to be at x=0. The beam extends to x = -beamLen (for left) or +beamLen (for right).
-    
-    const beamColor = "#64748b";
-    const cutColor = "#f43f5e"; // color of the joint line
-    
-    // We will generate SVG groups rotated around (pivotX, pivotY)
-    
-    const svg = `
-      <svg width="100%" height="100%" viewBox="0 0 ${w} ${h}">
-        <defs>
-          <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-            <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#000" flood-opacity="0.3"/>
-          </filter>
-        </defs>
-
-        <line x1="${cx}" y1="0" x2="${cx}" y2="${h}" stroke="#334155" stroke-dasharray="4 4" />
-        
-        <circle cx="${pivotX}" cy="${pivotY}" r="4" fill="#38bdf8" z-index="100"/>
-
-        <g transform="translate(${pivotX}, ${pivotY}) rotate(${rotL})">
-            <g transform="translate(-${beamLen}, ${st.cutMode === 'top' ? -H : 0})">
-                <rect x="0" y="0" width="${beamLen}" height="${H}" fill="${beamColor}" stroke="#94a3b8" filter="url(#glow)"/>
-                <rect x="0" y="0" width="${beamLen}" height="${flangeTh}" fill="#94a3b8" />
-                <rect x="0" y="${H-flangeTh}" width="${beamLen}" height="${flangeTh}" fill="#94a3b8" />
-                <line x1="0" y1="${H/2}" x2="${beamLen}" y2="${H/2}" stroke="#475569" stroke-dasharray="10 5"/>
-                
-                <line x1="${beamLen}" y1="0" x2="${beamLen}" y2="${H}" stroke="${cutColor}" stroke-width="2"/>
-            </g>
-        </g>
-
-        <g transform="translate(${pivotX}, ${pivotY}) rotate(${rotR})">
-            <g transform="translate(0, ${st.cutMode === 'top' ? -H : 0})">
-                <rect x="0" y="0" width="${beamLen}" height="${H}" fill="${beamColor}" stroke="#94a3b8" filter="url(#glow)"/>
-                <rect x="0" y="0" width="${beamLen}" height="${flangeTh}" fill="#94a3b8" />
-                <rect x="0" y="${H-flangeTh}" width="${beamLen}" height="${flangeTh}" fill="#94a3b8" />
-                 <line x1="0" y1="${H/2}" x2="${beamLen}" y2="${H/2}" stroke="#475569" stroke-dasharray="10 5"/>
-                
-                <line x1="0" y1="0" x2="0" y2="${H}" stroke="${cutColor}" stroke-width="2"/>
-            </g>
-        </g>
-
-        <path d="M ${cx} ${pivotY + (st.cutMode==='top'?-40:40)} 
-                 Q ${cx + (rotR*1.5)} ${pivotY + (st.cutMode==='top'?-40:40) + (rotR)} 
-                   ${cx + Math.sin(rotR*Math.PI/180)*60} ${pivotY + (st.cutMode==='top'?-40:40)}" 
-              fill="none" stroke="#38bdf8" stroke-width="2" />
-              
-        <text x="${cx}" y="${pivotY + (st.cutMode==='top' ? -60 : 70)}" fill="#38bdf8" font-weight="bold" text-anchor="middle" font-size="14">
-            ${st.angle.toFixed(1)}°
-        </text>
-        
-        <text x="${cx}" y="${h-20}" fill="#64748b" font-size="11" text-anchor="middle">
-            النقطة الزرقاء تمثل مفصل التجميع (محور الدوران)
-        </text>
-
-      </svg>
-    `;
-    $canvasWrapper.innerHTML = svg;
-  }
-
-  // --- EVENTS ---
-  $series.addEventListener('change', ()=>{ populateSizes(); updateUI(); });
-  $size.addEventListener('change', updateUI);
-  $angleRange.addEventListener('input', updateUI);
-  document.querySelectorAll('input[name="cutWings"]').forEach(el => el.addEventListener('change', updateUI));
-  
-  $tabSingle.addEventListener('click', ()=>{ currentView='single'; $tabSingle.classList.add('tab-btn-active'); $tabJoint.classList.remove('tab-btn-active'); updateUI(); });
-  $tabJoint.addEventListener('click', ()=>{ currentView='joint'; $tabJoint.classList.add('tab-btn-active'); $tabSingle.classList.remove('tab-btn-active'); updateUI(); });
-  
-  $btnReset.addEventListener('click', ()=>{
-     $series.value = 'HEB'; populateSizes(); $size.value=180; 
-     $angleRange.value=30;
-     document.querySelector('input[name="cutWings"][value="top"]').checked=true;
-     updateUI();
-  });
-
-  $themeToggle.addEventListener('click', () => {
-    document.body.classList.toggle('theme-dark');
-    document.body.classList.toggle('theme-light');
+  // Events
+  $series.addEventListener('change', ()=>{popSizes(); calc();});
+  $size.addEventListener('change', calc);
+  $angle.addEventListener('input', calc);
+  document.querySelectorAll('input[name="bendDir"]').forEach(r => r.addEventListener('change', calc));
+  document.getElementById('btnReset').addEventListener('click', ()=>{
+    $angle.value=0; calc();
   });
 
   // Init
-  populateSizes();
-  $size.value = 180;
-  updateUI();
+  popSizes();
+  calc();
 
 </script>
 </body>

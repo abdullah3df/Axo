@@ -109,7 +109,6 @@
 </head>
 <body class="text-slate-100 theme-dark">
 
-<!-- HEADER -->
 <header class="border-b border-slate-700/60 bg-slate-900/85 backdrop-blur sticky top-0 z-20">
   <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
     <div>
@@ -123,13 +122,11 @@
     </div>
 
     <div class="flex items-center gap-3">
-      <!-- language -->
       <div class="flex items-center gap-1 bg-slate-900/60 border border-slate-600/70 rounded-2xl p-1 text-xs">
         <button class="lang-btn px-2 py-1 rounded-xl hover:bg-sky-500/20" data-lang="ar" title="العربية">عربي</button>
         <button class="lang-btn px-2 py-1 rounded-xl hover:bg-sky-500/20" data-lang="en" title="English">EN</button>
         <button class="lang-btn px-2 py-1 rounded-xl hover:bg-sky-500/20" data-lang="de" title="Deutsch">DE</button>
       </div>
-      <!-- theme -->
       <button id="themeToggle"
               class="w-9 h-9 rounded-full border border-slate-600 flex items-center justify-center text-lg bg-slate-900/70 hover:bg-slate-800"
               title="Toggle light / dark">☾</button>
@@ -137,10 +134,8 @@
   </div>
 </header>
 
-<!-- MAIN -->
 <main class="max-w-6xl mx-auto px-4 py-6 sm:py-10 grid grid-cols-1 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1.15fr)] gap-6">
 
-  <!-- SETTINGS PANEL -->
   <section class="glass rounded-2xl shadow-xl shadow-sky-950/50 border border-slate-700/70 p-4 sm:p-5">
     <h2 class="font-semibold text-lg sm:text-xl mb-4 flex items-center gap-2">
       <span class="inline-flex h-6 w-6 rounded-full bg-sky-500/20 border border-sky-400/60 items-center justify-center text-[11px]">1</span>
@@ -149,7 +144,6 @@
 
     <div class="grid grid-cols-2 gap-3 text-sm">
 
-      <!-- SERIES -->
       <label class="col-span-2 text-slate-300 flex flex-col gap-0.5">
         <span class="field-label-main" data-i18n="seriesLabel">سلسلة المقطع</span>
         <span class="field-label-sub text-sky-300/80" data-i18n="seriesHint">HEA / HEB / HEM</span>
@@ -161,7 +155,6 @@
         <option value="HEM">HEM</option>
       </select>
 
-      <!-- SIZE -->
       <label class="col-span-2 text-slate-300 flex flex-col gap-0.5 mt-1">
         <span class="field-label-main" data-i18n="sizeLabel">المقاس</span>
         <span class="field-label-sub text-slate-400" data-i18n="sizeHint">HE 100 … HE 400 (تقريبي)</span>
@@ -170,7 +163,6 @@
               class="col-span-2 rounded-lg border border-slate-700 bg-slate-900/70 px-3 py-2 focus:outline-none focus:ring-1 focus:ring-sky-400">
       </select>
 
-      <!-- CUT WINGS MODE -->
       <label class="col-span-2 text-slate-300 flex flex-col gap-0.5 mt-1">
         <span class="field-label-main" data-i18n="cutWingsLabel">الأجنحة المعتمدة في حساب القص من الزاوية</span>
         <span class="field-label-sub text-slate-400" data-i18n="cutWingsHint">زاوية التجميع تعتمد على فرق القص بين العلوي والسفلي</span>
@@ -190,7 +182,6 @@
         </label>
       </div>
 
-      <!-- ANGLE INPUT -->
       <label class="col-span-2 text-slate-300 flex flex-col gap-0.5 mt-1">
         <span class="field-label-main" data-i18n="angleLabel">زاوية التجميع المستهدفة بين قطعتين θ (درجة)</span>
         <span class="field-label-sub text-slate-400" data-i18n="angleHint">تُستخدم فقط لحساب قيمة قص مقترحة — يمكنك تعديل القص يدوياً</span>
@@ -204,7 +195,6 @@
         </div>
       </div>
 
-      <!-- CUT VALUES -->
       <label class="col-span-2 text-slate-300 flex flex-col gap-0.5 mt-1">
         <span class="field-label-main" data-i18n="deltaSectionLabel">قص الجناح (لكل قطعة قبل التجميع) mm</span>
         <span class="field-label-sub text-slate-400" data-i18n="deltaSectionHint">
@@ -232,7 +222,6 @@
         </div>
       </div>
 
-      <!-- VISUAL SLOPE -->
       <label class="col-span-2 text-slate-300 flex items-center justify-between mt-3">
         <span class="field-label-main" data-i18n="slopeSectionLabel">ميلان خط القص في الرسم (من العمودي)</span>
         <span class="field-label-sub text-amber-300 text-[10px]" data-i18n="slopeSectionHint">تمثيل بصري فقط — لا يغيّر الحساب الهندسي</span>
@@ -263,7 +252,6 @@
         </div>
       </div>
 
-      <!-- TILT DIR -->
       <label class="col-span-2 text-slate-300 flex flex-col gap-0.5 mt-2">
         <span class="field-label-main" data-i18n="tiltDirSectionLabel">اتجاه ميلان الخط (رسم فقط)</span>
         <span class="field-label-sub text-slate-400" data-i18n="tiltDirSectionHint">نحو الداخل أو الخارج — بلا تأثير على الحساب</span>
@@ -299,10 +287,8 @@
 
     </div>
 
-    <!-- READOUT -->
     <div id="readout" class="mt-5 rounded-xl border border-slate-700/80 bg-slate-900/70 px-3.5 py-3 text-sm"></div>
 
-    <!-- BUTTONS -->
     <div class="mt-4 flex flex-wrap gap-2">
       <button id="btnReset"
               class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs sm:text-sm border border-slate-600"
@@ -312,7 +298,6 @@
     <p id="theoryText" class="text-[11px] text-slate-400 mt-3 leading-relaxed"></p>
   </section>
 
-  <!-- PREVIEW PANEL -->
   <section class="glass rounded-2xl shadow-xl shadow-sky-950/50 border border-slate-700/70 p-4 sm:p-5 flex flex-col">
     <div class="flex items-center justify-between gap-2 mb-4">
       <div class="flex items-center gap-2">
@@ -320,7 +305,6 @@
         <h2 class="font-semibold text-lg sm:text-xl" data-i18n="panel2Title">المعاينة الأمامية — قطعة / قطعتان</h2>
       </div>
 
-      <!-- TABS -->
       <div class="bg-slate-900/70 border border-slate-700/80 rounded-full px-1 py-0.5 flex items-center gap-1 text-[11px]">
         <button id="tabSingle" class="tab-btn tab-btn-active" data-view="single">
           <span>①</span><span data-i18n="tabSingle">قطعة واحدة</span>
@@ -331,7 +315,6 @@
       </div>
     </div>
 
-    <!-- SINGLE PIECE VIEW -->
     <div id="viewSingle" class="flex-1 flex flex-col">
       <div class="flex-1 border border-slate-700/70 rounded-2xl bg-slate-900/70 px-3 py-4 flex items-center justify-center">
         <div id="frontWrapper"></div>
@@ -356,7 +339,6 @@
       </div>
     </div>
 
-    <!-- JOINT VIEW -->
     <div id="viewJoint" class="flex-1 flex flex-col view-hidden">
       <div class="flex-1 border border-slate-700/70 rounded-2xl bg-slate-900/70 px-3 py-4 flex items-center justify-center">
         <div id="jointWrapper"></div>
@@ -375,7 +357,6 @@
   <span data-i18n="footerRight">للتنفيذ العملي: اعتمد كتالوج المقاطع وتعليمات الورشة وقواعد السلامة.</span>
 </footer>
 
-<!-- I18N -->
 <script>
   const I18N = {
     ar: {
@@ -567,7 +548,6 @@
   };
 </script>
 
-<!-- LOGIC -->
 <script>
   // تقريب بيانات عرض الأجنحة b
   const HE_DATA = {
@@ -1009,33 +989,25 @@
 
         <g filter="url(#shadowJoint)">
 
-          <!-- القطعة اليسرى -->
           <g>
-            <!-- الجناح العلوي مقصوص من الداخل -->
             <rect x="${leftTopX1}" y="${tfy}"
                   width="${leftTopX2-leftTopX1}" height="${flangeTh}"
                   fill="url(#metalJoint)" stroke="#94a3b8" stroke-width="1"/>
-            <!-- الجناح السفلي مقصوص من الداخل -->
             <rect x="${leftBottomX1}" y="${bfy-flangeTh}"
                   width="${leftBottomX2-leftBottomX1}" height="${flangeTh}"
                   fill="url(#metalJoint)" stroke="#94a3b8" stroke-width="1"/>
-            <!-- العمود -->
             <rect x="${leftOuterX + flangeW/2 - webTh/2}" y="${tfy+flangeTh}"
                   width="${webTh}" height="${profileH-2*flangeTh}"
                   fill="url(#webJoint)" stroke="#94a3b8" stroke-width="1"/>
           </g>
 
-          <!-- القطعة اليمنى -->
           <g>
-            <!-- الجناح العلوي مقصوص من الداخل -->
             <rect x="${rightTopX1}" y="${tfy}"
                   width="${rightTopX2-rightTopX1}" height="${flangeTh}"
                   fill="url(#metalJoint)" stroke="#94a3b8" stroke-width="1"/>
-            <!-- الجناح السفلي مقصوص من الداخل -->
             <rect x="${rightBottomX1}" y="${bfy-flangeTh}"
                   width="${rightBottomX2-rightBottomX1}" height="${flangeTh}"
                   fill="url(#metalJoint)" stroke="#94a3b8" stroke-width="1"/>
-            <!-- العمود -->
             <rect x="${rightInnerX + flangeW/2 - webTh/2}" y="${tfy+flangeTh}"
                   width="${webTh}" height="${profileH-2*flangeTh}"
                   fill="url(#webJoint)" stroke="#94a3b8" stroke-width="1"/>
@@ -1043,15 +1015,12 @@
 
         </g>
 
-        <!-- فراغ بسيط بين القطعتين -->
         <rect x="${midX-gapPx/2}" y="${tfy}"
               width="${gapPx}" height="${profileH}"
               fill="transparent" stroke="rgba(148,163,184,0.3)" stroke-dasharray="4 4"/>
 
-        <!-- نقطة قياس تقريبية في منتصف الفراغ -->
         <circle cx="${midX}" cy="${cy}" r="2.5" fill="#f97373"/>
 
-        <!-- قوس الزاوية (رمزي) -->
         <path d="
           M ${arcX1} ${arcY1}
           A ${arcR} ${arcR} 0 0 0 ${arcX2} ${arcY2}
@@ -1083,12 +1052,18 @@
     renderJointFront(state);
   }
 
-  // EVENTS
-  [$series,$size].forEach(el=>{
-    el.addEventListener('input',()=>{
-      mode='angle';
-      calc();
-    });
+  // EVENTS - THIS SECTION WAS CORRECTED
+  // 1. فصلنا الحدث الخاص بـ Series ليقوم بتحديث القائمة
+  $series.addEventListener('change', () => {
+    populateSizes(); // <-- هذا السطر كان مفقوداً
+    mode = 'angle';
+    calc();
+  });
+
+  // 2. حدث منفصل للمقاس Size
+  $size.addEventListener('change', () => {
+    mode = 'angle';
+    calc();
   });
 
   $angle.addEventListener('input',()=>{
@@ -1217,4 +1192,4 @@
 </script>
 
 </body>
-  </html>
+</html>

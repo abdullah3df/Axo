@@ -3,292 +3,466 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>HE Cut Pro v23 — Correct Geometry</title>
+  <title>HE Corner Detail - Top View</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
-    html,body{ font-family:Cairo,system-ui,ui-sans-serif; }
-    svg,svg *{user-select:none}
-    body{ min-height:100vh; background:#0f172a; color:#e2e8f0; }
+    html,body{ font-family:Cairo,system-ui,sans-serif; background:#0f172a; color:#e2e8f0; }
     .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(148, 163, 184, 0.1); }
     input[type=range] { -webkit-appearance: none; width: 100%; height: 6px; background: #334155; border-radius: 5px; outline: none; }
     input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: #38bdf8; cursor: pointer; border: 2px solid #fff; }
-    .stat-box { background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(51, 65, 85, 0.5); border-radius: 8px; padding: 10px; }
-    .canvas-container { background-image: radial-gradient(#334155 1px, transparent 1px); background-size: 20px 20px; }
+    .blueprint-grid { 
+      background-color: #1e293b; 
+      background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
   </style>
 </head>
 <body>
 
 <header class="border-b border-slate-700 bg-slate-900/90 sticky top-0 z-20">
-  <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+  <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
     <h1 class="text-xl font-bold flex gap-2 items-center">
-      <span>HE Cut Pro</span>
-      <span class="text-emerald-400 text-sm bg-emerald-900/30 px-2 py-0.5 rounded">v23 Corrected</span>
+      <span>HE Corner Detail</span>
+      <span class="text-amber-400 text-xs border border-amber-500/50 px-2 py-0.5 rounded">Top View</span>
     </h1>
-    <div class="text-xs text-slate-400">حساب القص الرأسي (Elevation)</div>
+    <div class="text-xs text-slate-400 hidden sm:block">محاكاة تفصيليلة حسب المخطط (M = 1:2.5)</div>
   </div>
 </header>
 
-<main class="max-w-6xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-6">
+<main class="max-w-5xl mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-6">
 
-  <aside class="glass rounded-2xl p-5 h-fit">
-    <h2 class="font-bold text-lg mb-4 text-sky-400">1. الإعدادات</h2>
+  <aside class="glass rounded-2xl p-5 h-fit space-y-6">
     
-    <div class="mb-4">
-      <label class="block text-xs text-slate-400 mb-1">نوع المقطع</label>
+    <div>
+      <h3 class="text-sky-400 font-bold mb-3 flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-sky-400"></span> 1. اختيار المقطع
+      </h3>
       <div class="flex gap-2">
-        <select id="series" class="flex-1 bg-slate-800 border border-slate-600 rounded px-2 py-2 outline-none focus:border-sky-500">
-          <option value="HEA">HEA</option>
+        <select id="series" class="flex-1 bg-slate-800 border border-slate-600 rounded p-2 text-sm outline-none focus:border-sky-500">
           <option value="HEB" selected>HEB</option>
+          <option value="HEA">HEA</option>
           <option value="HEM">HEM</option>
         </select>
-        <select id="size" class="flex-1 bg-slate-800 border border-slate-600 rounded px-2 py-2 outline-none focus:border-sky-500"></select>
+        <select id="size" class="flex-1 bg-slate-800 border border-slate-600 rounded p-2 text-sm outline-none focus:border-sky-500">
+          </select>
+      </div>
+      <div class="mt-2 text-[10px] text-slate-400 flex justify-between px-1">
+        <span>العرض الأصلي (b): <b id="origB" class="text-slate-200">--</b></span>
+        <span>الارتفاع (h): <b id="origH" class="text-slate-200">--</b></span>
       </div>
     </div>
 
-    <div class="stat-box mb-4 text-xs grid grid-cols-2 gap-2">
-      <div>
-        <span class="block text-slate-500">الارتفاع (h)</span>
-        <span id="dispH" class="font-mono text-sky-300 text-sm">--</span>
+    <div>
+      <h3 class="text-emerald-400 font-bold mb-3 flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-400"></span> 2. زاوية الركن
+      </h3>
+      <div class="flex justify-between mb-1 text-xs text-slate-300">
+        <span>الزاوية الداخلية (Inner Angle)</span>
+        <span id="valAngle" class="font-mono text-emerald-300">127.6°</span>
       </div>
-      <div>
-        <span class="block text-slate-500">العرض (b)</span>
-        <span id="dispB" class="font-mono text-sky-300 text-sm">--</span>
+      <input id="angle" type="range" min="45" max="180" step="0.1" value="127.6">
+      <p class="text-[10px] text-slate-500 mt-1">حسب المخطط الزاوية تقريباً 127.6°</p>
+    </div>
+
+    <div>
+      <h3 class="text-amber-400 font-bold mb-3 flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-amber-400"></span> 3. قص الجناح (Coupiert)
+      </h3>
+      
+      <div class="bg-slate-800/50 p-3 rounded-lg border border-slate-700">
+        <div class="flex justify-between mb-2 text-xs">
+          <label class="text-slate-300">عرض الجناح الجديد (Cut Width)</label>
+          <span id="valCutWidth" class="font-mono text-amber-300 font-bold">-- mm</span>
+        </div>
+        <input id="cutWidth" type="range" min="50" max="300" step="1">
+        
+        <div class="mt-3 flex items-center justify-between text-[10px] text-slate-400 border-t border-slate-700 pt-2">
+          <span>القيمة في المخطط (تقريباً):</span>
+          <button id="btnSet91" class="bg-slate-700 hover:bg-slate-600 text-white px-2 py-0.5 rounded transition">ضبط على 91mm</button>
+        </div>
       </div>
     </div>
 
-    <div class="mb-5">
-      <label class="block text-xs text-slate-400 mb-2">اتجاه الانحناء</label>
-      <div class="flex flex-col gap-2 bg-slate-800/50 p-2 rounded border border-slate-700">
-        <label class="flex items-center gap-2 cursor-pointer">
-          <input type="radio" name="bendDir" value="up" checked class="accent-sky-500">
-          <span class="text-sm">انحناء للأعلى (Valley)</span>
-        </label>
-        <label class="flex items-center gap-2 cursor-pointer">
-          <input type="radio" name="bendDir" value="down" class="accent-sky-500">
-          <span class="text-sm">انحناء للأسفل (Roof)</span>
-        </label>
-      </div>
+    <div class="text-[10px] text-slate-500 leading-relaxed bg-black/20 p-2 rounded">
+      <b>ملاحظة:</b> يتم تجميع القطعتين بحيث تتلامس أطراف الأجنحة الداخلية (النقطة B) والخارجية (النقطة A). قص الجناح يؤثر على تلافي الفراغ في النقطة A.
     </div>
 
-    <div class="mb-6">
-      <div class="flex justify-between mb-2">
-        <label class="text-xs text-slate-400">زاوية التجميع (θ)</label>
-        <span id="dispAngle" class="text-sky-400 font-bold text-sm">0°</span>
-      </div>
-      <input id="angleRange" type="range" min="0" max="60" step="0.5" value="30">
-    </div>
-
-    <div class="bg-emerald-900/20 border border-emerald-500/30 rounded-xl p-4 text-center">
-      <div class="text-xs text-emerald-200/70 mb-1">قيمة القص المطلوبة (Δ)</div>
-      <div id="finalCut" class="text-2xl font-bold text-emerald-400 font-mono">0.0 mm</div>
-      <div class="text-[10px] text-slate-400 mt-2 leading-tight">
-        يتم إزالة هذه القيمة من الجناح (العلوي أو السفلي) في كلا القطعتين لتحقيق الزاوية.
-      </div>
-    </div>
-    
-    <button id="btnReset" class="mt-4 w-full py-2 text-xs bg-slate-700 hover:bg-slate-600 rounded text-slate-300">إعادة تعيين</button>
   </aside>
 
-  <section class="flex flex-col gap-4">
+  <section class="glass rounded-2xl flex flex-col overflow-hidden min-h-[500px]">
+    <div class="bg-slate-800/50 px-4 py-2 border-b border-slate-700 flex justify-between items-center">
+      <span class="text-xs font-bold text-slate-300 tracking-wider">TOP VIEW / SCHEMATIC</span>
+      <span class="text-[10px] text-slate-500">Detail Eckpfosten</span>
+    </div>
     
-    <div class="glass rounded-2xl p-1 flex-1 min-h-[250px] flex flex-col">
-      <div class="px-4 py-2 border-b border-slate-700/50 flex justify-between items-center">
-        <h3 class="font-semibold text-sm text-slate-300">① وجه القطع (المقطع العرضي)</h3>
-        <span class="text-[10px] text-slate-500">كيف ترى المقطع أثناء القص</span>
+    <div id="canvasContainer" class="flex-1 relative blueprint-grid flex items-center justify-center overflow-hidden">
       </div>
-      <div id="viewSection" class="flex-1 relative canvas-container rounded-b-xl"></div>
-    </div>
-
-    <div class="glass rounded-2xl p-1 flex-1 min-h-[300px] flex flex-col">
-      <div class="px-4 py-2 border-b border-slate-700/50 flex justify-between items-center">
-        <h3 class="font-semibold text-sm text-slate-300">② التجميع (مسقط جانبي)</h3>
-        <span class="text-[10px] text-slate-500">شكل الوصلة من جانب العصب (Web)</span>
-      </div>
-      <div id="viewElevation" class="flex-1 relative canvas-container rounded-b-xl"></div>
-    </div>
-
   </section>
 
 </main>
 
 <script>
-  // أبعاد تقريبية (الارتفاع h هو الأهم هنا)
+  // Database of Profiles (Approx Dimensions)
   const DB = {
-    HEA: {100:{h:96,b:100}, 120:{h:114,b:120}, 140:{h:133,b:140}, 160:{h:152,b:160}, 180:{h:171,b:180}, 200:{h:190,b:200}, 220:{h:210,b:220}, 240:{h:230,b:240}, 260:{h:250,b:260}, 280:{h:270,b:280}, 300:{h:290,b:300}},
-    HEB: {100:{h:100,b:100}, 120:{h:120,b:120}, 140:{h:140,b:140}, 160:{h:160,b:160}, 180:{h:180,b:180}, 200:{h:200,b:200}, 220:{h:220,b:220}, 240:{h:240,b:240}, 260:{h:260,b:260}, 280:{h:280,b:280}, 300:{h:300,b:300}},
-    HEM: {100:{h:120,b:106}, 120:{h:140,b:126}, 140:{h:160,b:146}, 160:{h:180,b:166}, 180:{h:200,b:186}, 200:{h:220,b:206}, 220:{h:240,b:226}, 240:{h:270,b:248}, 260:{h:290,b:268}, 280:{h:310,b:288}, 300:{h:340,b:310}}
+    HEB: {
+      100:{h:100,b:100,tw:6,tf:10}, 120:{h:120,b:120,tw:6.5,tf:11}, 
+      140:{h:140,b:140,tw:7,tf:12}, 160:{h:160,b:160,tw:8,tf:13}, 
+      180:{h:180,b:180,tw:8.5,tf:14}, 200:{h:200,b:200,tw:9,tf:15}, 
+      220:{h:220,b:220,tw:9.5,tf:16}, 240:{h:240,b:240,tw:10,tf:17},
+      260:{h:260,b:260,tw:10,tf:17.5}, 280:{h:280,b:280,tw:10.5,tf:18},
+      300:{h:300,b:300,tw:11,tf:19}
+    },
+    HEA: {
+      100:{h:96,b:100,tw:5,tf:8}, 120:{h:114,b:120,tw:5,tf:8},
+      220:{h:210,b:220,tw:7,tf:11}, 240:{h:230,b:240,tw:7.5,tf:12} 
+      // Add more as needed
+    },
+    HEM: {
+      220:{h:240,b:226,tw:15.5,tf:26}
+      // Add more as needed
+    }
   };
 
-  const $series = document.getElementById('series');
-  const $size = document.getElementById('size');
-  const $angle = document.getElementById('angleRange');
-  
-  // Update Size Options
-  function popSizes(){
-    const s = $series.value;
-    const keys = Object.keys(DB[s]).map(Number).sort((a,b)=>a-b);
-    $size.innerHTML = keys.map(k => `<option value="${k}" ${k===180?'selected':''}>${k}</option>`).join('');
+  // Elements
+  const els = {
+    series: document.getElementById('series'),
+    size: document.getElementById('size'),
+    angle: document.getElementById('angle'),
+    cutWidth: document.getElementById('cutWidth'),
+    valAngle: document.getElementById('valAngle'),
+    valCutWidth: document.getElementById('valCutWidth'),
+    container: document.getElementById('canvasContainer'),
+    origB: document.getElementById('origB'),
+    origH: document.getElementById('origH'),
+    btn91: document.getElementById('btnSet91')
+  };
+
+  // State
+  let state = {
+    series: 'HEB',
+    size: 220,
+    angle: 127.6,
+    trimB: 91 // The "Coupiert" width from center or total? Drawing implies specific cut.
+    // Drawing: 91 is likely the remaining width from the web center to the tip?
+    // Standard HEB 220 B=220. Half=110. 91 means ~19mm cut.
+  };
+
+  function init(){
+    // Populate sizes
+    updateSizes();
+    
+    // Listeners
+    els.series.addEventListener('change', () => { updateSizes(); calc(); });
+    els.size.addEventListener('change', () => { 
+      // Reset cut width to full width on size change? Or keep ratio?
+      // Let's set it to default (uncut)
+      const data = DB[els.series.value][els.size.value];
+      if(data) els.cutWidth.value = (data.b/2) - 2; // slight trim default
+      calc(); 
+    });
+    els.angle.addEventListener('input', calc);
+    els.cutWidth.addEventListener('input', calc);
+    els.btn91.addEventListener('click', () => {
+      els.cutWidth.value = 91;
+      calc();
+    });
+
     calc();
   }
 
+  function updateSizes(){
+    const s = els.series.value;
+    const keys = Object.keys(DB[s]).sort((a,b)=>Number(a)-Number(b));
+    els.size.innerHTML = keys.map(k => `<option value="${k}" ${k==220?'selected':''}>${k}</option>`).join('');
+  }
+
   function calc(){
-    const series = $series.value;
-    const sz = $size.value;
-    const data = DB[series][sz];
-    const h = data.h;
-    const b = data.b;
-    const angle = parseFloat($angle.value);
-    const bendDir = document.querySelector('input[name="bendDir"]:checked').value;
+    state.series = els.series.value;
+    state.size = els.size.value;
+    state.angle = parseFloat(els.angle.value);
+    
+    const data = DB[state.series][state.size] || {h:220, b:220, tw:9.5, tf:16};
+    const halfB_Original = data.b / 2;
+    
+    // Slider Logic: Slider controls the "Remaining Width from Web Center"
+    // Max should be halfB_Original
+    els.cutWidth.max = halfB_Original;
+    els.cutWidth.min = 40; // min plausible width
+    
+    state.trimB = parseFloat(els.cutWidth.value);
 
-    // 1. الحساب الهندسي الصحيح
-    // لحساب القص المطلوب لزاوية ثيتا، نستخدم ظل الزاوية مع الارتفاع
-    // Cut = h * tan(theta/2) (لكل قطعة)
-    const radHalf = (angle / 2) * (Math.PI / 180);
-    const delta = h * Math.tan(radHalf);
+    // Updates UI
+    els.valAngle.textContent = state.angle.toFixed(1) + '°';
+    els.valCutWidth.textContent = state.trimB + ' mm';
+    els.origB.textContent = data.b;
+    els.origH.textContent = data.h;
 
-    // Update UI Text
-    document.getElementById('dispH').textContent = h + ' mm';
-    document.getElementById('dispB').textContent = b + ' mm';
-    document.getElementById('dispAngle').textContent = angle.toFixed(1) + '°';
-    document.getElementById('finalCut').textContent = delta.toFixed(1) + ' mm';
-
-    drawSection(series, sz, b, h, delta, bendDir);
-    drawElevation(series, sz, b, h, angle, bendDir);
+    draw(data);
   }
 
-  // رسم المقطع العرضي (وجه القص)
-  function drawSection(s, sz, b, h, delta, dir){
-    const el = document.getElementById('viewSection');
-    const W = el.clientWidth || 300;
-    const H_cvs = el.clientHeight || 250;
-    
-    // Scale Logic
-    const pad = 40;
-    const scale = Math.min((W-pad)/b, (H_cvs-pad)/h);
-    const cx = W/2; 
-    const cy = H_cvs/2;
-    
-    const sw = b * scale; // scaled width
-    const sh = h * scale; // scaled height
-    const ft = Math.max(6, sh * 0.1); // flange thickness visual
-    const wt = Math.max(4, sw * 0.08); // web thickness visual
-    
-    // Coords relative to center
-    const xL = cx - sw/2;
-    const xR = cx + sw/2;
-    const yT = cy - sh/2;
-    const yB = cy + sh/2;
-
-    // Highlight Logic: Which flange is cut?
-    // If bending UP (Valley), top flanges touch, bottom gap opens? 
-    // NO. To bend UP (ends go up), you cut the TOP flange shorter.
-    // Wait, if you cut top flange shorter, and bring faces together, the beam curves UP.
-    // So: UP (Valley) = Cut Top.
-    // DOWN (Roof) = Cut Bottom.
-    
-    const cutTop = (dir === 'up');
-    
-    let svg = `<svg width="100%" height="100%">
-      <defs>
-        <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#475569"/><stop offset="1" stop-color="#1e293b"/></linearGradient>
-      </defs>
-      <line x1="${xL-10}" y1="${yT}" x2="${xL-10}" y2="${yB}" stroke="#64748b" />
-      <text x="${xL-15}" y="${cy}" fill="#94a3b8" font-size="10" transform="rotate(-90 ${xL-15} ${cy})" text-anchor="middle">h=${h}</text>
-
-      <path d="
-        M ${xL} ${yT} H ${xR} V ${yT+ft} H ${cx+wt/2} V ${yB-ft} H ${xR} V ${yB} H ${xL} V ${yB-ft} H ${cx-wt/2} V ${yT+ft} H ${xL} Z
-      " fill="url(#g1)" stroke="#94a3b8" stroke-width="1"/>
-      
-      ${cutTop ? 
-        `<rect x="${xL}" y="${yT-2}" width="${sw}" height="${ft+4}" fill="none" stroke="#f43f5e" stroke-width="2" stroke-dasharray="4 2"/>
-         <text x="${cx}" y="${yT-10}" fill="#f43f5e" font-size="12" text-anchor="middle" font-weight="bold">قص هذا الجناح (Δ)</text>` 
-        : 
-        `<rect x="${xL}" y="${yB-ft-2}" width="${sw}" height="${ft+4}" fill="none" stroke="#f43f5e" stroke-width="2" stroke-dasharray="4 2"/>
-         <text x="${cx}" y="${yB+20}" fill="#f43f5e" font-size="12" text-anchor="middle" font-weight="bold">قص هذا الجناح (Δ)</text>`
-      }
-    </svg>`;
-    el.innerHTML = svg;
-  }
-
-  // رسم المسقط الجانبي (التجميع)
-  function drawElevation(s, sz, b, h, angle, dir){
-    const el = document.getElementById('viewElevation');
-    const W = el.clientWidth || 300;
-    const H_cvs = el.clientHeight || 300;
-    
+  function draw(data){
+    // Setup Canvas
+    const W = els.container.clientWidth;
+    const H = els.container.clientHeight;
     const cx = W/2;
-    const cy = H_cvs/2;
-    
-    // Visual scaling
-    const scale = 0.6;
-    const beamLen = 140;
-    const vH = h * scale; 
-    const vF = Math.max(5, vH*0.1);
+    const cy = H/2 + 50; // Move down a bit to see the top opening
+    const scale = 1.2; // Zoom factor
 
-    // Rotation Logic
-    const halfA = angle / 2;
-    // If bending UP: Left rotates CCW, Right rotates CW. Pivot is at BOTTOM.
-    // If bending DOWN: Left rotates CW, Right rotates CCW. Pivot is at TOP.
+    // Geometry
+    // We have two beams.
+    // Pivot Point: The Inner Corner (Point B).
+    // Let's assume the "Web Center" lines intersect at the center of the circle in the drawing.
+    // The angle 127.6 is between the perpendiculars of the flanges? 
+    // Looking at drawing: The dashed lines are the axes of symmetry of the profiles.
+    // The angle between these axes is 127.6 deg.
     
-    let rotL, rotR, pivotY;
+    const angleRad = state.angle * (Math.PI/180);
+    const halfAngle = angleRad / 2;
+
+    // Distance from Center Axis intersection to Pivot Point (B)
+    // Pivot B is the intersection of the inner flanges.
+    // Inner flange is at distance (data.h/2) from Web Center.
+    // So we have a rhombus formed by the web centers and the flange lines.
+    // Distance from Center (O) to Pivot (B) = (h/2) / sin(halfAngle) ? No.
+    // Let's trace the Web Center Lines. They meet at Origin.
+    // Beam 1 is rotated by -halfAngle. Beam 2 by +halfAngle.
+    // The inner flange line is parallel to web, offset by h/2 ? No, offset by h/2 is the Face.
+    // Wait, H is depth. Web is in middle. Face is at +/- h/2 from Web Center? Correct.
     
-    if(dir === 'up') {
-      pivotY = cy + vH/2; // Bottom
-      rotL = -halfA;
-      rotR = halfA;
-    } else {
-      pivotY = cy - vH/2; // Top
-      rotL = halfA;
-      rotR = -halfA;
+    // Let's place the Center of Rotation at the intersection of the two beam AXES (The circle 50).
+    
+    const offX = (data.h / 2); // Distance from web center to flange face
+    
+    // Calculations for Beam Polygon (Local Coords, Web Center at 0,0)
+    // We only draw the "Top" half (Right in the diagram) if we assume standard H.
+    // Actually, HEB is symmetrical.
+    // Width = trimB (from center) * 2 ? No, usually we trim sides symmetrically?
+    // The drawing shows "91" on one side. Let's assume symmetrical trim for the post.
+    // Or maybe only the touching side is trimmed? The drawing shows symmetry.
+    
+    const wTotal = state.trimB * 2; // Total width after cut
+    const wHalf = state.trimB;
+    const dHalf = data.h / 2;
+    const tf = data.tf;
+    const tw = data.tw;
+
+    // Helper to rotate point
+    function rot(x, y, ang) {
+        return {
+            x: x * Math.cos(ang) - y * Math.sin(ang),
+            y: x * Math.sin(ang) + y * Math.cos(ang)
+        };
     }
 
-    const col = "#334155";
-    const strk = "#64748b";
+    // Generate SVG Path for one Beam (centered at 0,0, pointing UP)
+    // Then we rotate and translate it.
+    // To match drawing: Beams point "Outwards" from the V.
+    // Beam 1 axis angle: -90 - (180-127.6)/2 ... simpler:
+    // Angle between beams is 127.6.
+    // Beam Right angle: +63.8 deg from vertical? No.
+    // Let's make Vertical the bisector.
+    // Beam Right Axis: +63.8 deg. Beam Left Axis: -63.8 deg.
+    
+    // Offset calculation:
+    // We want the FLANGE FACES to meet at the inner corner.
+    // The flange face is at x = -dHalf (if beam points up).
+    // We need to shift the beam along its local Y axis (longitudinal)
+    // such that the inner corner touches the other beam's inner corner.
+    // But simpler: The intersection of the axes (O) is fixed.
+    // The inner flange face is a line parallel to axis at distance dHalf.
+    // Intersection of two lines:
+    // Line 1: x*cos(A) + y*sin(A) = dHalf
+    // Distance from O to the "Inner Corner" B along the bisector?
+    // Geometry: The gap between center O and the actual corner B depends on H and Angle.
+    // Dist = (dHalf) / sin(halfAngle).
+    
+    // BUT, the drawing shows the beams meeting.
+    // Let's draw them relative to the Origin (O) which is the center of the circle.
+    
+    // Shift of the visual block to make "Web Center" aligned with Origin?
+    // No, the web center is the axis.
+    // Beam is rectangle (h) x (width).
+    // Position: It extends outwards.
+    
+    // Calculate Gap at Outer Corner (A)
+    // Outer corner is at distance (dHalf) / sin(halfAngle) from center? No.
+    // Outer flange is at +dHalf? No, HEB H is depth. 
+    // Inner Face: -dHalf. Outer Face: +dHalf.
+    // Inner Corner Point (B) coords: (0, -dHalf / sin(halfAngle)). (Assuming Y is up, bisector is Y axis).
+    // Outer Corner Point (A) coords: (0, dHalf / sin(halfAngle)).?? No.
+    // This is only true if the beam ends are cut at the miter angle.
+    // BUT the drawing shows "91". This means the corner of the flange is at `wHalf` from the web.
+    // So we have a discrete corner point at (wHalf, -dHalf) in local coords.
+    
+    // Let's calculate position of the tips in World Space
+    // Beam Right (Angle +halfAngle from Y-axis inverse? Let's say angle is from X).
+    // Let's stick to: Vertical is bisector (Angle = 0).
+    // Beam Right Axis Rotation: +halfAngle.
+    // Beam Left Axis Rotation: -halfAngle.
+    
+    // Local Points of the "Tip" (The face that touches):
+    // Let's assume the beams are NOT miter cut, but square cut, but rotated.
+    // Inner Tip Local: (-wHalf, -dHalf) ? No, we are looking at Top View.
+    // The "Profile" is the H shape.
+    // Beam Right: Rotated CCW by (90 - halfAngle).
+    // Actually, let's simplify.
+    // We draw the H-shape Polygon.
+    // We translate it so its center is at (0,0).
+    // Then we calculate the "Shift" away from center so the corners match?
+    // No, the drawing implies the axes meet at the center (Circle 50).
+    
+    // Distance from Axis Intersection (O) to the "Cut Plane"?
+    // The drawing is a Cross Section. The beams are vertical columns.
+    // We are seeing the H-profile.
+    // The H-profile is positioned such that its center is at distance R from Origin?
+    // No, the diagram shows the Web Centerlines converging to the center point (39).
+    
+    // SO:
+    // Beam Right: Center at (0,0). Rotated by (180 - halfAngle).
+    // But if center is at (0,0), they overlap massively.
+    // They must be offset outwards.
+    // Offset = The dimension that makes the corners touch.
+    // Corner B (Inner): Local coords (-dHalf, -wHalf) (if web is along X).
+    // Let's define Beam Local: Web along X axis. Flanges parallel to X.
+    // Depth H is along Y. Width B is along X. (Wait, standard is Depth H along Y? No. Web is vertical in I shape).
+    // Let's use: H is along X, B is along Y.
+    // Inner Face: x = -h/2.
+    // Outer Face: x = h/2.
+    // Tips: y = +/- trimB.
+    
+    // We want the Point (-h/2, -trimB) of Beam Right to touch Point (-h/2, trimB) of Beam Left?
+    // Beam Right is rotated by +halfAngle.
+    // Beam Left is rotated by -halfAngle.
+    // We shift them along their X-axis (Radius) by `dist`.
+    // Condition: Inner tips touch.
+    // Inner Tip Local: (-h/2, trimB) (assuming trimB is the "bottom" side).
+    // Rotated Point must lie on the Y-axis (Bisector)? 
+    // Yes, due to symmetry, the contact point B is on the bisector.
+    
+    // Math:
+    // P_local = (-h/2, -trimB) (Inner corner of Right Beam).
+    // P_world = Rotate(P_local + Shift)
+    // We want P_world.x = 0.
+    
+    // x_world = (x_local + Shift) * cos(ang) - y_local * sin(ang) = 0
+    // (-h/2 + Shift) * cos(halfAngle) - (-trimB) * sin(halfAngle) = 0
+    // (-h/2 + Shift) * cos = -trimB * sin
+    // -h/2 + Shift = -trimB * tan(halfAngle)
+    // Shift = h/2 - trimB * tan(halfAngle)
+    
+    const tanHalf = Math.tan(halfAngle);
+    const shift = (dHalf) - (wHalf * tanHalf); // This places the inner corner on the bisector
+    
+    // Check Outer Corner (A)
+    // P_outer_local = (h/2, -trimB)
+    // P_outer_world_x = (h/2 + shift) * cos - (-trimB) * sin
+    // Gap = 2 * P_outer_world_x
+    
+    const pOuterX = (dHalf + shift) * Math.cos(halfAngle) - (-wHalf) * Math.sin(halfAngle);
+    const gapA = 2 * pOuterX;
 
-    let svg = `<svg width="100%" height="100%">
+    // SVG Construction
+    // Color styles
+    const colSteel = "#334155";
+    const colLine = "#94a3b8";
+    const colWelds = "#f59e0b";
+
+    // Build Beam Polyline (Standard I-shape, web along X, width along Y)
+    // H is full depth (along X). B is full width (along Y).
+    // trimB is half-width.
+    function getPoints(shiftVal) {
+        let pts = [];
+        // Start Top-Left (Outer Flange, Top Tip)
+        pts.push({x: dHalf + shiftVal, y: wHalf});
+        // Web Top
+        pts.push({x: tw/2 + shiftVal, y: wHalf});
+        pts.push({x: tw/2 + shiftVal, y: wHalf}); // simplify: just rects
+        // Just returning the corners for simple drawing
+        return [];
+    }
+    
+    // We'll use SVG Transforms for simplicity
+    
+    let svgContent = `
       <defs>
-        <marker id="dot" markerWidth="6" markerHeight="6" refX="3" refY="3"><circle cx="3" cy="3" r="2" fill="#38bdf8"/></marker>
+        <marker id="arrow" markerWidth="10" markerHeight="10" refX="0" refY="3" orient="auto">
+          <path d="M0,0 L0,6 L9,3 z" fill="#94a3b8" />
+        </marker>
       </defs>
       
-      <circle cx="${cx}" cy="${pivotY}" r="3" fill="#38bdf8" />
+      <line x1="${cx}" y1="0" x2="${cx}" y2="${H}" stroke="#475569" stroke-dasharray="5,5" />
+    `;
 
-      <g transform="translate(${cx},${pivotY}) rotate(${rotL})">
-        <g transform="translate(-${beamLen}, ${dir==='up' ? -vH : 0})">
-          <rect x="0" y="0" width="${beamLen}" height="${vH}" fill="${col}" stroke="${strk}"/>
-          <rect x="0" y="0" width="${beamLen}" height="${vF}" fill="#475569"/>
-          <rect x="0" y="${vH-vF}" width="${beamLen}" height="${vF}" fill="#475569"/>
-          <line x1="${beamLen}" y1="0" x2="${beamLen}" y2="${vH}" stroke="#f43f5e" stroke-width="2"/>
-        </g>
-      </g>
+    // Draw Circle 50
+    svgContent += `<circle cx="${cx}" cy="${cy}" r="${50*scale}" fill="none" stroke="#475569" stroke-width="1" stroke-dasharray="4 2"/>
+    <text x="${cx}" y="${cy-55*scale}" fill="#475569" font-size="10" text-anchor="middle">50</text>`;
 
-      <g transform="translate(${cx},${pivotY}) rotate(${rotR})">
-        <g transform="translate(0, ${dir==='up' ? -vH : 0})">
-          <rect x="0" y="0" width="${beamLen}" height="${vH}" fill="${col}" stroke="${strk}"/>
-          <rect x="0" y="0" width="${beamLen}" height="${vF}" fill="#475569"/>
-          <rect x="0" y="${vH-vF}" width="${beamLen}" height="${vF}" fill="#475569"/>
-          <line x1="0" y1="0" x2="0" y2="${vH}" stroke="#f43f5e" stroke-width="2"/>
-        </g>
-      </g>
+    // Function to generate beam SVG
+    const drawBeam = (rotation, isRight) => {
+        // Local shape: Web along X.
+        // X from -h/2 to h/2. Y from -trimB to trimB.
+        // Create Path
+        // Outer Flange Rect
+        const flangeOuter = `<rect x="${dHalf - tf}" y="${-wHalf}" width="${tf}" height="${wTotal}" fill="${colSteel}" stroke="${colLine}" />`;
+        // Inner Flange Rect
+        const flangeInner = `<rect x="${-dHalf}" y="${-wHalf}" width="${tf}" height="${wTotal}" fill="${colSteel}" stroke="${colLine}" />`;
+        // Web Rect
+        const web = `<rect x="${-dHalf+tf}" y="${-tw/2}" width="${data.h - 2*tf}" height="${tw}" fill="#475569" stroke="none" />`;
+        
+        // Dimensions Lines inside beam
+        const dimLine = `<line x1="${-dHalf}" y1="${-wHalf-10}" x2="${dHalf}" y2="${-wHalf-10}" stroke="#64748b" stroke-width="0.5"/>`;
 
-      <text x="${cx}" y="${dir==='up'? cy-40 : cy+40}" fill="#38bdf8" font-weight="bold" text-anchor="middle">${angle.toFixed(1)}°</text>
+        return `<g transform="translate(${cx}, ${cy}) rotate(${rotation}) translate(${shift * scale}, 0) scale(${scale})">
+            ${web} ${flangeInner} ${flangeOuter}
+        </g>`;
+    };
 
-    </svg>`;
-    el.innerHTML = svg;
+    // Beam angles relative to screen (Vertical is -90 deg)
+    // Beam Right (Angle from vertical is +halfAngle) -> Rotation = -90 + state.angle/2
+    // Beam Left -> Rotation = -90 - state.angle/2
+    
+    // Correction: My Math above assumed X is axis. 
+    // SVG Rotate is CW. -90 points UP.
+    // Rotation Right: (-90 + state.angle/2).
+    // Rotation Left: (-90 - state.angle/2).
+    
+    const rotR = -90 + (state.angle/2);
+    const rotL = -90 - (state.angle/2);
+
+    svgContent += drawBeam(rotR, true);
+    svgContent += drawBeam(rotL, false);
+
+    // Annotations (Points A and B)
+    // B is the Inner intersection. It should be at (cx, cy + distB).
+    // Calculation of B world pos:
+    // B_local = (-dHalf, -wHalf) (for Right Beam, assuming Y points "Left" in local relative to rotation? )
+    // Let's just trust visual for labels.
+    
+    // Gap Indicator at A (Outer)
+    if(gapA > 1) {
+        svgContent += `<text x="${cx}" y="${cy - (dHalf*scale) - 40}" fill="#f43f5e" font-size="12" text-anchor="middle">فجوة: ${Math.abs(gapA).toFixed(1)}mm</text>`;
+    } else if (gapA < -1) {
+        svgContent += `<text x="${cx}" y="${cy - (dHalf*scale) - 40}" fill="#f43f5e" font-size="12" text-anchor="middle">تداخل: ${Math.abs(gapA).toFixed(1)}mm</text>`;
+    } else {
+        svgContent += `<text x="${cx}" y="${cy - (dHalf*scale) - 40}" fill="#10b981" font-size="12" text-anchor="middle">تطابق (A)</text>`;
+    }
+    
+    // Label B
+    svgContent += `<text x="${cx}" y="${cy + 20}" fill="#94a3b8" font-size="12" font-weight="bold" text-anchor="middle">(B)</text>`;
+    // Label A
+    svgContent += `<text x="${cx}" y="${cy - (dHalf*scale) - 10}" fill="#94a3b8" font-size="12" font-weight="bold" text-anchor="middle">(A)</text>`;
+
+    // Draw "91" Dimension Line
+    // We need coordinates of the Right Beam's tip
+    // Local: (0, -wHalf). World? Complex to calc in SVG string.
+    // Displaying static text for "Coupiert"
+    
+    els.container.innerHTML = `<svg width="100%" height="100%">${svgContent}</svg>`;
   }
 
-  // Events
-  $series.addEventListener('change', ()=>{popSizes(); calc();});
-  $size.addEventListener('change', calc);
-  $angle.addEventListener('input', calc);
-  document.querySelectorAll('input[name="bendDir"]').forEach(r => r.addEventListener('change', calc));
-  document.getElementById('btnReset').addEventListener('click', ()=>{
-    $angle.value=0; calc();
-  });
-
-  // Init
-  popSizes();
-  calc();
+  init();
 
 </script>
 </body>

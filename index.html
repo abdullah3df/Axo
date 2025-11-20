@@ -14,6 +14,7 @@
     body{
       min-height:100vh;
       transition:background .3s,color .3s;
+      overflow-x:hidden;
     }
     body.theme-dark{
       background:
@@ -334,7 +335,7 @@
     <!-- SINGLE PIECE VIEW -->
     <div id="viewSingle" class="flex-1 flex flex-col">
       <div class="flex-1 border border-slate-700/70 rounded-2xl bg-slate-900/70 px-3 py-4 flex items-center justify-center">
-        <div id="frontWrapper"></div>
+        <div id="frontWrapper" class="w-full max-w-[360px] mx-auto"></div>
       </div>
       <div class="grid grid-cols-2 gap-3 text-[11px] text-slate-400 mt-4">
         <div class="flex items-center gap-2">
@@ -351,7 +352,7 @@
         </div>
         <div class="flex items-center gap-2">
           <span class="inline-block h-3 w-3 rounded-full border border-sky-400"></span>
-          <span data-i18n="legendNote">الرسم تمثيلي — الأرقام في الملخص هي المرجع الهندسي</span>
+          <span data-i18n="legendNote">الرسم تمثيلي — الأبعاد الرقمية هي المرجع</span>
         </div>
       </div>
     </div>
@@ -359,7 +360,7 @@
     <!-- JOINT VIEW -->
     <div id="viewJoint" class="flex-1 flex flex-col view-hidden">
       <div class="flex-1 border border-slate-700/70 rounded-2xl bg-slate-900/70 px-3 py-4 flex items-center justify-center">
-        <div id="jointWrapper"></div>
+        <div id="jointWrapper" class="w-full max-w-[420px] mx-auto"></div>
       </div>
       <p class="text-[11px] text-slate-400 mt-3" data-i18n="jointHint">
         في هذا الرسم تظهر قطعتان من الأمام بعد القص — الأجنحة مقصوصة فعلاً حسب Δtop و Δbottom، مع فراغ صغير جداً عند نقاط التماس
@@ -864,7 +865,7 @@
     const angleText = `θ ≈ ${angDeg.toFixed(1)}°`;
 
     const svg = `
-      <svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+      <svg width="100%" height="${h}" viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet">
         <defs>
           <linearGradient id="metalGrad" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stop-color="#cbd5f5"/>
@@ -923,7 +924,7 @@
     $frontWrapper.innerHTML = svg;
   }
 
-  // رسم قطعتين من الأمام بعد القص — بدون خطوط حمراء، لكن الأجنحة مقصوصة
+  // رسم قطعتين من الأمام بعد القص — مع ميلان فعلي بدون تداخل
   function renderJointFront(state){
     const dict = I18N[currentLang] || I18N.ar;
     const {
@@ -944,7 +945,8 @@
     const spanBase = 70+(b-180)*0.25;
     const flangeW = spanBase*2;
 
-    const gapPx = 10; // فراغ صغير ثابت بين القطعتين (يمثل ≈0.003 بشكل بصري)
+    // فراغ صغير جداً مع تقريبهما من بعض
+    const gapPx = 6;
 
     // القطعة اليسرى: طرفها الداخلي عند midX - gap/2
     const leftInnerX = midX - gapPx/2;
@@ -980,6 +982,11 @@
       ? (dict.pairAngleZeroNote || "≈ 0°")
       : `${pairAngle.toFixed(2)}°`;
 
+    // نميل كل قطعة بنصف الزاوية للحصول على زاوية حادة/منفرجة بينهما
+    let tiltDeg = pairAngle / 2;
+    // حد أقصى بصري حتى لا تنقلب الأشكال بشكل مبالغ فيه
+    if(tiltDeg > 35) tiltDeg = 35;
+
     // قوس بسيط لعرض الزاوية (رمزي)
     const arcR = 40;
     const angleRad = pairAngle*Math.PI/180;
@@ -989,7 +996,7 @@
     const arcY2 = cy - arcR*Math.sin(angleRad);
 
     const svg = `
-      <svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+      <svg width="100%" height="${h}" viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet">
         <defs>
           <linearGradient id="metalJoint" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stop-color="#cbd5f5"/>
@@ -1009,8 +1016,8 @@
 
         <g filter="url(#shadowJoint)">
 
-          <!-- القطعة اليسرى -->
-          <g>
+          <!-- القطعة اليسرى (جسم صلب يميل عكس اليمين) -->
+          <g transform="rotate(${ -tiltDeg }, ${leftInnerX}, ${cy})">
             <!-- الجناح العلوي مقصوص من الداخل -->
             <rect x="${leftTopX1}" y="${tfy}"
                   width="${leftTopX2-leftTopX1}" height="${flangeTh}"
@@ -1025,8 +1032,8 @@
                   fill="url(#webJoint)" stroke="#94a3b8" stroke-width="1"/>
           </g>
 
-          <!-- القطعة اليمنى -->
-          <g>
+          <!-- القطعة اليمنى (جسم صلب يميل باتجاه معاكس) -->
+          <g transform="rotate(${ tiltDeg }, ${rightInnerX}, ${cy})">
             <!-- الجناح العلوي مقصوص من الداخل -->
             <rect x="${rightTopX1}" y="${tfy}"
                   width="${rightTopX2-rightTopX1}" height="${flangeTh}"
@@ -1043,10 +1050,10 @@
 
         </g>
 
-        <!-- فراغ بسيط بين القطعتين -->
+        <!-- فراغ بسيط بين القطعتين (يبقى عمودي ليظهر أنه فجوة، الأجسام لا تتداخل) -->
         <rect x="${midX-gapPx/2}" y="${tfy}"
               width="${gapPx}" height="${profileH}"
-              fill="transparent" stroke="rgba(148,163,184,0.3)" stroke-dasharray="4 4"/>
+              fill="transparent" stroke="rgba(148,163,184,0.4)" stroke-dasharray="4 4"/>
 
         <!-- نقطة قياس تقريبية في منتصف الفراغ -->
         <circle cx="${midX}" cy="${cy}" r="2.5" fill="#f97373"/>

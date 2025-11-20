@@ -646,15 +646,15 @@
   let currentLang = 'ar';
   let mode = 'angle'; // 'angle' أو 'cuts'
 
-  // متغيرات تفاعل القطع (دوران + تحريك يمين/يسار)
+  // متغيرات تفاعل القطع (دوران + تحريك)
   let userTiltLeft = 0;
   let userTiltRight = 0;
   let userShiftLeft = 0;
   let userShiftRight = 0;
 
   const MAX_DRAG_SHIFT = 40;
-  const MAX_DRAG_TILT = 40;
-  const DRAG_ROT_FACTOR = 0.3;
+  const MAX_DRAG_TILT = 20;
+  const DRAG_ROT_FACTOR = 0.25;
 
   let activePiece = null;
   let dragStartX = 0;
@@ -704,7 +704,6 @@
       btn.classList.toggle('lang-btn-active', btn.dataset.lang===lang);
     });
 
-    // نص الفكرة الهندسية
     if(lang==='ar'){
       $theoryText.innerHTML =
         "• زاوية التجميع بين قطعتين لا تعتمد على قيمة القص نفسها، بل على <b>الفرق بين قص الجناح العلوي Δtop والسفلي Δbottom</b>.<br>" +
@@ -760,14 +759,13 @@
       const deltaGeom = Math.min(maxCut, b*Math.tan(halfRad)*CALIB);
       if(cutMode==='top'){ dt = deltaGeom; db = 0; }
       else if(cutMode==='bottom'){ dt = 0; db = deltaGeom; }
-      else { dt = deltaGeom; db = 0; } // قص مستقل: نقترح قيمه للعلوي فقط
+      else { dt = deltaGeom; db = 0; }
     } else {
       dt = Math.max(0,Math.min(dt,maxCut));
       db = Math.max(0,Math.min(db,maxCut));
       angDeg = Math.min(45,Math.max(0,angleFromCuts(dt,db,b)));
     }
 
-    // sync inputs
     $angle.value = angDeg.toFixed(1);
     $angleRange.value = angDeg;
     $deltaTop.value = dt.toFixed(1);
@@ -780,7 +778,7 @@
     $alphaBottomRange.value = alphaBottomDeg;
 
     const pairAngleRaw = angleFromCuts(dt,db,b);
-    const pairAngle = Math.max(0,pairAngleRaw - GAP_DEG); // فراغ بسيط في زاوية القياس
+    const pairAngle = Math.max(0,pairAngleRaw - GAP_DEG);
     const remainingTop = Math.max(b-dt,0);
     const remainingBottom = Math.max(b-db,0);
     const diffCut = Math.abs(dt-db);
@@ -875,7 +873,7 @@
     `;
   }
 
-  // رسم قطعة واحدة مع خطوط حمراء
+  // قطعة واحدة
   function renderSingleFront(state){
     const {
       s, sz, b,
@@ -919,7 +917,7 @@
     const svg = `
       <svg width="100%" height="${h}" viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet">
         <defs>
-          <linearGradient id="metalGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <linearGradient id="metalGrad" x1="0%" y1="0%" x2="100%">
             <stop offset="0%" stop-color="#cbd5f5"/>
             <stop offset="40%" stop-color="#e5e7eb"/>
             <stop offset="70%" stop-color="#9ca3af"/>
@@ -972,11 +970,10 @@
         </text>
       </svg>
     `;
-
     $frontWrapper.innerHTML = svg;
   }
 
-  // رسم قطعتين من الأمام بعد القص — مع ميلان فعلي بدون تداخل + تفاعل السحب/الدوران
+  // Joint Front View
   function renderJointFront(state){
     const dict = I18N[currentLang] || I18N.ar;
     const {
@@ -996,7 +993,7 @@
     const spanBase = 70+(b-180)*0.25;
     const flangeW = spanBase*2;
 
-    const gapPx = 6; // فراغ بسيط ثابت بين القطعتين (أجسام صلبة)
+    const gapPx = 6;
 
     const leftInnerX = midX - gapPx/2;
     const leftOuterX = leftInnerX - flangeW;
@@ -1009,7 +1006,6 @@
 
     const pxTopCut = (b>0) ? flangeW * (dt/b) : 0;
     const pxBottomCut = (b>0) ? flangeW * (db/b) : 0;
-
     const pxTopCutClamped = Math.min(pxTopCut, flangeW*0.5);
     const pxBottomCutClamped = Math.min(pxBottomCut, flangeW*0.5);
 
@@ -1027,8 +1023,9 @@
       ? (dict.pairAngleZeroNote || "≈ 0°")
       : `${pairAngle.toFixed(2)}°`;
 
-    let baseTilt = pairAngle / 2;
-    if(baseTilt > 35) baseTilt = 35;
+    // ميلان أساسي من الزاوية، لكن هادئ لتجنب التداخل
+    let baseTilt = pairAngle / 2.5;
+    if(baseTilt > 18) baseTilt = 18;
 
     const totalTiltLeft = -baseTilt + userTiltLeft;
     const totalTiltRight = baseTilt + userTiltRight;
@@ -1043,7 +1040,7 @@
     const svg = `
       <svg width="100%" height="${h}" viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet">
         <defs>
-          <linearGradient id="metalJoint" x1="0%" y1="0%" x2="100%" y2="100%">
+          <linearGradient id="metalJoint" x1="0%" y1="0%" x2="100%">
             <stop offset="0%" stop-color="#cbd5f5"/>
             <stop offset="40%" stop-color="#e5e7eb"/>
             <stop offset="70%" stop-color="#9ca3af"/>
@@ -1061,10 +1058,15 @@
 
         <g filter="url(#shadowJoint)">
 
-          <!-- القطعة اليسرى (جسم صلب) -->
+          <!-- القطعة اليسرى -->
           <g data-piece="left"
              style="cursor:grab"
-             transform="translate(${userShiftLeft},0) rotate(${totalTiltLeft}, ${leftInnerX}, ${cy})">
+             transform="
+               translate(${userShiftLeft},0)
+               translate(${leftInnerX},${cy})
+               rotate(${totalTiltLeft})
+               translate(${-leftInnerX},${-cy})
+             ">
             <rect x="${leftTopX1}" y="${tfy}"
                   width="${leftTopX2-leftTopX1}" height="${flangeTh}"
                   fill="url(#metalJoint)" stroke="#94a3b8" stroke-width="1"/>
@@ -1076,10 +1078,15 @@
                   fill="url(#webJoint)" stroke="#94a3b8" stroke-width="1"/>
           </g>
 
-          <!-- القطعة اليمنى (جسم صلب) -->
+          <!-- القطعة اليمنى -->
           <g data-piece="right"
              style="cursor:grab"
-             transform="translate(${userShiftRight},0) rotate(${totalTiltRight}, ${rightInnerX}, ${cy})">
+             transform="
+               translate(${userShiftRight},0)
+               translate(${rightInnerX},${cy})
+               rotate(${totalTiltRight})
+               translate(${-rightInnerX},${-cy})
+             ">
             <rect x="${rightTopX1}" y="${tfy}"
                   width="${rightTopX2-rightTopX1}" height="${flangeTh}"
                   fill="url(#metalJoint)" stroke="#94a3b8" stroke-width="1"/>
@@ -1093,19 +1100,16 @@
 
         </g>
 
-        <!-- فراغ ثابت بين القطعتين (يبقى عمودي كفجوة) -->
+        <!-- فراغ ثابت بين القطعتين -->
         <rect x="${midX-gapPx/2}" y="${tfy}"
               width="${gapPx}" height="${profileH}"
               fill="transparent" stroke="rgba(148,163,184,0.4)" stroke-dasharray="4 4"/>
 
-        <!-- نقطة قياس تقريبية في منتصف الفراغ -->
         <circle cx="${midX}" cy="${cy}" r="2.5" fill="#f97373"/>
 
-        <!-- قوس الزاوية (رمزي) -->
-        <path d="
-          M ${arcX1} ${arcY1}
-          A ${arcR} ${arcR} 0 0 0 ${arcX2} ${arcY2}
-        " fill="none" stroke="#f97373" stroke-width="2" stroke-linecap="round"/>
+        <!-- قوس الزاوية -->
+        <path d="M ${arcX1} ${arcY1} A ${arcR} ${arcR} 0 0 0 ${arcX2} ${arcY2}"
+              fill="none" stroke="#f97373" stroke-width="2" stroke-linecap="round"/>
 
         <text x="${midX-arcR-6}" y="${cy-8}" font-size="11"
               fill="#fda4af" text-anchor="end" font-weight="600">
@@ -1122,12 +1126,11 @@
         </text>
       </svg>
     `;
-
     $jointWrapper.innerHTML = svg;
     attachJointInteraction();
   }
 
-  // تفعيل السحب/الدوران على القطعتين
+  // تفاعل السحب/الدوران
   function attachJointInteraction(){
     const svg = $jointWrapper.querySelector('svg');
     if(!svg) return;
@@ -1176,7 +1179,7 @@
       }
 
       const state = buildState();
-      renderJointFront(state); // نعيد رسم الواجهة المشتركة فقط مع نفس الحسابات
+      renderJointFront(state);
     };
 
     const endDrag = ()=>{
@@ -1284,7 +1287,6 @@
     document.querySelector('input[name="cutWings"][value="top"]').checked=true;
     document.querySelector('input[name="tiltDirTop"][value="in"]').checked=true;
     document.querySelector('input[name="tiltDirBottom"][value="in"]').checked=true;
-    // إعادة ضبط التفاعل اليدوي
     userTiltLeft = 0;
     userTiltRight = 0;
     userShiftLeft = 0;

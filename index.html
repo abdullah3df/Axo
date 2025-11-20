@@ -66,18 +66,53 @@
       box-shadow:0 0 0 4px rgba(56,189,248,.5);
       cursor:pointer;
     }
+
+    /* أزرار اللغة الاحترافية */
+    .lang-switcher{
+      display:flex;
+      align-items:center;
+      gap:.4rem;
+      padding:.15rem .45rem;
+      border-radius:999px;
+      border:1px solid rgba(148,163,184,.5);
+      background:rgba(15,23,42,.7);
+    }
+    body.theme-light .lang-switcher{
+      background:rgba(255,255,255,.9);
+      border-color:#e5e7eb;
+    }
+    .lang-switcher-icon{
+      font-size:.75rem;
+      opacity:.9;
+    }
     .lang-btn{
       transition:all .18s ease;
+      padding:.25rem .6rem;
+      border-radius:999px;
+      border:1px solid rgba(148,163,184,.4);
+      font-size:.7rem;
+      display:inline-flex;
+      align-items:center;
+      gap:.25rem;
+      background:transparent;
+      cursor:pointer;
+      color:#e5e7eb;
+    }
+    body.theme-light .lang-btn{
+      color:#0f172a;
+      border-color:rgba(148,163,184,.6);
+    }
+    .lang-btn:hover{
+      background:rgba(148,163,184,.15);
     }
     .lang-btn-active{
-      background:rgba(56,189,248,.2);
-      color:#e5e7eb;
-      transform:scale(1.05);
-      box-shadow:0 0 0 2px rgba(56,189,248,.5);
-    }
-    body.theme-light .lang-btn-active{
+      background:linear-gradient(135deg,#38bdf8,#a855f7);
       color:#0f172a;
+      border-color:rgba(15,23,42,.8);
+      transform:scale(1.03);
+      box-shadow:0 0 0 1px rgba(56,189,248,.45);
     }
+
     .field-label-main{font-weight:600;font-size:.9rem;}
     .field-label-sub{font-size:.7rem;opacity:.8;}
 
@@ -125,10 +160,11 @@
 
     <div class="flex items-center gap-3">
       <!-- language -->
-      <div class="flex items-center gap-1 bg-slate-900/60 border border-slate-600/70 rounded-2xl p-1 text-xs">
-        <button class="lang-btn px-2 py-1 rounded-xl hover:bg-sky-500/20" data-lang="ar" title="العربية">عربي</button>
-        <button class="lang-btn px-2 py-1 rounded-xl hover:bg-sky-500/20" data-lang="en" title="English">EN</button>
-        <button class="lang-btn px-2 py-1 rounded-xl hover:bg-sky-500/20" data-lang="de" title="Deutsch">DE</button>
+      <div class="lang-switcher text-xs">
+        <span class="lang-switcher-icon">🌐</span>
+        <button class="lang-btn lang-btn-active" data-lang="ar" title="العربية">AR</button>
+        <button class="lang-btn" data-lang="en" title="English">EN</button>
+        <button class="lang-btn" data-lang="de" title="Deutsch">DE</button>
       </div>
       <!-- theme -->
       <button id="themeToggle"
@@ -610,6 +646,22 @@
   let currentLang = 'ar';
   let mode = 'angle'; // 'angle' أو 'cuts'
 
+  // متغيرات تفاعل القطع (دوران + تحريك يمين/يسار)
+  let userTiltLeft = 0;
+  let userTiltRight = 0;
+  let userShiftLeft = 0;
+  let userShiftRight = 0;
+
+  const MAX_DRAG_SHIFT = 40;
+  const MAX_DRAG_TILT = 40;
+  const DRAG_ROT_FACTOR = 0.3;
+
+  let activePiece = null;
+  let dragStartX = 0;
+  let dragStartY = 0;
+  let dragStartShift = 0;
+  let dragStartTilt = 0;
+
   function getCutMode(){
     const c = document.querySelector('input[name="cutWings"]:checked');
     return c ? c.value : 'top';
@@ -924,7 +976,7 @@
     $frontWrapper.innerHTML = svg;
   }
 
-  // رسم قطعتين من الأمام بعد القص — مع ميلان فعلي بدون تداخل
+  // رسم قطعتين من الأمام بعد القص — مع ميلان فعلي بدون تداخل + تفاعل السحب/الدوران
   function renderJointFront(state){
     const dict = I18N[currentLang] || I18N.ar;
     const {
@@ -941,38 +993,31 @@
     const flangeTh = 16;
     const webTh = 12;
 
-    // نحافظ على نفس منطق توسعة الجناح تقريباً
     const spanBase = 70+(b-180)*0.25;
     const flangeW = spanBase*2;
 
-    // فراغ صغير جداً مع تقريبهما من بعض
-    const gapPx = 6;
+    const gapPx = 6; // فراغ بسيط ثابت بين القطعتين (أجسام صلبة)
 
-    // القطعة اليسرى: طرفها الداخلي عند midX - gap/2
     const leftInnerX = midX - gapPx/2;
     const leftOuterX = leftInnerX - flangeW;
 
-    // القطعة اليمنى: طرفها الداخلي عند midX + gap/2
     const rightInnerX = midX + gapPx/2;
     const rightOuterX = rightInnerX + flangeW;
 
     const tfy = cy - profileH/2;
     const bfy = cy + profileH/2;
 
-    // تحويل القص من mm إلى نقطة أفقية (نفس مبدأ النسبة كما في الرسم الأول)
     const pxTopCut = (b>0) ? flangeW * (dt/b) : 0;
     const pxBottomCut = (b>0) ? flangeW * (db/b) : 0;
 
     const pxTopCutClamped = Math.min(pxTopCut, flangeW*0.5);
     const pxBottomCutClamped = Math.min(pxBottomCut, flangeW*0.5);
 
-    // قطاعات القطعة اليسرى
     const leftTopX1 = leftOuterX;
     const leftTopX2 = leftInnerX - pxTopCutClamped;
     const leftBottomX1 = leftOuterX;
     const leftBottomX2 = leftInnerX - pxBottomCutClamped;
 
-    // قطاعات القطعة اليمنى
     const rightTopX1 = rightInnerX + pxTopCutClamped;
     const rightTopX2 = rightOuterX;
     const rightBottomX1 = rightInnerX + pxBottomCutClamped;
@@ -982,12 +1027,12 @@
       ? (dict.pairAngleZeroNote || "≈ 0°")
       : `${pairAngle.toFixed(2)}°`;
 
-    // نميل كل قطعة بنصف الزاوية للحصول على زاوية حادة/منفرجة بينهما
-    let tiltDeg = pairAngle / 2;
-    // حد أقصى بصري حتى لا تنقلب الأشكال بشكل مبالغ فيه
-    if(tiltDeg > 35) tiltDeg = 35;
+    let baseTilt = pairAngle / 2;
+    if(baseTilt > 35) baseTilt = 35;
 
-    // قوس بسيط لعرض الزاوية (رمزي)
+    const totalTiltLeft = -baseTilt + userTiltLeft;
+    const totalTiltRight = baseTilt + userTiltRight;
+
     const arcR = 40;
     const angleRad = pairAngle*Math.PI/180;
     const arcX1 = midX - arcR;
@@ -1016,33 +1061,31 @@
 
         <g filter="url(#shadowJoint)">
 
-          <!-- القطعة اليسرى (جسم صلب يميل عكس اليمين) -->
-          <g transform="rotate(${ -tiltDeg }, ${leftInnerX}, ${cy})">
-            <!-- الجناح العلوي مقصوص من الداخل -->
+          <!-- القطعة اليسرى (جسم صلب) -->
+          <g data-piece="left"
+             style="cursor:grab"
+             transform="translate(${userShiftLeft},0) rotate(${totalTiltLeft}, ${leftInnerX}, ${cy})">
             <rect x="${leftTopX1}" y="${tfy}"
                   width="${leftTopX2-leftTopX1}" height="${flangeTh}"
                   fill="url(#metalJoint)" stroke="#94a3b8" stroke-width="1"/>
-            <!-- الجناح السفلي مقصوص من الداخل -->
             <rect x="${leftBottomX1}" y="${bfy-flangeTh}"
                   width="${leftBottomX2-leftBottomX1}" height="${flangeTh}"
                   fill="url(#metalJoint)" stroke="#94a3b8" stroke-width="1"/>
-            <!-- العمود -->
             <rect x="${leftOuterX + flangeW/2 - webTh/2}" y="${tfy+flangeTh}"
                   width="${webTh}" height="${profileH-2*flangeTh}"
                   fill="url(#webJoint)" stroke="#94a3b8" stroke-width="1"/>
           </g>
 
-          <!-- القطعة اليمنى (جسم صلب يميل باتجاه معاكس) -->
-          <g transform="rotate(${ tiltDeg }, ${rightInnerX}, ${cy})">
-            <!-- الجناح العلوي مقصوص من الداخل -->
+          <!-- القطعة اليمنى (جسم صلب) -->
+          <g data-piece="right"
+             style="cursor:grab"
+             transform="translate(${userShiftRight},0) rotate(${totalTiltRight}, ${rightInnerX}, ${cy})">
             <rect x="${rightTopX1}" y="${tfy}"
                   width="${rightTopX2-rightTopX1}" height="${flangeTh}"
                   fill="url(#metalJoint)" stroke="#94a3b8" stroke-width="1"/>
-            <!-- الجناح السفلي مقصوص من الداخل -->
             <rect x="${rightBottomX1}" y="${bfy-flangeTh}"
                   width="${rightBottomX2-rightBottomX1}" height="${flangeTh}"
                   fill="url(#metalJoint)" stroke="#94a3b8" stroke-width="1"/>
-            <!-- العمود -->
             <rect x="${rightInnerX + flangeW/2 - webTh/2}" y="${tfy+flangeTh}"
                   width="${webTh}" height="${profileH-2*flangeTh}"
                   fill="url(#webJoint)" stroke="#94a3b8" stroke-width="1"/>
@@ -1050,7 +1093,7 @@
 
         </g>
 
-        <!-- فراغ بسيط بين القطعتين (يبقى عمودي ليظهر أنه فجوة، الأجسام لا تتداخل) -->
+        <!-- فراغ ثابت بين القطعتين (يبقى عمودي كفجوة) -->
         <rect x="${midX-gapPx/2}" y="${tfy}"
               width="${gapPx}" height="${profileH}"
               fill="transparent" stroke="rgba(148,163,184,0.4)" stroke-dasharray="4 4"/>
@@ -1081,6 +1124,73 @@
     `;
 
     $jointWrapper.innerHTML = svg;
+    attachJointInteraction();
+  }
+
+  // تفعيل السحب/الدوران على القطعتين
+  function attachJointInteraction(){
+    const svg = $jointWrapper.querySelector('svg');
+    if(!svg) return;
+    const leftG = svg.querySelector('[data-piece="left"]');
+    const rightG = svg.querySelector('[data-piece="right"]');
+    if(!leftG || !rightG) return;
+
+    const startDrag = (piece, evt)=>{
+      evt.preventDefault();
+      activePiece = piece;
+      dragStartX = evt.clientX;
+      dragStartY = evt.clientY;
+      if(piece === 'left'){
+        dragStartShift = userShiftLeft;
+        dragStartTilt = userTiltLeft;
+      } else {
+        dragStartShift = userShiftRight;
+        dragStartTilt = userTiltRight;
+      }
+      document.addEventListener('pointermove', onDragMove);
+      document.addEventListener('pointerup', endDrag);
+      document.addEventListener('pointercancel', endDrag);
+      if(piece === 'left') leftG.style.cursor = 'grabbing';
+      if(piece === 'right') rightG.style.cursor = 'grabbing';
+    };
+
+    const onDragMove = (evt)=>{
+      if(!activePiece) return;
+      const dx = evt.clientX - dragStartX;
+      const dy = evt.clientY - dragStartY;
+
+      let newShift = dragStartShift + dx;
+      if(newShift > MAX_DRAG_SHIFT) newShift = MAX_DRAG_SHIFT;
+      if(newShift < -MAX_DRAG_SHIFT) newShift = -MAX_DRAG_SHIFT;
+
+      let newTilt = dragStartTilt - dy * DRAG_ROT_FACTOR;
+      if(newTilt > MAX_DRAG_TILT) newTilt = MAX_DRAG_TILT;
+      if(newTilt < -MAX_DRAG_TILT) newTilt = -MAX_DRAG_TILT;
+
+      if(activePiece === 'left'){
+        userShiftLeft = newShift;
+        userTiltLeft = newTilt;
+      } else {
+        userShiftRight = newShift;
+        userTiltRight = newTilt;
+      }
+
+      const state = buildState();
+      renderJointFront(state); // نعيد رسم الواجهة المشتركة فقط مع نفس الحسابات
+    };
+
+    const endDrag = ()=>{
+      if(!activePiece) return;
+      activePiece = null;
+      leftG.style.cursor = 'grab';
+      rightG.style.cursor = 'grab';
+      document.removeEventListener('pointermove', onDragMove);
+      document.removeEventListener('pointerup', endDrag);
+      document.removeEventListener('pointercancel', endDrag);
+    };
+
+    leftG.addEventListener('pointerdown', e=>startDrag('left', e));
+    rightG.addEventListener('pointerdown', e=>startDrag('right', e));
   }
 
   function calc(){
@@ -1174,6 +1284,11 @@
     document.querySelector('input[name="cutWings"][value="top"]').checked=true;
     document.querySelector('input[name="tiltDirTop"][value="in"]').checked=true;
     document.querySelector('input[name="tiltDirBottom"][value="in"]').checked=true;
+    // إعادة ضبط التفاعل اليدوي
+    userTiltLeft = 0;
+    userTiltRight = 0;
+    userShiftLeft = 0;
+    userShiftRight = 0;
     calc();
   });
 
